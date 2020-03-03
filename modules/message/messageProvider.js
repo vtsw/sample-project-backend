@@ -23,6 +23,11 @@ class MessageProvider {
     return MessageProvider.factory(inserted.ops[0]);
   }
 
+  async update(id, message) {
+    const inserted = await this.db.updateOne({ _id: ObjectId(id) }, ...message);
+    return MessageProvider.factory(inserted.ops[0]);
+  }
+
   async find(condition) {
     const messages = await this.db.find(condition).toArray();
     return messages.map(MessageProvider.factory);

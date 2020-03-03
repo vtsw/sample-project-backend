@@ -26,6 +26,8 @@ module.exports = {
         hasNext: true,
       };
     },
+    updateMessage: (_, { message }, { messageProvider }) => messageProvider.update(message.id, message),
+    deleteMessage: (_, { id }, { messageProvider }) => messageProvider.delete(id),
   },
   User: {
     messages: (user, _, { dataloaders }) => dataloaders.getMessageByUser.load(user.id),

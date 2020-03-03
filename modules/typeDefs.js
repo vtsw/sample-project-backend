@@ -51,7 +51,7 @@ module.exports = gql`
 
   input UpdateMessageInput {
     content: String!
-    userId: ID
+    _id: ID
   }
 
   type Query {
@@ -68,5 +68,6 @@ module.exports = gql`
     updateUser(user: UpdateUserInput!): User
     createMessage(message: CreateMessageInput!): Message
     updateMessage(message: UpdateMessageInput!): Message
+    deleteMessage(id: ID!): Message
   }
 `;
