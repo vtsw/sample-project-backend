@@ -2,7 +2,7 @@ module.exports = {
   Mutation: {
     createMessage: (source, { content }, { messageProvider }) => messageProvider.createMessage({ content, userId: source.id }),
     createUser: (_, { user }, { authenticationService }) => authenticationService.register(user),
-    login: (async) => {
+    login: (source, { content }, { messageProvider }) => {
 
     },
   },
