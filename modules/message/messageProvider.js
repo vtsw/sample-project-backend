@@ -17,6 +17,7 @@ class MessageProvider {
   async create(message) {
     const inserted = await this.db.insertOne({
       content: message.content,
+      userId: message.userId,
       createdAt: new Date().getTime(),
     });
     return MessageProvider.factory(inserted.ops[0]);

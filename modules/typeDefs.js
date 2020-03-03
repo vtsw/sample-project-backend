@@ -2,7 +2,7 @@ const gql = require('graphql-tag');
 
 module.exports = gql`
   scalar Date
-  
+
   type AuthPayload {
     token: String!
   }
@@ -34,7 +34,7 @@ module.exports = gql`
   }
 
   input LoginUserInput {
-    user: String!,
+    email: String!
     password: String!
   }
 
@@ -49,6 +49,11 @@ module.exports = gql`
     content: String!
   }
 
+  input UpdateMessageInput {
+    content: String!
+    userId: ID
+  }
+
   type Query {
     message(id: String!): Message
     messageList: [Message]!
@@ -58,9 +63,10 @@ module.exports = gql`
   }
 
   type Mutation {
-    login(email: String!, password: String!): AuthPayload
-    createUser(user: CreateUserInput): User
-    updateUser(user: UpdateUserInput): User
-    createMessage(messsage: CreateMessageInput): Message
+    login(user: LoginUserInput!): AuthPayload
+    createUser(user: CreateUserInput!): User
+    updateUser(user: UpdateUserInput!): User
+    createMessage(message: CreateMessageInput!): Message
+    updateMessage(message: UpdateMessageInput!): Message
   }
 `;

@@ -10,7 +10,7 @@ module.exports = class Jwt {
   }
 
   encode(payload) {
-    return jwt.sign(payload, get(this.authConfig, 'jwt.privateKey'), 'privateKey');
+    return jwt.sign(payload, get(this.authConfig, 'jwt.privateKey', 'privateKey'));
   }
 
   decode(token) {

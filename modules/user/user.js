@@ -38,7 +38,7 @@ class User {
 
 	toJson() {
 		return {
-			id: this._email,
+			id: this._id,
 			name: this._name,
 			email: this._email,
 		}

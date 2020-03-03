@@ -1,10 +1,8 @@
 module.exports = {
   Mutation: {
-    createMessage: (source, { content }, { messageProvider }) => messageProvider.createMessage({ content, userId: source.id }),
-    createUser: (_, { user }, { authenticationService }) => authenticationService.register(user),
-    login: (source, { content }, { messageProvider }) => {
-
-    },
+    createMessage: (source, { message }, { messageProvider }) => messageProvider.create(message),
+    createUser: (_, { user }, { authenService }) => authenService.register(user),
+    login: (_, { user }, { authenService }) => authenService.login(user.email, user.password),
   },
   Query: {
     user: (_, { id }, { userProvider }) => userProvider.findById(id),

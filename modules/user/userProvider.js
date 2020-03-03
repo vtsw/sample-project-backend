@@ -11,7 +11,7 @@ class UserProvider {
   }
 
   findByCredential(credential) {
-    return this.db.findOne({ email: credential });
+    return this.db.findOne({ email: credential }).then(UserProvider.factory);
   }
 
   async create(user) {
