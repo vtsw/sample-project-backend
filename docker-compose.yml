@@ -1,0 +1,45 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+    command: nodemon --legacy-watch server.js
+    command: node mongo-init.js
+    command: node migration.js
+    ports:
+      - "4000:4000"
+    links:
+      - mongodb
+      - minio
+    depends_on:
+      - mongodb
+      - minio
+    volumes:
+      - .:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
+  minio:
+    image: minio/minio
+    volumes:
+      - data:/data
+    environment:
+      MINIO_ACCESS_KEY: "AKIAIOSFODNN7EXAMPLE"
+      MINIO_SECRET_KEY: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    ports:
+      - "9000:9000"
+    command: minio server /data/minio/
+  mongodb:
+    image: "mongo"
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "simple"
+      MONGO_INITDB_ROOT_PASSWORD: "simplePassword"
+      MONGO_INITDB_DATABASE: "simple_db"
+
+    volumes:
+      - "mongodb_data:/data/db"
+    ports:
+      - "27017:27017"
+volumes:
+  mongodb_data:
+    driver: local
+  data:
