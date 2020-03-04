@@ -3,6 +3,8 @@ module.exports = {
     createMessage: (source, { message }, { messageProvider }) => messageProvider.create(message),
     createUser: (_, { user }, { authenService }) => authenService.register(user),
     login: (_, { user }, { authenService }) => authenService.login(user.email, user.password),
+    updateMessage: (_, { message }, { messageProvider }) => messageProvider.update(message.id, message),
+    deleteMessage: (_, { id }, { messageProvider }) => messageProvider.delete(id),
   },
   Query: {
     user: (_, { id }, { userProvider }) => userProvider.findById(id),
@@ -14,9 +16,7 @@ module.exports = {
         hasNext: true,
       };
     },
-    me: (_, args, { req }) => {
-
-    },
+    me: (_, args, { req }) => req.user,
     message: (_, { id }, { messageProvider }) => messageProvider.findById(id),
     messageList: async (args, { messageProvider }) => {
       const messages = await messageProvider.find();
@@ -26,8 +26,6 @@ module.exports = {
         hasNext: true,
       };
     },
-    updateMessage: (_, { message }, { messageProvider }) => messageProvider.update(message.id, message),
-    deleteMessage: (_, { id }, { messageProvider }) => messageProvider.delete(id),
   },
   User: {
     messages: (user, _, { dataloaders }) => dataloaders.getMessageByUser.load(user.id),

@@ -1,6 +1,9 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
+
+  directive @isAuthenticated on FIELD_DEFINITION
+  
   scalar Date
 
   type AuthPayload {
@@ -55,19 +58,19 @@ module.exports = gql`
   }
 
   type Query {
-    message(id: String!): Message
-    messageList: [Message]!
-    me: User
-    user(id: String!): User
-    userList: UserList
+    message(id: String!): Message @isAuthenticated
+    messageList: [Message]! @isAuthenticated
+    me: User @isAuthenticated
+    user(id: String!): User @isAuthenticated
+    userList: UserList @isAuthenticated
   }
 
   type Mutation {
     login(user: LoginUserInput!): AuthPayload
-    createUser(user: CreateUserInput!): User
-    updateUser(user: UpdateUserInput!): User
-    createMessage(message: CreateMessageInput!): Message
-    updateMessage(message: UpdateMessageInput!): Message
-    deleteMessage(id: ID!): Message
+    createUser(user: CreateUserInput!): User @isAuthenticated
+    updateUser(user: UpdateUserInput!): User @isAuthenticated
+    createMessage(message: CreateMessageInput!): Message @isAuthenticated
+    updateMessage(message: UpdateMessageInput!): Message @isAuthenticated
+    deleteMessage(id: ID!): Message @isAuthenticated
   }
 `;
