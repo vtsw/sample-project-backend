@@ -1,7 +1,7 @@
 const gql = require('graphql-tag');
 
 const { makeExecutableSchema } = require('graphql-tools');
-const typeDefs = gql(require('./typeDefs'));
+const typeDefs = require('./typeDefs');
 const resolvers = require('./resolver');
 const directiveResolvers = require('./directiveResolvers');
 
