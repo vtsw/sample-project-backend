@@ -1,4 +1,4 @@
-export const typeDef = `
+module.exports =  `
   extend type Mutation {
     createMessage(message: CreateMessageInput!): Message @isAuthenticated
     updateMessage(message: UpdateMessageInput!): Message @isAuthenticated

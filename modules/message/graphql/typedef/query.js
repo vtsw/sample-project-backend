@@ -1,6 +1,6 @@
-export const typeDef = `
-  extend type Query {
-    user(id: String!): User @isAuthenticated
-    userList: UserList @isAuthenticated
+module.exports = `
+  type Query {
+    message(id: String!): Message @isAuthenticated
+    messageList: [Message]! @isAuthenticated
   }
 `;

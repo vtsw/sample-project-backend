@@ -1,4 +1,4 @@
-export const typeDef = `
+module.exports = `
   type User {
     _id: ID!
     name: String!
@@ -11,8 +11,6 @@ export const typeDef = `
     hasNext: Boolean,
     total: Int
   }
-
-  
 
   input LoginUserInput {
     email: String!

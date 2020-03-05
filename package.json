@@ -19,16 +19,18 @@
     "graphql-tag": "^2.10.3",
     "graphql-tools": "^4.0.7",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "latest",
     "lodash.get": "^4.4.2",
+    "merge-graphql-schemas": "^1.7.6",
     "minio": "^7.0.14",
-    "mongodb": "^3.5.4",
-    "lodash": "latest"
+    "mongodb": "^3.5.4"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-graphql": "^3.1.1",
-    "faker": "^4.1.0"
+    "faker": "^4.1.0",
+    "merge-graphql-schemas": "^1.7.6"
   }
 }

@@ -1,9 +1,10 @@
 const gql = require('graphql-tag');
-const { makeExecutableSchema } = require('graphql-tools');
+const {  mergeTypes } =  require('merge-graphql-schemas');
+
 const UserTypeDefs = require( './user/graphql/typedef');
 const MessageTypeDefs = require( './message/graphql/typedef');
 
-const baseTypeDefs = `
+const baseTypeDefs = gql`
 
   directive @isAuthenticated on FIELD_DEFINITION
   
@@ -18,10 +19,11 @@ const baseTypeDefs = `
   }
 
   type Mutation {
+    _empty: String
   }
 `;
 
 const typeDefs = [baseTypeDefs, UserTypeDefs, MessageTypeDefs];
-const mergedTypeDefs = [].concat.apply([], typeDefs);
-module.exports = mergedTypeDefs;
+const mergedTypeDefs = [].concat.apply([], typeDefs)
+module.exports = mergeTypes(mergedTypeDefs, {all: true});
 

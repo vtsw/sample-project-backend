@@ -1,4 +1,4 @@
-export const typeDef = `
+module.exports = `
   input CreateUserInput {
     password: String!
     name: String!
@@ -10,5 +10,6 @@ export const typeDef = `
     name: String
     email: String
     password: String
-  }`
+  }
+  `
 ;

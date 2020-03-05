@@ -1,4 +1,4 @@
-export const typeDef = `
+module.exports =  `
   input CreateMessageInput {
     content: String!
   }
