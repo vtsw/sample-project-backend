@@ -1,4 +1,4 @@
-module.exports =  {
+module.exports = {
   Query: {
     message: (_, { id }, { messageProvider }) => messageProvider.findById(id),
     messageList: async (args, { messageProvider }) => {
@@ -10,4 +10,4 @@ module.exports =  {
       };
     },
   },
-}
+};

@@ -1,4 +1,4 @@
-module.exports =  `
+module.exports = `
   extend type Mutation {
     login(user: LoginUserInput!): AuthPayload
     createUser(user: CreateUserInput!): User @isAuthenticated

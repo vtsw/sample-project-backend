@@ -1,8 +1,8 @@
 const gql = require('graphql-tag');
-const {  mergeTypes } =  require('merge-graphql-schemas');
+const { mergeTypes } = require('merge-graphql-schemas');
 
-const UserTypeDefs = require( './user/graphql/typedef');
-const MessageTypeDefs = require( './message/graphql/typedef');
+const UserTypeDefs = require('./user/graphql/typedef');
+const MessageTypeDefs = require('./message/graphql/typedef');
 
 const baseTypeDefs = gql`
 
@@ -24,6 +24,5 @@ const baseTypeDefs = gql`
 `;
 
 const typeDefs = [baseTypeDefs, UserTypeDefs, MessageTypeDefs];
-const mergedTypeDefs = [].concat.apply([], typeDefs)
-module.exports = mergeTypes(mergedTypeDefs, {all: true});
-
+const mergedTypeDefs = [].concat.apply([], typeDefs);
+module.exports = mergeTypes(mergedTypeDefs, { all: true });

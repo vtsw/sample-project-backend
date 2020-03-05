@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongodb');
-const Message = require('./graphql/typedef');
+const Message = require('./message');
 
 class MessageProvider {
   /**

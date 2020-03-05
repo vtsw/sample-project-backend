@@ -3,8 +3,6 @@ services:
   web:
     build:
       context: .
-    command: node mongo-init.js
-    command: node migration.js
     command: nodemon --legacy-watch server.js
     ports:
       - "4000:4000"

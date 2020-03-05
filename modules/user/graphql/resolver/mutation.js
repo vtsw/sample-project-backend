@@ -1,6 +1,6 @@
-module.exports =  {
+module.exports = {
   Mutation: {
     createMessage: (source, { message }, { messageProvider }) => messageProvider.create(message),
-    createUser: (_, { user }, { authenService }) => authenService.register(user)
-  }
-}
+    createUser: (_, { user }, { authenService }) => authenService.register(user),
+  },
+};
