@@ -1,40 +1,40 @@
 class Message {
-	_id;
+  _id;
   _content;
-	_createdAt;
-	_userId;
+  _createdAt;
+  _userId;
 
-	constructor(id) {
-		this._id = id;
-	}
+  constructor(id) {
+    this._id = id;
+  }
 
-	get userId() {
-		return this._userId;
-	}
+  get userId() {
+    return this._userId;
+  }
 
-	set userId(value) {
-		this._userId = value;
-	}
-	
-	get id() {
-		return this._id;
-	}
+  set userId(value) {
+    this._userId = value;
+  }
 
-	get content() {
-		return this._content;
-	}
+  get id() {
+    return this._id;
+  }
 
-	set content(value) {
-		this._content = value;
-	}
+  get content() {
+    return this._content;
+  }
 
-	get createdAt() {
-		return this._createdAt;
-	}
+  set content(value) {
+    this._content = value;
+  }
 
-	set createdAt(value) {
-		this._createdAt = value;
-	}
+  get createdAt() {
+    return this._createdAt;
+  }
+
+  set createdAt(value) {
+    this._createdAt = value;
+  }
 }
 
 module.exports = Message;

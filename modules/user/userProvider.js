@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongodb');
-const User = require('./user');
+const User = require('./graphql/typedef');
 
 class UserProvider {
   constructor(db) {
@@ -7,11 +7,13 @@ class UserProvider {
   }
 
   findById(id) {
-    return this.db.findOne({ _id: ObjectId(id) }).then(UserProvider.factory);
+    return this.db.findOne({ _id: ObjectId(id) })
+      .then(UserProvider.factory);
   }
 
   findByCredential(credential) {
-    return this.db.findOne({ email: credential }).then(UserProvider.factory);
+    return this.db.findOne({ email: credential })
+      .then(UserProvider.factory);
   }
 
   async create(user) {
@@ -24,7 +26,9 @@ class UserProvider {
   }
 
   find(condition) {
-    return this.db.find(condition).toArray().then((users) => users.map(UserProvider.factory));
+    return this.db.find(condition)
+      .toArray()
+      .then((users) => users.map(UserProvider.factory));
   }
 
   static factory(rawData) {

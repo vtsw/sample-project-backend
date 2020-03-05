@@ -21,7 +21,8 @@
     "jsonwebtoken": "^8.5.1",
     "lodash.get": "^4.4.2",
     "minio": "^7.0.14",
-    "mongodb": "^3.5.4"
+    "mongodb": "^3.5.4",
+    "lodash": "latest"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
