@@ -5,10 +5,10 @@ const messageResolver = require('./message/graphql/resolver');
 
 const baseResolver = {
   Mutation: {
-    login: (_, { user }, { authService }) => authService.login(user.email, user.password),
+
   },
   Query: {
-    me: (_, args, { req }) => req.user,
+
   },
 };
 

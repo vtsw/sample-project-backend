@@ -9,10 +9,11 @@ module.exports = {
         hasNext: true,
       };
     },
+    me: (_, args, { req }) => req.user,
   },
   Mutation: {
-    createMessage: (source, { message }, { messageProvider }) => messageProvider.create(message),
-    createUser: (_, { user }, { authenService }) => authenService.register(user),
+    createUser: (_, { user }, { authService }) => authService.register(user),
+    login: (_, { user }, { authService }) => authService.login(user.email, user.password),
   },
   User: {
     messages: (user, _, { messageProvider }) => {

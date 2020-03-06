@@ -11,7 +11,13 @@ module.exports = {
     },
   },
   Mutation: {
-    updateMessage: (_, { message }, { messageProvider }) => messageProvider.update(message.id, message),
+    createMessage: (source, { message }, { messageProvider, req }) => messageProvider.create({
+      ...message,
+      sender: req.user.id,
+    }),
+    updateMessage: (_, { message }, { messageProvider, req }) => {
+      messageProvider.update(message.id, message);
+    },
     deleteMessage: (_, { id }, { messageProvider }) => messageProvider.delete(id),
   },
 };

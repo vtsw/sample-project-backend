@@ -1,7 +1,8 @@
+const gql = require('graphql-tag');
 
-module.exports = `
+module.exports = gql`
 	type Message {
-	  _id: ID!
+	  id: ID!
 	  content: String!
 	  createdAt: Date
 	  userId: ID!
@@ -13,7 +14,7 @@ module.exports = `
 	
 	input UpdateMessageInput {
 	  content: String!
-	  _id: ID
+	  id: ID!
 	}
 	
 	extend type Mutation {

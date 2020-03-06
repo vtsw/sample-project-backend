@@ -1,44 +1,48 @@
 class Message {
+  /**
+   *
+   * @param {String} id
+   */
   constructor(id) {
-    this.data = {
+    this.attributes = {
       id,
       sender: null,
       receiver: null,
       content: null,
-      createdAt: null,
+      lastModified: null,
     };
   }
 
-  get userId() {
-    return this.data.userId;
+  get sender() {
+    return this.attributes.sender;
   }
 
-  set userId(value) {
-    this.data.userId = value;
+  set sender(value) {
+    this.attributes.sender = value;
   }
 
   get id() {
-    return this.data.id;
+    return this.attributes.id;
   }
 
   get content() {
-    return this.data.content;
+    return this.attributes.content;
   }
 
   set content(value) {
-    this.data.content = value;
+    this.attributes.content = value;
   }
 
-  get createdAt() {
-    return this.data.createdAt;
+  get lastModified() {
+    return this.attributes.lastModified;
   }
 
-  set createdAt(value) {
-    this.data.createdAt = value;
+  set lastModified(value) {
+    this.attributes.lastModified = value;
   }
 
   toJson() {
-    return this.data;
+    return this.attributes;
   }
 }
 

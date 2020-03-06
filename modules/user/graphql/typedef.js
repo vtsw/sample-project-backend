@@ -1,6 +1,8 @@
-module.exports = `
+const gql = require('graphql-tag');
+
+module.exports = gql`
   type User {
-    _id: ID!
+    id: ID!
     name: String!
     email: String!
     messages: [Message]!
@@ -24,7 +26,7 @@ module.exports = `
   }
   
   input UpdateUserInput {
-    _id: ID!
+    id: ID!
     name: String
     email: String
     password: String
@@ -39,5 +41,6 @@ module.exports = `
   extend type Query {
     user(id: String!): User @isAuthenticated
     userList: UserList @isAuthenticated
+    me: User @isAuthenticated
   }
 `;

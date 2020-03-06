@@ -10,7 +10,7 @@ class AuthenticationService {
 
 
   async login(email, password) {
-    const user = await this.userProvider.findByCredential(email);
+    const user = await this.userProvider.findByEmail(email);
     if (!user) {
       throw new AuthenticationError('User or password is invalid.');
     }
@@ -31,7 +31,7 @@ class AuthenticationService {
   }
 
   async register(user) {
-    if (await this.userProvider.findByCredential(user.email)) {
+    if (await this.userProvider.findByEmail(user.email)) {
       throw new AuthenticationError('The email already exists.');
     }
     const newUser = { ...user };

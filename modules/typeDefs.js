@@ -15,14 +15,13 @@ const baseTypeDefs = gql`
   }
 
   type Query {
-    me: User @isAuthenticated
+    foo: String
   }
 
   type Mutation {
-    _empty: String
+    bar: String
   }
 `;
 
 const typeDefs = [baseTypeDefs, UserTypeDefs, MessageTypeDefs];
-const mergedTypeDefs = Array.prototype.concat.apply([], typeDefs);
-module.exports = mergeTypes(mergedTypeDefs, { all: true });
+module.exports = mergeTypes(typeDefs, { all: true });
