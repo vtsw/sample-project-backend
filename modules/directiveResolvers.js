@@ -1,4 +1,5 @@
 const get = require('lodash.get');
+const { AuthenticationError } = require('./errors');
 
 module.exports = {
   isAuthenticated: async (next, source, args, context) => {
@@ -7,16 +8,15 @@ module.exports = {
       throw new Error('You must supply a JWT for authorization!');
     }
     try {
-      const { authenService } = context;
+      const { authService } = context;
       const { req } = context;
-      const user = await authenService.verify(token);
-      if (!user) {
+      req.user = await authService.verify(token);
+      return next();
+    } catch (e) {
+      if (e instanceof AuthenticationError) {
         throw new Error('User not authenticated');
       }
-      req.user = user;
-      return next();
-    } catch (err) {
-      throw new Error('You are not authorized.');
+      throw e;
     }
   },
 };

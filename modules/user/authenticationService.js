@@ -1,4 +1,5 @@
 const UserProvider = require('./userProvider');
+const { AuthenticationError } = require('../errors');
 
 class AuthenticationService {
   constructor(bcrypt, userProvider, jwt) {
@@ -11,10 +12,10 @@ class AuthenticationService {
   async login(email, password) {
     const user = await this.userProvider.findByCredential(email);
     if (!user) {
-      throw new Error('User or password is invalid.');
+      throw new AuthenticationError('User or password is invalid.');
     }
     if (!this.bcrypt.compare(password, user.password)) {
-      throw new Error('User or password is invalid.');
+      throw new AuthenticationError('User or password is invalid.');
     }
     return {
       token: this.jwt.encode(user.toJson()),
@@ -24,14 +25,14 @@ class AuthenticationService {
   async verify(token) {
     const payload = this.jwt.decode(token);
     if (!payload) {
-      throw new Error('Authorization token is invalid.');
+      throw new AuthenticationError('Invalid token');
     }
     return UserProvider.factory(payload);
   }
 
   async register(user) {
     if (await this.userProvider.findByCredential(user.email)) {
-      throw new Error('The email already exists.');
+      throw new AuthenticationError('The email already exists.');
     }
     const newUser = { ...user };
     newUser.password = await this.bcrypt.hash(newUser.password, 10);

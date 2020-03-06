@@ -1,9 +1,13 @@
 const { ObjectId } = require('mongodb');
-const User = require('./graphql/typedef');
+const User = require('../user/user');
 
 class UserProvider {
+  /**
+   *
+   * @param {Collection} db
+   */
   constructor(db) {
-    this.db = db.collection('users');
+    this.db = db;
   }
 
   findById(id) {

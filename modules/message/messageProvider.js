@@ -4,10 +4,10 @@ const Message = require('./message');
 class MessageProvider {
   /**
    *
-   * @param {} db
+   * @param {Collection} db
    */
   constructor(db) {
-    this.db = db.collection('messages');
+    this.db = db;
   }
 
   findById(id) {

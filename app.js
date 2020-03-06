@@ -6,10 +6,10 @@ const createSessionContext = require('./createSessionContext');
 
 const app = express();
 
-bootstrapper().then((services) => {
+bootstrapper().then((appContenxt) => {
   app.use('/graphql', graphqlHTTP(async (req) => {
     // create new context on every request
-    const context = await createSessionContext(req, services);
+    const context = await createSessionContext(req, appContenxt);
     return {
       schema,
       graphiql: true,

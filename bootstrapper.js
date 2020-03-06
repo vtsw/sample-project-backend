@@ -11,10 +11,10 @@ module.exports = async () => {
   const context = {};
   context.db = (await mongodb(config)).db('simple_db');
   context.minio = minio(config);
-  context.userProvider = new UserProvider(context.db);
-  context.messageProvider = new MessageProvider(context.db);
+  context.userProvider = new UserProvider(context.db.collection('users'));
+  context.messageProvider = new MessageProvider(context.db.collection('messages'));
   context.bcrypt = new Bcrypt(config);
   context.jwt = new JWT(config);
-  context.authenService = new AuthenticationService(context.bcrypt, context.userProvider, context.jwt);
+  context.authService = new AuthenticationService(context.bcrypt, context.userProvider, context.jwt);
   return context;
 };

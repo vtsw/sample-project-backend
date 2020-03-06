@@ -24,5 +24,5 @@ const baseTypeDefs = gql`
 `;
 
 const typeDefs = [baseTypeDefs, UserTypeDefs, MessageTypeDefs];
-const mergedTypeDefs = [].concat.apply([], typeDefs);
+const mergedTypeDefs = Array.prototype.concat.apply([], typeDefs);
 module.exports = mergeTypes(mergedTypeDefs, { all: true });

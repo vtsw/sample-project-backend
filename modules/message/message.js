@@ -1,39 +1,44 @@
 class Message {
-  _id;
-  _content;
-  _createdAt;
-  _userId;
-
   constructor(id) {
-    this._id = id;
+    this.data = {
+      id,
+      sender: null,
+      receiver: null,
+      content: null,
+      createdAt: null,
+    };
   }
 
   get userId() {
-    return this._userId;
+    return this.data.userId;
   }
 
   set userId(value) {
-    this._userId = value;
+    this.data.userId = value;
   }
 
   get id() {
-    return this._id;
+    return this.data.id;
   }
 
   get content() {
-    return this._content;
+    return this.data.content;
   }
 
   set content(value) {
-    this._content = value;
+    this.data.content = value;
   }
 
   get createdAt() {
-    return this._createdAt;
+    return this.data.createdAt;
   }
 
   set createdAt(value) {
-    this._createdAt = value;
+    this.data.createdAt = value;
+  }
+
+  toJson() {
+    return this.data;
   }
 }
 
