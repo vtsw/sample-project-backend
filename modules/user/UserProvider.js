@@ -63,7 +63,7 @@ class UserProvider {
   async findWithPagination(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
     let hasNext = false;
     const users = await this.find({ ...condition, page: { limit: condition.page.limit + 1, skip: condition.page.skip } });
-    if (users.length > condition.limit) {
+    if (users.length > condition.page.limit) {
       hasNext = true;
       users.pop();
     }

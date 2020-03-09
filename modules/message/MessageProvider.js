@@ -88,7 +88,7 @@ class MessageProvider {
       skip: condition.page.skip,
     };
     const messages = await this.find({ page, query: condition.query });
-    if (messages.length > condition.limit) {
+    if (messages.length > condition.page.limit) {
       hasNext = true;
       messages.pop();
     }
