@@ -5,10 +5,10 @@ module.exports = gql`
     id: ID!
     name: String!
     email: String!
-    messages: [Message]!
+    messages(query: MessageListInput): MessageList!
   }
 
-  type UserList {
+  type UserList implements Paginatable {
     users: [User]!
     hasNext: Boolean,
     total: Int
@@ -31,6 +31,12 @@ module.exports = gql`
     email: String
     password: String
   }
+
+  input UserListInput {
+    skip: Int = 0,
+    limit: Int = 10,
+    searchText: String
+  }
   
   extend type Mutation {
     login(user: LoginUserInput!): AuthPayload
@@ -40,7 +46,6 @@ module.exports = gql`
   
   extend type Query {
     user(id: String!): User @isAuthenticated
-    userList: UserList @isAuthenticated
-    me: User @isAuthenticated
+    userList(query: UserListInput): UserList @isAuthenticated
   }
 `;

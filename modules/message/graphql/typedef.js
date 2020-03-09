@@ -5,7 +5,7 @@ module.exports = gql`
 	  id: ID!
 	  content: String!
 	  createdAt: Date
-	  userId: ID!
+		userId: ID
 	}
 	
 	input CreateMessageInput {
@@ -16,6 +16,18 @@ module.exports = gql`
 	  content: String!
 	  id: ID!
 	}
+
+  type MessageList implements Paginatable {
+    messages: [Message]!
+    hasNext: Boolean,
+    total: Int,
+  }
+	
+  input MessageListInput {
+    skip: Int = 0,
+    limit: Int = 10,
+	  searchText: String
+  }
 	
 	extend type Mutation {
     createMessage(message: CreateMessageInput!): Message @isAuthenticated
@@ -25,6 +37,6 @@ module.exports = gql`
   
   extend type Query {
     message(id: String!): Message @isAuthenticated
-    messageList: [Message]! @isAuthenticated
+    messageList(query: MessageListInput): MessageList @isAuthenticated
   }
 `;

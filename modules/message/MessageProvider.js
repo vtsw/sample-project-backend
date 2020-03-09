@@ -1,7 +1,7 @@
 const { ObjectId } = require('mongodb');
 const moment = require('moment');
 const { ResourceNotFoundError } = require('../errors');
-const Message = require('./message');
+const Message = require('./Message');
 
 class MessageProvider {
   /**
@@ -14,7 +14,7 @@ class MessageProvider {
 
   /**
    *
-   * @param id
+   * @param {String} id
    * @returns {PromiseLike<any> | Promise<any>}
    */
   findById(id) {
@@ -36,6 +36,12 @@ class MessageProvider {
     return MessageProvider.factory(inserted.ops[0]);
   }
 
+  /**
+   *
+   * @param id
+   * @param messageUpdate
+   * @returns {Promise<null|Message>}
+   */
   async update(id, messageUpdate) {
     const message = await this.findById(id);
     if (!message) {
@@ -49,17 +55,55 @@ class MessageProvider {
     return MessageProvider.factory({ ...message.toJson(), ...messageUpdate });
   }
 
+  /**
+   *
+   * @param {String} id
+   * @returns {Promise<null|Message>}
+   */
   delete(id) {
     return this.update(id, {
       deleted: true,
     });
   }
 
-  async find(condition) {
-    const messages = await this.messages.find(condition).toArray();
+  /**
+   *
+   * @param {Object} condition
+   * @returns {Promise<*>}
+   */
+  async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
+    const messages = await this.messages.find(condition.query).limit(condition.page.limit).skip(condition.page.skip).toArray();
     return messages.map(MessageProvider.factory);
   }
 
+  /**
+   *
+   * @param {Object} condition
+   * @returns {Promise<{total: *, messages: *, hasNext: boolean}>}
+   */
+  async findWithPagination(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
+    let hasNext = false;
+    const page = {
+      limit: condition.page.limit + 1,
+      skip: condition.page.skip,
+    };
+    const messages = await this.find({ page, query: condition.query });
+    if (messages.length > condition.limit) {
+      hasNext = true;
+      messages.pop();
+    }
+    return {
+      messages,
+      total: messages.length,
+      hasNext,
+    };
+  }
+
+  /**
+   *
+   * @param {Object} rawData
+   * @returns {null|Message}
+   */
   static factory(rawData) {
     if (!rawData) {
       return null;

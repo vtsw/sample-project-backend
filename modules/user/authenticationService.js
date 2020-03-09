@@ -1,14 +1,25 @@
-const UserProvider = require('./userProvider');
+const UserProvider = require('./UserProvider');
 const { AuthenticationError } = require('../errors');
 
 class AuthenticationService {
+  /**
+   *
+   * @param {Bcrypt} bcrypt
+   * @param {UserProvider} userProvider
+   * @param {JWT} jwt
+   */
   constructor(bcrypt, userProvider, jwt) {
     this.bcrypt = bcrypt;
     this.userProvider = userProvider;
     this.jwt = jwt;
   }
 
-
+  /**
+   *
+   * @param {String} email
+   * @param {String} password
+   * @returns {Promise<{token: string | Uint8Array}>}
+   */
   async login(email, password) {
     const user = await this.userProvider.findByEmail(email);
     if (!user) {
@@ -22,6 +33,11 @@ class AuthenticationService {
     };
   }
 
+  /**
+   *
+   * @param {String} token
+   * @returns {Promise<User>}
+   */
   async verify(token) {
     const payload = this.jwt.decode(token);
     if (!payload) {
@@ -30,6 +46,11 @@ class AuthenticationService {
     return UserProvider.factory(payload);
   }
 
+  /**
+   *
+   * @param {Object} user
+   * @returns {Promise<User>}
+   */
   async register(user) {
     if (await this.userProvider.findByEmail(user.email)) {
       throw new AuthenticationError('The email already exists.');

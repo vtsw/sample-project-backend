@@ -10,6 +10,11 @@ const baseTypeDefs = gql`
   
   scalar Date
 
+  interface Paginatable {
+    hasNext: Boolean
+    total: Int
+  }
+
   type AuthPayload {
     token: String!
   }

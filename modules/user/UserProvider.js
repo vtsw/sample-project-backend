@@ -1,13 +1,13 @@
 const { ObjectId } = require('mongodb');
-const User = require('../user/user');
+const User = require('./User');
 
 class UserProvider {
   /**
    *
-   * @param {Collection} db
+   * @param {Collection} users
    */
-  constructor(db) {
-    this.db = db;
+  constructor(users) {
+    this.users = users;
   }
 
   /**
@@ -16,7 +16,7 @@ class UserProvider {
    * @returns {PromiseLike<any> | Promise<any>}
    */
   findById(id) {
-    return this.db.findOne({ _id: ObjectId(id) })
+    return this.users.findOne({ _id: ObjectId(id) })
       .then(UserProvider.factory);
   }
 
@@ -26,7 +26,7 @@ class UserProvider {
    * @returns {PromiseLike<any> | Promise<any>}
    */
   findByEmail(email) {
-    return this.db.findOne({ email })
+    return this.users.findOne({ email })
       .then(UserProvider.factory);
   }
 
@@ -36,7 +36,7 @@ class UserProvider {
    * @returns {Promise<User>}
    */
   async create(user) {
-    const inserted = await this.db.insertOne({
+    const inserted = await this.users.insertOne({
       email: user.email,
       name: user.name,
       password: user.password,
@@ -49,10 +49,29 @@ class UserProvider {
    * @param {Object} condition
    * @returns {Promise<T>}
    */
-  find(condition) {
-    return this.db.find(condition)
+  find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
+    return this.users.find(condition.query).limit(condition.page.limit).skip(condition.page.skip)
       .toArray()
       .then((users) => users.map(UserProvider.factory));
+  }
+
+  /**
+   *
+   * @param {Object} condition
+   * @returns {Promise<{total: *, hasNext: boolean, users: T}>}
+   */
+  async findWithPagination(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
+    let hasNext = false;
+    const users = await this.find({ ...condition, page: { limit: condition.page.limit + 1, skip: condition.page.skip } });
+    if (users.length > condition.limit) {
+      hasNext = true;
+      users.pop();
+    }
+    return {
+      users,
+      total: users.length,
+      hasNext,
+    };
   }
 
   /**
