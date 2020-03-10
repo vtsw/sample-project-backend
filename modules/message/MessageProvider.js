@@ -78,8 +78,8 @@ class MessageProvider {
 
   /**
    *
-   * @param {Object} condition
-   * @returns {Promise<{total: *, messages: *, hasNext: boolean}>}
+   * @param condition
+   * @returns {Promise<{total: *, hasNext: boolean, items: *}>}
    */
   async findWithPagination(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
     let hasNext = false;
@@ -93,7 +93,7 @@ class MessageProvider {
       messages.pop();
     }
     return {
-      messages,
+      items: messages,
       total: messages.length,
       hasNext,
     };

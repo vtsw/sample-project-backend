@@ -18,7 +18,7 @@ module.exports = gql`
 	}
 
   type MessageList implements Paginatable {
-    messages: [Message]!
+    items: [Message]!
     hasNext: Boolean,
     total: Int,
   }

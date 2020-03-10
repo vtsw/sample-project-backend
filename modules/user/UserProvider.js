@@ -84,8 +84,8 @@ class UserProvider {
 
   /**
    *
-   * @param {Object} condition
-   * @returns {Promise<{total: *, hasNext: boolean, users: T}>}
+   * @param condition
+   * @returns {Promise<{total: *, hasNext: boolean, items: T}>}
    */
   async findWithPagination(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
     let hasNext = false;
@@ -95,7 +95,7 @@ class UserProvider {
       users.pop();
     }
     return {
-      users,
+      items: users,
       total: users.length,
       hasNext,
     };
