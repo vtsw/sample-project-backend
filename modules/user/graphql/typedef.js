@@ -42,6 +42,7 @@ module.exports = gql`
     login(user: LoginUserInput!): AuthPayload
     createUser(user: CreateUserInput!): User @isAuthenticated
     updateUser(user: UpdateUserInput!): User @isAuthenticated
+    deleteUser(id: ID!): User @isAuthenticated
   }
   
   extend type Query {

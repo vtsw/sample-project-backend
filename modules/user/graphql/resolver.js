@@ -1,4 +1,5 @@
 const { isEmpty } = require('lodash');
+const { ResourceNotFoundError } = require('../../errors');
 
 module.exports = {
   Query: {
@@ -17,6 +18,8 @@ module.exports = {
   Mutation: {
     createUser: (_, { user }, { authService }) => authService.register(user),
     login: (_, { user }, { authService }) => authService.login(user.email, user.password),
+    updateUser: async (_, { user }, { userProvider }) => userProvider.update(user.id, user),
+    deleteUser: (_, { id }, { userProvider }) => userProvider.delete(id),
   },
   User: {
     messages: (user, args, { messageProvider }) => {
