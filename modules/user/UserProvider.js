@@ -1,4 +1,6 @@
 const { ObjectId } = require('mongodb');
+const { ResourceNotFoundError } = require('../errors');
+const moment = require('moment');
 const User = require('./User');
 
 class UserProvider {
@@ -16,7 +18,7 @@ class UserProvider {
    * @returns {PromiseLike<any> | Promise<any>}
    */
   findById(id) {
-    return this.users.findOne({ _id: ObjectId(id) })
+    return this.users.findOne({ _id: ObjectId(id), $or: [{ deleted: false }, { deleted: { $exists: false } }] })
       .then(UserProvider.factory);
   }
 
@@ -57,6 +59,31 @@ class UserProvider {
 
   /**
    *
+   * @param id
+   * @param userUpdate
+   * @returns {Promise<User>}
+   */
+  async update(id, userUpdate) {
+    const user = await this.findById(id);
+    if (!user) {
+      throw new ResourceNotFoundError('User', `id: ${id}`);
+    }
+    const { result } = await this.users
+      .updateOne({ _id: ObjectId(id) }, { $set: userUpdate, $currentDate: { lastModified: true } });
+    if (result.ok !== 1) {
+      throw new Error(`Update fail with id: ${id}`);
+    }
+    return UserProvider.factory({ ...user.toJson(), ...userUpdate });
+  }
+
+  async delete(id) {
+    return this.update(id, {
+      deleted: true,
+    });
+  }
+
+  /**
+   *
    * @param {Object} condition
    * @returns {Promise<{total: *, hasNext: boolean, users: T}>}
    */
@@ -83,7 +110,7 @@ class UserProvider {
     if (!rawData) {
       return null;
     }
-    const user = new User(rawData._id);
+    const user = new User(rawData._id || rawData.id);
     user.password = rawData.password;
     user.email = rawData.email;
     user.name = rawData.name;
