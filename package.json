@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "docker-compose up -f docker-compose.yml",
-    "test": "docker-compose up -f docker-compose.int-test.yml"
+    "start": "docker-compose build . -f docker-compose.yml; docker-compose up",
+    "test": "docker-compose build . -f docker-compose.int-test.yml; docker-compose up",
     "migrate-mongo": "node_modules/migrate-mongo/bin/migrate-mongo.js"
   },
   "keywords": [],
@@ -26,16 +26,22 @@
     "merge-graphql-schemas": "^1.7.6",
     "minio": "^7.0.14",
     "moment": "^2.24.0",
-    "mongodb": "^3.5.4"
+    "mongodb": "^3.5.4",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
     "apollo-boost": "^0.4.7",
+    "apollo-cache-inmemory": "^1.6.5",
+    "apollo-client": "^2.6.8",
+    "apollo-link-context": "^1.0.19",
+    "apollo-link-http": "^1.5.16",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-graphql": "^3.1.1",
     "eslint-plugin-import": "^2.20.1",
-    "migrate-mongo": "^7.1.0"
-    "jest": "^25.1.0"
+    "jest": "^25.1.0",
+    "migrate-mongo": "^7.1.0",
+    "unfetch": "^4.1.0"
   },
   "jest": {
     "testRegex": "./tests/.*.js$",
