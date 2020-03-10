@@ -9,7 +9,7 @@ module.exports = gql`
   }
 
   type UserList implements Paginatable {
-    users: [User]!
+    items: [User]!
     hasNext: Boolean,
     total: Int
   }

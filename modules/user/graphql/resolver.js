@@ -1,5 +1,4 @@
 const { isEmpty } = require('lodash');
-const { ResourceNotFoundError } = require('../../errors');
 
 module.exports = {
   Query: {
@@ -25,12 +24,12 @@ module.exports = {
     messages: (user, args, { messageProvider }) => {
       if (isEmpty(args)) {
         return messageProvider
-          .findWithPagination({ query: { }, page: { limit: 10, skip: 0 } });
+          .findWithPagination({ query: { userId: user.id }, page: { limit: 10, skip: 0 } });
       }
       const { query: { searchText, limit, skip } } = args;
       const content = isEmpty(searchText) ? new RegExp(`${searchText}`) : {};
       return messageProvider
-        .findWithPagination({ query: { content }, page: { limit, skip } });
+        .findWithPagination({ query: { userId: user.id, content }, page: { limit, skip } });
     },
   },
 };
