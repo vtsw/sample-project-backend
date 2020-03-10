@@ -6,7 +6,7 @@ module.exports = {
     url: 'mongodb://foobar:foobarPassword@mongodb:27017/simple_db',
   },
   minio: {
-    endPoint: '172.76.10.161',
+    endPoint: 'minio',
     port: 9000,
     useSSL: false,
     accessKey: 'AKIAIOSFODNN7EXAMPLE',

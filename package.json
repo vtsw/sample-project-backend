@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "docker-compose up -f docker-compose.yml",
+    "test": "docker-compose up -f docker-compose.int-test.yml"
     "migrate-mongo": "node_modules/migrate-mongo/bin/migrate-mongo.js"
   },
   "keywords": [],
@@ -28,11 +29,18 @@
     "mongodb": "^3.5.4"
   },
   "devDependencies": {
+    "apollo-boost": "^0.4.7",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-graphql": "^3.1.1",
     "eslint-plugin-import": "^2.20.1",
-    "faker": "^4.1.0",
     "migrate-mongo": "^7.1.0"
+    "jest": "^25.1.0"
+  },
+  "jest": {
+    "testRegex": "./tests/.*.js$",
+    "globals": {
+      "__DEV__": true
+    }
   }
 }
