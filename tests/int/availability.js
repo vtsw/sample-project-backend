@@ -3,41 +3,39 @@ const { ApolloClient } = require('apollo-client');
 const { InMemoryCache } = require('apollo-cache-inmemory');
 const { createHttpLink } = require('apollo-link-http');
 const { setContext } = require('apollo-link-context');
-const fetch = require("node-fetch");
-jest.mock('node-fetch', ()=>jest.fn())
+const assert = require('assert').strict;
+const fetch = require('node-fetch');
 
-const httpLink =  createHttpLink({
-  uri: 'http://localhost:4000/graphql',
-  fetch
+const httpLink = createHttpLink({
+  uri: 'http://web:4000/graphql',
+  fetch,
 });
-const authLink = setContext((_, { headers }) => {
-  return {
-    headers: {
-      ...headers,
-    },
-  }})
+const authLink = setContext((_, { headers }) => ({
+  headers: {
+    ...headers,
+  },
+}));
 
 const TEST_QUERY = gql`
 {
-  query userList {
-    users
-  }
+  foo
 }
 `;
-console.log(authLink)
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: authLink.concat(httpLink),
 });
 describe('Test availability', () => {
-  it("Should query users", () => {
-    client
+  it('Should query users', async () => {
+    expect.assertions(1);
+    const result = await client
       .query({
-        query: TEST_QUERY
-      })
-      .then(
-        result =>
-        {console.log(result);})
-      .catch(error => console.log(error))
-  })
+        query: TEST_QUERY,
+      });
+    console.log(result, 'result');
+
+    expect(result.data).toStrictEqual({
+      foo: 'Bar',
+    });
+  });
 });

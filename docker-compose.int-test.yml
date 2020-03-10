@@ -6,7 +6,7 @@ services:
       dockerfile: ./Dockerfile
     command: npm start
     ports:
-      - "4000:4000"
+      - "4001:4000"
     links:
       - mongodb
       - minio
@@ -23,8 +23,6 @@ services:
     environment:
       MINIO_ACCESS_KEY: "AKIAIOSFODNN7EXAMPLE"
       MINIO_SECRET_KEY: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-    ports:
-      - "9000:9000"
     command: minio server /data/minio/
   mongodb:
     image: "mongo"
@@ -32,31 +30,27 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: "simple"
       MONGO_INITDB_ROOT_PASSWORD: "simplePassword"
-      MONGO_INITDB_DATABASE: "simple_db"
 
     volumes:
       - "mongodb_data:/data/db"
     ports:
-      - "27017:27017"
+      - "27018:27017"
   int-test:
-    int-client:
-      build:
-        context: .
-        dockerfile: ./Dockerfile.int-test
-        command: npm test
-        ports:
-          - "4001:4001"
-        links:
-          - mongodb
-          - minio
-          - web
-        depends_on:
-          - mongodb
-          - minio
-          - web
-        volumes:
-          - .:/usr/src/app
-          - ./node_modules:/usr/src/app/node_modules
+    build:
+      context: .
+      dockerfile: ./Dockerfile.int-test
+    command: npm test
+    links:
+      - mongodb
+      - minio
+      - web
+    depends_on:
+      - mongodb
+      - minio
+      - web
+    volumes:
+      - .:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
 volumes:
   mongodb_data:
     driver: local

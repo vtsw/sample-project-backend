@@ -8,7 +8,7 @@ const baseResolver = {
 
   },
   Query: {
-
+    foo: () => 'Bar',
   },
 };
 
