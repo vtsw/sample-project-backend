@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node_modules/jest/bin/jest.js",
     "migrate-mongo": "node_modules/migrate-mongo/bin/migrate-mongo.js up"
   },
   "keywords": [],
@@ -26,15 +26,27 @@
     "merge-graphql-schemas": "^1.7.6",
     "minio": "^7.0.14",
     "moment": "^2.24.0",
-    "mongodb": "^3.5.4",
-    "node-fetch": "^2.6.0"
+    "mongodb": "^3.5.4"
   },
   "devDependencies": {
+    "apollo-cache-inmemory": "^1.6.5",
+    "apollo-client": "^2.6.8",
+    "apollo-link-context": "^1.0.19",
+    "apollo-link-http": "^1.5.16",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-graphql": "^3.1.1",
     "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jest": "^23.8.2",
     "faker": "^4.1.0",
-    "migrate-mongo": "^7.1.0"
+    "jest": "^25.1.0",
+    "migrate-mongo": "^7.1.0",
+    "node-fetch": "^2.6.0"
+  },
+  "jest": {
+    "testRegex": "./tests/.*.js$",
+    "globals": {
+      "__DEV__": true
+    }
   }
 }

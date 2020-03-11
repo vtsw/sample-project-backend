@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
-const { ResourceNotFoundError } = require('../errors');
 const moment = require('moment');
+const { ResourceNotFoundError } = require('../errors');
 const User = require('./User');
 
 class UserProvider {
@@ -52,7 +52,9 @@ class UserProvider {
    * @returns {Promise<T>}
    */
   find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
-    return this.users.find(condition.query).limit(condition.page.limit).skip(condition.page.skip)
+    return this.users
+      .find({ $or: [{ deleted: false }, { deleted: { $exists: false } }].concat(condition.query.$or || []), ...condition.query })
+      .limit(condition.page.limit).skip(condition.page.skip)
       .toArray()
       .then((users) => users.map(UserProvider.factory));
   }

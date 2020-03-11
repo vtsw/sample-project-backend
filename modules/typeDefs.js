@@ -20,11 +20,11 @@ const baseTypeDefs = gql`
   }
 
   type Query {
-    foo: String
+    hello: String
   }
 
   type Mutation {
-    bar: String
+    hello(name: String): String
   }
 `;
 

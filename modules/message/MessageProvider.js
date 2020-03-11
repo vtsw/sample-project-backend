@@ -72,7 +72,9 @@ class MessageProvider {
    * @returns {Promise<*>}
    */
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
-    const messages = await this.messages.find(condition.query).limit(condition.page.limit).skip(condition.page.skip).toArray();
+    const messages = await this.messages
+      .find({ $or: [{ deleted: false }, { deleted: { $exists: false } }].concat(condition.query.$or || []), ...condition.query })
+      .limit(condition.page.limit).skip(condition.page.skip).toArray();
     return messages.map(MessageProvider.factory);
   }
 

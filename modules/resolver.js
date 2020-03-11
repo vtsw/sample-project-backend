@@ -5,10 +5,10 @@ const messageResolver = require('./message/graphql/resolver');
 
 const baseResolver = {
   Mutation: {
-
+    hello: (_, { name }) => `hello ${name}`,
   },
   Query: {
-
+    hello: () => 'world',
   },
 };
 
