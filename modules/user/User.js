@@ -5,6 +5,7 @@ class User {
       email: null,
       password: null,
       name: null,
+      lastModified: null,
     };
   }
 

@@ -18,7 +18,7 @@ class MessageProvider {
    * @returns {PromiseLike<any> | Promise<any>}
    */
   findById(id) {
-    return this.messages.findOne({ _id: ObjectId(id), $or: [{ deleted: false }, { deleted: { $exists: false } }] })
+    return this.messages.findOne({ _id: ObjectId(id), deleted: false })
       .then(MessageProvider.factory);
   }
 
@@ -32,6 +32,7 @@ class MessageProvider {
       content: message.content,
       sender: ObjectId(message.sender),
       lastModified: moment().format(),
+      deleted: false,
     });
     return MessageProvider.factory(inserted.ops[0]);
   }
@@ -47,12 +48,13 @@ class MessageProvider {
     if (!message) {
       throw new ResourceNotFoundError('message', `id: ${id}`);
     }
+    const lastModified = moment().format();
     const { result } = await this.messages
-      .updateOne({ _id: ObjectId(id) }, { $set: messageUpdate, $currentDate: { lastModified: true } });
+      .updateOne({ _id: ObjectId(id) }, { $set: messageUpdate });
     if (result.ok !== 1) {
       throw new Error(`Update fail with id: ${id}`);
     }
-    return MessageProvider.factory({ ...message.toJson(), ...messageUpdate });
+    return MessageProvider.factory(Object.assign(message.toJson(), messageUpdate, { lastModified }));
   }
 
   /**
@@ -73,8 +75,10 @@ class MessageProvider {
    */
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
     const messages = await this.messages
-      .find({ $or: [{ deleted: false }, { deleted: { $exists: false } }].concat(condition.query.$or || []), ...condition.query })
-      .limit(condition.page.limit).skip(condition.page.skip).toArray();
+      .find(Object.assign(condition.query, { deleted: false }, { userId: ObjectId(condition.query.userId) }))
+      .limit(condition.page.limit)
+      .skip(condition.page.skip).sort({ lastModified: -1 })
+      .toArray();
     return messages.map(MessageProvider.factory);
   }
 

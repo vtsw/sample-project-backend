@@ -1,5 +1,4 @@
 const { ObjectId } = require('mongodb');
-const moment = require('moment');
 const { ResourceNotFoundError } = require('../errors');
 const User = require('./User');
 
@@ -18,7 +17,7 @@ class UserProvider {
    * @returns {PromiseLike<any> | Promise<any>}
    */
   findById(id) {
-    return this.users.findOne({ _id: ObjectId(id), $or: [{ deleted: false }, { deleted: { $exists: false } }] })
+    return this.users.findOne({ _id: ObjectId(id), deleted: false })
       .then(UserProvider.factory);
   }
 
@@ -42,6 +41,7 @@ class UserProvider {
       email: user.email,
       name: user.name,
       password: user.password,
+      deleted: false,
     });
     return UserProvider.factory(inserted.ops[0]);
   }
@@ -53,7 +53,7 @@ class UserProvider {
    */
   find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
     return this.users
-      .find({ $or: [{ deleted: false }, { deleted: { $exists: false } }].concat(condition.query.$or || []), ...condition.query })
+      .find(Object.assign(condition.query, { deleted: false }))
       .limit(condition.page.limit).skip(condition.page.skip)
       .toArray()
       .then((users) => users.map(UserProvider.factory));
@@ -116,6 +116,7 @@ class UserProvider {
     user.password = rawData.password;
     user.email = rawData.email;
     user.name = rawData.name;
+    user.lastModified = rawData.lastModified;
     return user;
   }
 }
