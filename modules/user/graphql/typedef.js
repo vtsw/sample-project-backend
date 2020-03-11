@@ -3,9 +3,10 @@ const gql = require('graphql-tag');
 module.exports = gql`
   type User {
     id: ID!
-    name: String!
-    email: String!
-    messages(query: MessageListInput): MessageList!
+    name: String
+    email: String
+    lastModified: Date
+    messages(query: MessageListInput): MessageList
   }
 
   type UserList implements Paginatable {
