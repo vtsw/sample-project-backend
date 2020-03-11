@@ -1,4 +1,4 @@
-const { isEmpty } = require('lodash');
+const { isEmpty, pickBy, identity } = require('lodash');
 
 module.exports = {
   Query: {
@@ -9,9 +9,9 @@ module.exports = {
           .findWithPagination({ query: { }, page: { limit: 10, skip: 0 } });
       }
       const { query: { searchText, limit, skip } } = args;
-      const pattern = !isEmpty(searchText) ? new RegExp(`${searchText}`) : {};
+      const pattern = !isEmpty(searchText) ? new RegExp(`${searchText}`) : null;
       return userProvider
-        .findWithPagination({ query: { $or: [{ name: pattern }, { email: pattern }] }, page: { limit, skip } });
+        .findWithPagination({ query: pattern ? { $or: [{ name: pattern }, { email: pattern }] } : {}, page: { limit, skip } });
     },
   },
   Mutation: {
@@ -27,9 +27,9 @@ module.exports = {
           .findWithPagination({ query: { userId: user.id }, page: { limit: 10, skip: 0 } });
       }
       const { query: { searchText, limit, skip } } = args;
-      const content = isEmpty(searchText) ? new RegExp(`${searchText}`) : {};
+      const content = !isEmpty(searchText) ? new RegExp(`${searchText}`) : null;
       return messageProvider
-        .findWithPagination({ query: { userId: user.id, content }, page: { limit, skip } });
+        .findWithPagination({ query: pickBy({ userId: user.id, content }, identity), page: { limit, skip } });
     },
   },
 };
