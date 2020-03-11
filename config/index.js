@@ -21,7 +21,8 @@ module.exports = {
       expiresIn: process.env.JWT_EXPIRES_IN || '1d',
     },
     bcrypt: {
-      saltRounds: process.env.BCRYPT_SALT_ROUND || 10,
+      // eslint-disable-next-line radix
+      saltRounds: parseInt(process.env.BCRYPT_SALT_ROUND) || 10,
     },
   },
 };

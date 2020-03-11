@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^4.0.0",
+    "cors": "^2.8.5",
     "dataloader": "^2.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -25,7 +26,8 @@
     "merge-graphql-schemas": "^1.7.6",
     "minio": "^7.0.14",
     "moment": "^2.24.0",
-    "mongodb": "^3.5.4"
+    "mongodb": "^3.5.4",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

@@ -1,11 +1,13 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
+const cors = require('cors');
 const config = require('./config');
 const schema = require('./modules');
 const bootstrapper = require('./bootstrapper');
 const createSessionContext = require('./createSessionContext');
 
 const app = express();
+app.use(cors());
 
 bootstrapper().then((appContenxt) => {
   app.use('/graphql', graphqlHTTP(async (req) => {

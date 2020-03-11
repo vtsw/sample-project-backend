@@ -43,8 +43,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: "simple"
       MONGO_INITDB_ROOT_PASSWORD: "simplePassword"
-      MONGO_INITDB_DATABASE: "simple_db"
-
     volumes:
       - "mongodb_data:/data/db"
     ports:

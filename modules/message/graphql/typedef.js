@@ -4,7 +4,7 @@ module.exports = gql`
 	type Message {
 	  id: ID!
 	  content: String!
-	  createdAt: Date
+    lastModified: Date
 		userId: ID
 	}
 	

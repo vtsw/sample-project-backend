@@ -1,6 +1,6 @@
 module.exports = {
   mongodb: {
-    url: 'mongodb://root:root@mongodb:27017',
+    url: 'mongodb://simple:simplePassword@mongodb:27017',
     databaseName: 'admin',
     options: {
       useNewUrlParser: true,
