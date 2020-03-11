@@ -1,4 +1,5 @@
 const { ObjectId } = require('mongodb');
+const moment = require('moment');
 const { ResourceNotFoundError } = require('../errors');
 const User = require('./User');
 
@@ -42,6 +43,7 @@ class UserProvider {
       name: user.name,
       password: user.password,
       deleted: false,
+      lastModified: moment.format(),
     });
     return UserProvider.factory(inserted.ops[0]);
   }
@@ -51,12 +53,17 @@ class UserProvider {
    * @param {Object} condition
    * @returns {Promise<T>}
    */
-  find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
-    return this.users
+  async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
+    const userCursor = this.users
       .find(Object.assign(condition.query, { deleted: false }))
-      .limit(condition.page.limit).skip(condition.page.skip)
-      .toArray()
-      .then((users) => users.map(UserProvider.factory));
+      .limit(condition.page.limit + 1).skip(condition.page.skip);
+    const hasNext = userCursor.hasNext();
+    const users = await userCursor.toArray();
+    return {
+      hasNext,
+      items: users.map((user) => UserProvider.factory(user)),
+      total: users.length,
+    };
   }
 
   /**
@@ -82,25 +89,6 @@ class UserProvider {
     return this.update(id, {
       deleted: true,
     });
-  }
-
-  /**
-   *
-   * @param condition
-   * @returns {Promise<{total: *, hasNext: boolean, items: T}>}
-   */
-  async findWithPagination(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
-    let hasNext = false;
-    const users = await this.find({ ...condition, page: { limit: condition.page.limit + 1, skip: condition.page.skip } });
-    if (users.length > condition.page.limit) {
-      hasNext = true;
-      users.pop();
-    }
-    return {
-      items: users,
-      total: users.length,
-      hasNext,
-    };
   }
 
   /**
