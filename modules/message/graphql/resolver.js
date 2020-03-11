@@ -9,7 +9,7 @@ module.exports = {
           .findWithPagination({ query: { }, page: { limit: 10, skip: 0 } });
       }
       const { query: { searchText, limit, skip } } = args;
-      const content = isEmpty(searchText) ? new RegExp(`${searchText}`) : {};
+      const content = !isEmpty(searchText) ? new RegExp(`${searchText}`) : {};
       return messageProvider
         .findWithPagination({ query: { content }, page: { limit, skip } });
     },

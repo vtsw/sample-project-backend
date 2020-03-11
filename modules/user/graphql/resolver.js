@@ -9,7 +9,7 @@ module.exports = {
           .findWithPagination({ query: { }, page: { limit: 10, skip: 0 } });
       }
       const { query: { searchText, limit, skip } } = args;
-      const pattern = isEmpty(searchText) ? new RegExp(`${searchText}`) : {};
+      const pattern = !isEmpty(searchText) ? new RegExp(`${searchText}`) : {};
       return userProvider
         .findWithPagination({ query: { $or: [{ name: pattern }, { email: pattern }] }, page: { limit, skip } });
     },
