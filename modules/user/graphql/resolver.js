@@ -6,12 +6,12 @@ module.exports = {
     userList: async (_, args, { userProvider }) => {
       if (isEmpty(args)) {
         return userProvider
-          .findWithPagination({ query: { }, page: { limit: 10, skip: 0 } });
+          .find({ query: { }, page: { limit: 10, skip: 0 } });
       }
       const { query: { searchText, limit, skip } } = args;
       const pattern = !isEmpty(searchText) ? new RegExp(`${searchText}`) : null;
       return userProvider
-        .findWithPagination({ query: pattern ? { $or: [{ name: pattern }, { email: pattern }] } : {}, page: { limit, skip } });
+        .find({ query: pattern ? { $or: [{ name: pattern }, { email: pattern }] } : {}, page: { limit, skip } });
     },
   },
   Mutation: {
@@ -24,12 +24,12 @@ module.exports = {
     messages: (user, args, { messageProvider }) => {
       if (isEmpty(args)) {
         return messageProvider
-          .findWithPagination({ query: { userId: user.id }, page: { limit: 10, skip: 0 } });
+          .find({ query: { userId: user.id }, page: { limit: 10, skip: 0 } });
       }
       const { query: { searchText, limit, skip } } = args;
       const content = !isEmpty(searchText) ? new RegExp(`${searchText}`) : null;
       return messageProvider
-        .findWithPagination({ query: pickBy({ userId: user.id, content }, identity), page: { limit, skip } });
+        .find({ query: pickBy({ userId: user.id, content }, identity), page: { limit, skip } });
     },
   },
 };

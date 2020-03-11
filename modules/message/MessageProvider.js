@@ -1,4 +1,5 @@
 const { ObjectId } = require('mongodb');
+const { pickBy, identity } = require('lodash');
 const moment = require('moment');
 const { ResourceNotFoundError } = require('../errors');
 const Message = require('./Message');
@@ -74,12 +75,18 @@ class MessageProvider {
    * @returns {Promise<*>}
    */
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
-    const messages = await this.messages
-      .find(Object.assign(condition.query, { deleted: false }, { userId: ObjectId(condition.query.userId) }))
-      .limit(condition.page.limit)
-      .skip(condition.page.skip).sort({ lastModified: -1 })
-      .toArray();
-    return messages.map(MessageProvider.factory);
+    const messageCursor = this.messages
+      .find(Object.assign(condition.query, { deleted: false },
+        pickBy({ userId: condition.query.userId ? ObjectId(condition.query.userId) : null }, identity)))
+      .limit(condition.page.limit + 1)
+      .skip(condition.page.skip).sort({ lastModified: -1 });
+    const hasNext = messageCursor.hasNext();
+    const messages = await messageCursor.toArray();
+    return {
+      hasNext,
+      items: messages.map(MessageProvider.factory),
+      total: messages.length,
+    };
   }
 
   /**
