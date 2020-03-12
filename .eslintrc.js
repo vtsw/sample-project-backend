@@ -12,5 +12,10 @@ module.exports = {
   },
   plugins: [
     'graphql', 'jest'
-  ]
+  ],
+  globals: {
+    "it": "readonly",
+    "describe": "readonly",
+    "expect": "readonly"
+  }
 };
