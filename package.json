@@ -2,10 +2,9 @@
   "name": "sample-project",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "npm run migrate-mongo && node server.js",
-    "test": "jest ",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "migrate-mongo": "node_modules/migrate-mongo/bin/migrate-mongo.js up"
   },
   "keywords": [],
