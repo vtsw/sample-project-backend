@@ -10,4 +10,6 @@ RUN rm -rf ./tests
 
 # Create app directory
 COPY package*.json ./
-RUN npm install
+
+#Following installation is ommited since in test environment, they're installed manually
+#RUN npm install
