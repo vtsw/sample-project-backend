@@ -40,7 +40,7 @@ module.exports = gql`
   
   extend type Mutation {
     login(user: LoginUserInput!): AuthPayload
-    createUser(user: CreateUserInput!): User @isAuthenticated
+    createUser(user: CreateUserInput!): User
     updateUser(user: UpdateUserInput!): User @isAuthenticated
     deleteUser(id: ID!): User @isAuthenticated
   }

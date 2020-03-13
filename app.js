@@ -1,5 +1,6 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
+const cors = require('cors');
 const config = require('./config');
 const schema = require('./modules');
 const bootstrapper = require('./bootstrapper');
