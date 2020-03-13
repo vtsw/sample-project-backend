@@ -6,7 +6,7 @@ const { setContext } = require('apollo-link-context');
 const fetch = require('node-fetch');
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000/graphql',
+  uri: 'http://web:4000/graphql',
   fetch,
 });
 const authLink = setContext((_, { headers }) => ({
