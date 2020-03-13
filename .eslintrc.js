@@ -11,6 +11,6 @@ module.exports = {
     'no-tabs': 0
   },
   plugins: [
-    'graphql'
+    'graphql', 'jest'
   ]
 };

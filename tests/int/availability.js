@@ -3,11 +3,10 @@ const { ApolloClient } = require('apollo-client');
 const { InMemoryCache } = require('apollo-cache-inmemory');
 const { createHttpLink } = require('apollo-link-http');
 const { setContext } = require('apollo-link-context');
-const assert = require('assert').strict;
 const fetch = require('node-fetch');
 
 const httpLink = createHttpLink({
-  uri: 'http://web:4000/graphql',
+  uri: 'http://localhost:4000/graphql',
   fetch,
 });
 const authLink = setContext((_, { headers }) => ({
@@ -17,25 +16,39 @@ const authLink = setContext((_, { headers }) => ({
 }));
 
 const TEST_QUERY = gql`
-{
-  foo
-}
+  {
+    hello
+  }
+`;
+const TEST_MUTATION = gql`
+    mutation {
+        hello(name: "Sam")
+    }
 `;
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: authLink.concat(httpLink),
 });
 describe('Test availability', () => {
-  it('Should query users', async () => {
+  it('Should query hello', async () => {
     expect.assertions(1);
     const result = await client
       .query({
         query: TEST_QUERY,
       });
-    console.log(result, 'result');
-
     expect(result.data).toStrictEqual({
-      foo: 'Bar',
+      hello: 'world',
+    });
+  });
+
+  it('should mutate hello', async () => {
+    expect.assertions(1);
+    const result = await client
+      .mutate({
+        mutation: TEST_MUTATION,
+      });
+    expect(result.data).toStrictEqual({
+      hello: 'hello Sam',
     });
   });
 });
