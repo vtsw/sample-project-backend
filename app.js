@@ -1,6 +1,6 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
-const cors = require('cors');
+const config = require('./config');
 const schema = require('./modules');
 const bootstrapper = require('./bootstrapper');
 const createSessionContext = require('./createSessionContext');
@@ -14,7 +14,7 @@ bootstrapper().then((appContenxt) => {
     const context = await createSessionContext(req, appContenxt);
     return {
       schema,
-      graphiql: true,
+      graphiql: config.app.mode === 'development',
       context,
     };
   }));

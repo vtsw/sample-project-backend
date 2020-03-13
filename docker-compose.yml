@@ -15,6 +15,18 @@ services:
     volumes:
       - .:/usr/src/app
       - ./node_modules:/usr/src/app/node_modules
+    environment:
+      MINIO_ACCESS_KEY: "AKIAIOSFODNN7EXAMPLE"
+      MINIO_SECRET_KEY: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+      MINIO_USE_SSL: "false"
+      MINIO_PORT: 9000
+      MINIO_END_POINT: "minio"
+      MONGODB_URL: "mongodb://foobar:foobarPassword@mongodb:27017/simple_db"
+      JWT_PRIVATE_KEY: "privateKey"
+      JWT_EXPIRES_IN: "1d"
+      BCRYPT_SALT_ROUND: 10
+      NODE_ENV: "development"
+      APP_PORT: 4000
   minio:
     image: minio/minio
     volumes:
