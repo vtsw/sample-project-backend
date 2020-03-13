@@ -28,7 +28,7 @@ class UserProvider {
    * @returns {PromiseLike<any> | Promise<any>}
    */
   findByEmail(email) {
-    return this.users.findOne({ email })
+    return this.users.findOne({ email, deleted: false })
       .then(UserProvider.factory);
   }
 
@@ -43,7 +43,7 @@ class UserProvider {
       name: user.name,
       password: user.password,
       deleted: false,
-      lastModified: moment.format(),
+      lastModified: moment().format(),
     });
     return UserProvider.factory(inserted.ops[0]);
   }

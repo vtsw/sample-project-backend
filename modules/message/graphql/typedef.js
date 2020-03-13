@@ -27,6 +27,7 @@ module.exports = gql`
     skip: Int = 0,
     limit: Int = 10,
 	  searchText: String
+    userId: ID
   }
 	
 	extend type Mutation {
