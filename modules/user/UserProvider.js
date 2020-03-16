@@ -54,11 +54,13 @@ class UserProvider {
    * @returns {Promise<T>}
    */
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
-    const userCursor = this.users
+    const users = await this.users
       .find(Object.assign(condition.query, { deleted: false }))
-      .limit(condition.page.limit + 1).skip(condition.page.skip);
-    const hasNext = userCursor.hasNext();
-    const users = await userCursor.toArray();
+      .limit(condition.page.limit + 1).skip(condition.page.skip).toArray();
+    const hasNext = (users.length === condition.page.limit + 1);
+    if (hasNext) {
+      users.pop();
+    }
     return {
       hasNext,
       items: users.map((user) => UserProvider.factory(user)),

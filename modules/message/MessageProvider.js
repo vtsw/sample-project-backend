@@ -75,13 +75,16 @@ class MessageProvider {
    * @returns {Promise<*>}
    */
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
-    const messageCursor = this.messages
+    const messages = await this.messages
       .find(Object.assign(condition.query, { deleted: false },
         pickBy({ userId: condition.query.userId ? ObjectId(condition.query.userId) : null }, identity)))
       .limit(condition.page.limit + 1)
-      .skip(condition.page.skip).sort({ lastModified: -1 });
-    const hasNext = messageCursor.hasNext();
-    const messages = await messageCursor.toArray();
+      .skip(condition.page.skip).sort({ lastModified: -1 })
+      .toArray();
+    const hasNext = (messages.length === condition.page.limit + 1);
+    if (hasNext) {
+      messages.pop();
+    }
     return {
       hasNext,
       items: messages.map(MessageProvider.factory),
