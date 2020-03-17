@@ -2,7 +2,7 @@ module.exports = {
   app: {
     // eslint-disable-next-line radix
     port: parseInt(process.env.APP_PORT) || 4000,
-    mode: process.env.NODE_ENV || 'development',
+    env: process.env.NODE_ENV || 'development',
   },
   mongodb: {
     url: process.env.MONGODB_URL || 'mongodb://foobar:foobarPassword@mongodb:27017/simple_db',
