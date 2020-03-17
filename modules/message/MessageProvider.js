@@ -94,29 +94,6 @@ class MessageProvider {
 
   /**
    *
-   * @param condition
-   * @returns {Promise<{total: *, hasNext: boolean, items: *}>}
-   */
-  async findWithPagination(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
-    let hasNext = false;
-    const page = {
-      limit: condition.page.limit + 1,
-      skip: condition.page.skip,
-    };
-    const messages = await this.find({ page, query: condition.query });
-    if (messages.length > condition.page.limit) {
-      hasNext = true;
-      messages.pop();
-    }
-    return {
-      items: messages,
-      total: messages.length,
-      hasNext,
-    };
-  }
-
-  /**
-   *
    * @param {Object} rawData
    * @returns {null|Message}
    */
