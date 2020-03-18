@@ -1,7 +1,7 @@
 module.exports = {
   async up(db, client) {
     const simpleDb = client.db('simple_db');
-    await simpleDb.addUser('foobar', 'foobarPassword',
+    await simpleDb.addUser('simple', 'simplePassword',
       {
         roles: [
           { role: 'readWrite', db: 'simple_db' },

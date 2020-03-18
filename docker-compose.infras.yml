@@ -1,65 +1,9 @@
 version: '3'
 services:
-  web:
-    build:
-      context: .
-    command: node server.js
-    ports:
-      - "4000:4000"
-    links:
-      - mongodb
-      - minio
-    depends_on:
-      - mongodb
-      - minio
-    environment:
-      MINIO_ACCESS_KEY: "EGN382IMEPNND2JB46PQ"
-      MINIO_SECRET_KEY: "5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM"
-      MINIO_USE_SSL: "false"
-      MINIO_PORT: 9000
-      MINIO_END_POINT: "minio"
-      MONGODB_URL: "mongodb://simple:simplePassword@mongodb:27017/simple_db"
-      JWT_PRIVATE_KEY: "privateKey"
-      JWT_EXPIRES_IN: "1d"
-      BCRYPT_SALT_ROUND: 10
-      NODE_ENV: "development"
-      APP_PORT: 4000
-    networks:
-      - localnetwork
-
-  webdev:
-    build:
-      context: .
-    command: nodemon --legacy-watch server.js
-    ports:
-      - "4001:4000"
-    links:
-      - mongodb
-      - minio
-    depends_on:
-      - mongodb
-      - minio
-    volumes:
-      - .:/usr/src/app
-      - ./node_modules:/usr/src/app/node_modules
-    environment:
-      MINIO_ACCESS_KEY: "EGN382IMEPNND2JB46PQ"
-      MINIO_SECRET_KEY: "5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM"
-      MINIO_USE_SSL: "false"
-      MINIO_PORT: 9000
-      MINIO_END_POINT: "172.76.10.159"
-      MONGODB_URL: "mongodb://simple:simplePassword@mongodb:27017/simple_db"
-      JWT_PRIVATE_KEY: "privateKey"
-      JWT_EXPIRES_IN: "1d"
-      BCRYPT_SALT_ROUND: 10
-      NODE_ENV: "development"
-      APP_PORT: 4000
-    networks:
-      - localnetwork
   minio:
     image: minio/minio
     volumes:
-      - data:/data
+      - minio_data:/data
     environment:
       MINIO_ACCESS_KEY: "EGN382IMEPNND2JB46PQ"
       MINIO_SECRET_KEY: "5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM"
@@ -72,8 +16,8 @@ services:
     image: "mongo"
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: "root"
-      MONGO_INITDB_ROOT_PASSWORD: "root"
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
     volumes:
       - "mongodb_data:/data/db"
     ports:
@@ -84,7 +28,9 @@ services:
 volumes:
   mongodb_data:
     driver: local
-  data:
+  minio_data:
+    driver: local
+
 networks:
   localnetwork:
     external: true
