@@ -1,6 +1,7 @@
 version: '3'
 services:
   minio:
+    container_name: minioInfra
     image: minio/minio
     volumes:
       - minio_data:/data
@@ -13,6 +14,7 @@ services:
     networks:
       - localnetwork
   mongodb:
+    container_name: mongodbInfra
     image: "mongo"
     restart: always
     environment:

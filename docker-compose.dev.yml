@@ -15,7 +15,7 @@ services:
       MINIO_USE_SSL: "false"
       MINIO_PORT: 9000
       MINIO_END_POINT: "172.76.10.159"
-      MONGODB_URL: "mongodb://simple:simplePassword@mongodb:27017/simple_db"
+      MONGODB_URL: "mongodb://foobar:foobarPassword@mongodbInfra:27017/simple_db"
       JWT_PRIVATE_KEY: "privateKey"
       JWT_EXPIRES_IN: "1d"
       BCRYPT_SALT_ROUND: 10
