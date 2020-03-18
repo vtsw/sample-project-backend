@@ -47,7 +47,7 @@ module.exports = gql`
   }
   
   extend type Query {
-    user(id: String!): User @isAuthenticated
+    user(id: ID!): User @isAuthenticated
     userList(query: UserListInput): UserList @isAuthenticated
   }
 `;

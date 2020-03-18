@@ -37,7 +37,7 @@ module.exports = gql`
   }
   
   extend type Query {
-    message(id: String!): Message @isAuthenticated
+    message(id: ID!): Message @isAuthenticated
     messageList(query: MessageListInput): MessageList @isAuthenticated
   }
 `;
