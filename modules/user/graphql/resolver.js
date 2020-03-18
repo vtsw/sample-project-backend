@@ -47,9 +47,17 @@ module.exports = {
           email: Joi.string()
             .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
           name: Joi.string().alphanum().min(3).max(255),
+          password: Joi.string()
+            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
         }),
       }),
-      resolve: (_, { user }, { userProvider }) => userProvider.update(user.id, user),
+      resolve: async (_, { user }, { userProvider, authService }) => {
+        if (user.password) {
+          // eslint-disable-next-line no-param-reassign
+          user.password = await authService.createPassword(user.password);
+        }
+        return userProvider.update(user.id, user);
+      },
     },
     deleteUser: (_, { id }, { userProvider }) => userProvider.delete(id),
   },
