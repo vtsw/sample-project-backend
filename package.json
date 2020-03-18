@@ -43,7 +43,10 @@
     "faker": "^4.1.0",
     "jest": "^25.1.0",
     "migrate-mongo": "^7.1.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "@hapi/joi": "^17.1.1",
+    "apollo-link": "latest",
+    "uuid": "latest"
   },
   "jest": {
     "testRegex": "./tests/.*.js$",
