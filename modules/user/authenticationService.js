@@ -56,8 +56,12 @@ class AuthenticationService {
       throw new AuthenticationError('The email already exists.');
     }
     const newUser = { ...user };
-    newUser.password = await this.bcrypt.hash(newUser.password, 10);
+    newUser.password = await this.createPassword(newUser.password);
     return this.userProvider.create(newUser);
+  }
+
+  createPassword(textPassword) {
+    return this.bcrypt.hash(textPassword, 10);
   }
 }
 

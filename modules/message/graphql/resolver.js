@@ -1,5 +1,5 @@
 const { isEmpty, pickBy, identity } = require('lodash');
-const Joi = require('@hapi/joi');
+const { createMessage, updateMessage } = require('../validationSchema');
 
 module.exports = {
   Query: {
@@ -21,29 +21,14 @@ module.exports = {
   },
   Mutation: {
     createMessage: {
-      validationSchema: Joi.object({
-        message: Joi.object({
-          content: Joi.string()
-            .alphanum()
-            .min(3)
-            .max(255),
-        }),
-      }),
+      validationSchema: createMessage,
       resolve: (source, { message }, { messageProvider, req }) => messageProvider.create({
         ...message,
         userId: req.user.id,
       }),
     },
     updateMessage: {
-      validationSchema: Joi.object({
-        message: Joi.object({
-          id: Joi.string().required(),
-          content: Joi.string()
-            .alphanum()
-            .min(3)
-            .max(255),
-        }),
-      }),
+      validationSchema: updateMessage,
       resolve: (_, { message }, { messageProvider }) => messageProvider.update(message.id, message),
     },
     deleteMessage: (_, { id }, { messageProvider }) => messageProvider.delete(id),

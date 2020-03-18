@@ -1,5 +1,5 @@
 const { isEmpty, pickBy, identity } = require('lodash');
-const Joi = require('@hapi/joi');
+const { createUser, updateUser, login } = require('../validationSchema');
 
 module.exports = {
   Query: {
@@ -17,39 +17,22 @@ module.exports = {
   },
   Mutation: {
     createUser: {
-      validationSchema: Joi.object({
-        user: Joi.object({
-          email: Joi.string()
-            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-          password: Joi.string()
-            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
-          name: Joi.string().alphanum().min(3).max(255)
-            .required(),
-        }),
-      }),
+      validationSchema: createUser,
       resolve: (_, { user }, { authService }) => authService.register(user),
     },
     login: {
-      validationSchema: Joi.object({
-        user: Joi.object({
-          email: Joi.string()
-            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-          password: Joi.string()
-            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
-        }),
-      }),
+      validationSchema: login,
       resolve: (_, { user }, { authService }) => authService.login(user.email, user.password),
     },
     updateUser: {
-      validationSchema: Joi.object({
-        user: Joi.object({
-          id: Joi.string().required(),
-          email: Joi.string()
-            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
-          name: Joi.string().alphanum().min(3).max(255),
-        }),
-      }),
-      resolve: (_, { user }, { userProvider }) => userProvider.update(user.id, user),
+      validationSchema: updateUser,
+      resolve: async (_, { user }, { userProvider, authService }) => {
+        if (user.password) {
+          // eslint-disable-next-line no-param-reassign
+          user.password = await authService.createPassword(user.password);
+        }
+        return userProvider.update(user.id, user);
+      },
     },
     deleteUser: (_, { id }, { userProvider }) => userProvider.delete(id),
   },
