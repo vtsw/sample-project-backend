@@ -4,8 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "node_modules/jest/bin/jest.js",
-    "migrate-mongo": "node_modules/migrate-mongo/bin/migrate-mongo.js up"
+    "start:local": "cross-env MONGODB_URL=mongodb://foobar:foobarPassword@localhost:27017/simple_db MINIO_END_POINT=localhost node server.js",
+    "test": "jest",
+    "migrate-mongo": "migrate-mongo up",
+    "migrate-mongo:local": "migrate-mongo up -f migrate-mongo-config.local.js"
   },
   "keywords": [],
   "author": "",
@@ -31,10 +33,13 @@
     "mongodb": "^3.5.4"
   },
   "devDependencies": {
+    "@hapi/joi": "^17.1.1",
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
+    "apollo-link": "latest",
     "apollo-link-context": "^1.0.19",
     "apollo-link-http": "^1.5.16",
+    "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-graphql": "^3.1.1",
@@ -44,8 +49,6 @@
     "jest": "^25.1.0",
     "migrate-mongo": "^7.1.0",
     "node-fetch": "^2.6.0",
-    "@hapi/joi": "^17.1.1",
-    "apollo-link": "latest",
     "uuid": "latest"
   },
   "jest": {

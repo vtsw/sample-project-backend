@@ -12,8 +12,8 @@ module.exports = {
     // eslint-disable-next-line radix
     port: parseInt(process.env.MINIO_PORT) || 9000,
     useSSL: process.env.MINIO_USE_SSL === 'true' || false,
-    accessKey: process.env.MINIO_ACCESS_KEY || 'AKIAIOSFODNN7EXAMPLE',
-    secretKey: process.env.MINIO_SECRET_KEY || 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+    accessKey: process.env.MINIO_ACCESS_KEY || 'EGN382IMEPNND2JB46PQ',
+    secretKey: process.env.MINIO_SECRET_KEY || '5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM',
   },
   auth: {
     jwt: {
