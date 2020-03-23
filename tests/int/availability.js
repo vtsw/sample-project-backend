@@ -1,5 +1,6 @@
 const gql = require('graphql-tag');
-const {client} = require('./client');
+const { client } = require('./client');
+
 const TEST_QUERY = gql`
   {
     hello
