@@ -1,7 +1,7 @@
 const UserProvider = require('./UserProvider');
 const { AuthenticationError } = require('../errors');
 
-class AuthenticationService {
+class Authenticator {
   /**
    *
    * @param {Bcrypt} bcrypt
@@ -65,4 +65,4 @@ class AuthenticationService {
   }
 }
 
-module.exports = AuthenticationService;
+module.exports = Authenticator;

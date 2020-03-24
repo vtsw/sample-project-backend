@@ -14,7 +14,7 @@ services:
       MINIO_SECRET_KEY: "5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM"
       MINIO_USE_SSL: "false"
       MINIO_PORT: 9000
-      MINIO_END_POINT: "localhost"
+      MINIO_END_POINT: "minioInfra"
       MONGODB_URL: "mongodb://foobar:foobarPassword@mongodb:27017/simple_db"
       JWT_PRIVATE_KEY: "privateKey"
       JWT_EXPIRES_IN: "1d"
