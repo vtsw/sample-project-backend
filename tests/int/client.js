@@ -1,5 +1,4 @@
 const { ApolloLink } = require('apollo-link');
-
 const { ApolloClient } = require('apollo-client');
 const { InMemoryCache } = require('apollo-cache-inmemory');
 const { createHttpLink } = require('apollo-link-http');

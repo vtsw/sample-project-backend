@@ -23,4 +23,14 @@ module.exports = {
       saltRounds: parseInt(process.env.BCRYPT_SALT_ROUND, 10) || 10,
     },
   },
+  // https://github.com/winstonjs/winston-daily-rotate-file#options
+  logs: {
+    filename: 'application-%DATE%.log',
+    dirname: `${global.appRoot}/logs/`,
+    datePattern: 'YYYY-MM-DD-HH',
+    zippedArchive: true,
+    maxSize: '100k',
+    maxFiles: '2d',
+    auditFile: `${global.appRoot}/logs/audit.json`,
+  },
 };

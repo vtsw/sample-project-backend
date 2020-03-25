@@ -8,22 +8,19 @@ const minioClient = minio(config);
 const {
   combine, timestamp, json,
 } = format;
+const { dirname } = config.logs;
 
-const dailyRotateFile = new (transports.DailyRotateFile)({
-  filename: 'logs/application-%DATE%.log',
-  datePattern: 'YYYY-MM-DD-HH',
-  zippedArchive: true,
-  maxSize: '100k',
-  maxFiles: '2d',
-});
+const dailyRotateFile = new (transports.DailyRotateFile)(config.logs);
 
-dailyRotateFile.on('archive', async (zipFilename) => {
-  const fileStream = fs.createReadStream(`${global.appRoot}/${zipFilename}`);
-  fs.stat(`${global.appRoot}/${zipFilename}`, (err, stats) => {
+dailyRotateFile.on('archive', (zipFilename) => {
+  const fileStream = fs.createReadStream(`${zipFilename}`);
+  fs.stat(`${zipFilename}`, (err, stats) => {
     if (err) {
+      // eslint-disable-next-line no-console
       return console.log(err);
     }
-    return minioClient.putObject('logs', zipFilename.replace('logs/', ''), fileStream, stats.size, (putErr, etag) => console.log(err, etag));
+    // eslint-disable-next-line no-console
+    return minioClient.putObject('logs', zipFilename.replace(dirname, ''), fileStream, stats.size, (putErr, etag) => console.log(err, etag));
   });
 });
 
