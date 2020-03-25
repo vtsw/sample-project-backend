@@ -1,0 +1,6 @@
+FROM mongo
+RUN apt-get update -y && apt-get install wget && wget https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x mc && mv mc bin/
+RUN mc config host add backup-server  http://$MINIO_END_POINT:$MINIO_PORT $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
+
+
+
