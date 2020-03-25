@@ -6,6 +6,7 @@ const Bcrypt = require('./services/bcrypt');
 const JWT = require('./services/jwt');
 const config = require('./config');
 const Authenticator = require('./modules/user/authenticator');
+const winston = require('./services/winston');
 
 module.exports = async () => {
   const context = {};
@@ -16,5 +17,6 @@ module.exports = async () => {
   context.bcrypt = new Bcrypt(config);
   context.jwt = new JWT(config);
   context.authService = new Authenticator(context.bcrypt, context.userProvider, context.jwt);
+  context.logger = winston;
   return context;
 };

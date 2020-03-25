@@ -1,10 +1,13 @@
 /* eslint-disable no-console */
 require('dotenv').config();
 const cluster = require('cluster');
+const path = require('path');
 const os = require('os');
 const app = require('./app');
 const config = require('./config');
 const bootstrapper = require('./bootstrapper');
+
+global.appRoot = path.resolve(__dirname);
 
 function runApp() {
   bootstrapper().then((appContext) => {

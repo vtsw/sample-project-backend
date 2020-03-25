@@ -32,8 +32,8 @@
     "minio": "^7.0.14",
     "moment": "^2.24.0",
     "mongodb": "^3.5.4",
-    "morgan": "^1.10.0",
     "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^4.4.2",
     "winston-transport": "^4.3.0"
   },
   "devDependencies": {
