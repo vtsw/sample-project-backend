@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 const path = require('path');
-global.appRoot = path.resolve(__dirname);
+
+global.APP_ROOT = path.resolve(__dirname);
+
 require('dotenv').config();
 const cluster = require('cluster');
 const os = require('os');

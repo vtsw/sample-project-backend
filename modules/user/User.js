@@ -46,12 +46,12 @@ class User {
     return this.data.lastModified;
   }
 
-  set avatar(value) {
-    this.data.lastModified = value;
+  set image(value) {
+    this.data.image = value;
   }
 
-  get avatar() {
-    return this.data.avatar;
+  get image() {
+    return this.data.image;
   }
 
   toJson() {

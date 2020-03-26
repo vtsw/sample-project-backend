@@ -107,7 +107,7 @@ class UserProvider {
     user.email = rawData.email;
     user.name = rawData.name;
     user.lastModified = rawData.lastModified;
-    user.avatar = rawData.avatar;
+    user.image = rawData.image;
     return user;
   }
 }

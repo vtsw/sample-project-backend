@@ -7,6 +7,7 @@ module.exports = gql`
     email: String
     lastModified: Date
     messages(query: MessageListInput): MessageList
+    image: File
   }
 
   type UserList implements Paginatable {
@@ -48,6 +49,7 @@ module.exports = gql`
   
   extend type Query {
     user(id: ID!): User @isAuthenticated
+    me: User @isAuthenticated
     userList(query: UserListInput): UserList @isAuthenticated
   }
 `;

@@ -29,14 +29,15 @@ const baseResolver = {
       url.search = '';
       url.host = config.minio.publicEndPoint;
       const { user: loggedUser } = req;
-      await userProvider.update(loggedUser.id, { avatar: url.href });
-      return {
+      const image = {
         filename,
         mimetype,
         encoding,
         link: url.href,
         etag,
       };
+      await userProvider.update(loggedUser.id, { image });
+      return image;
     },
   },
   Query: {

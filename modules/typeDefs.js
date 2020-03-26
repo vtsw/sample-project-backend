@@ -25,6 +25,7 @@ const baseTypeDefs = gql`
 
   type AuthPayload {
     token: String!
+	  user: User
   }
 
   type Query {

@@ -1,6 +1,8 @@
-FROM mongo
-RUN apt-get update -y && apt-get install wget && wget https://dl.min.io/client/mc/release/linux-amd64/mc
-RUN chmod +x mc
-
-
-
+FROM node:12.16.1
+EXPOSE 4000
+RUN npm install -g nodemon node-gyp
+WORKDIR /usr/src/app
+COPY . ./
+COPY package*.json ./
+RUN rm -rf ./node_modules
+RUN npm install

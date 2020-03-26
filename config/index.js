@@ -27,11 +27,11 @@ module.exports = {
   // https://github.com/winstonjs/winston-daily-rotate-file#options
   logs: {
     filename: 'application-%DATE%.log',
-    dirname: `${global.appRoot}/logs/`,
+    dirname: `${global.APP_ROOT}/logs/`,
     datePattern: 'YYYY-MM-DD-HH',
     zippedArchive: true,
     maxSize: '20m',
     maxFiles: '14d',
-    auditFile: `${global.appRoot}/logs/audit.json`,
+    auditFile: `${global.APP_ROOT}/logs/audit.json`,
   },
 };

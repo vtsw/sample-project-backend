@@ -30,6 +30,7 @@ class Authenticator {
     }
     return {
       token: this.jwt.encode(user.toJson()),
+      user,
     };
   }
 
