@@ -3,7 +3,7 @@ services:
   web:
     build:
       context: .
-    command: bash -c "npm run migrate-mongo ; node server.js"
+    command: bash -c "npm run migrate-mongo ; npm run minio-init; node server.js"
     ports:
       - "4000:4000"
     environment:
