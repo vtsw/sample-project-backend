@@ -13,6 +13,7 @@ module.exports = {
     useSSL: process.env.MINIO_USE_SSL === 'true' || false,
     accessKey: process.env.MINIO_ACCESS_KEY || 'sampleAccessKey',
     secretKey: process.env.MINIO_SECRET_KEY || 'sampleSecretKey',
+    publicEndPoint: process.env.MINIO_PUBLIC_END_POINT || 'localhost',
   },
   auth: {
     jwt: {
@@ -29,8 +30,8 @@ module.exports = {
     dirname: `${global.appRoot}/logs/`,
     datePattern: 'YYYY-MM-DD-HH',
     zippedArchive: true,
-    maxSize: '100k',
-    maxFiles: '2d',
+    maxSize: '20m',
+    maxFiles: '14d',
     auditFile: `${global.appRoot}/logs/audit.json`,
   },
 };

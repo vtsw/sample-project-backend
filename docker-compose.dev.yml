@@ -15,7 +15,12 @@ services:
       MINIO_USE_SSL: "false"
       MINIO_PORT: 9000
       MINIO_END_POINT: "minioInfra"
-      MONGODB_URL: "mongodb://foobar:foobarPassword@mongodb:27017/simple_db"
+      MINIO_PUBLIC_END_POINT: "localhost"
+      MONGODB_URL: "mongodb://foobar:foobarPassword@mongodbInfra:27017/simple_db"
+      MONGODB_HOST: "mongodbInfra"
+      MONGODB_ROOT_USER: "root"
+      MONGODB_ROOT_PASSWORD: "root"
+      MONGODB_PORT: "27017"
       JWT_PRIVATE_KEY: "privateKey"
       JWT_EXPIRES_IN: "1d"
       BCRYPT_SALT_ROUND: 10

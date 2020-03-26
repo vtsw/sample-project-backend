@@ -1,4 +1,5 @@
 const { createLogger, format, transports } = require('winston');
+const util = require('util');
 const fs = require('fs');
 const config = require('../config');
 const minio = require('./minio');
@@ -12,16 +13,15 @@ const { dirname } = config.logs;
 
 const dailyRotateFile = new (transports.DailyRotateFile)(config.logs);
 
+/**
+ * After log file is archived, it will uploaded to MinIO server.
+ */
 dailyRotateFile.on('archive', (zipFilename) => {
-  const fileStream = fs.createReadStream(`${zipFilename}`);
-  fs.stat(`${zipFilename}`, (err, stats) => {
-    if (err) {
-      // eslint-disable-next-line no-console
-      return console.log(err);
-    }
+  util.promisify(fs.stat)(`${zipFilename}`)
+    .then((stats) => minioClient.putObject('logs', zipFilename.replace(dirname, ''), fs.createReadStream(`${zipFilename}`), stats.size))
+    .then(() => fs.unlinkSync(zipFilename))
     // eslint-disable-next-line no-console
-    return minioClient.putObject('logs', zipFilename.replace(dirname, ''), fileStream, stats.size, (putErr, etag) => console.log(err, etag));
-  });
+    .catch((e) => console.error(e));
 });
 
 module.exports = createLogger({

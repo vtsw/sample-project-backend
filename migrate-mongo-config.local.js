@@ -1,6 +1,6 @@
 module.exports = {
   mongodb: {
-    url: 'mongodb://root:root@localhost:27017',
+    url: `mongodb://${process.env.MONGODB_ROOT_USER}:${process.env.MONGODB_ROOT_PASSWORD}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`,
     databaseName: 'admin',
     options: {
       useNewUrlParser: true,

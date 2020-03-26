@@ -33,7 +33,7 @@ const baseTypeDefs = gql`
 
   type Mutation {
     hello(name: String): String
-    uploadAvatar(file: Upload!): File! @isAuthenticated
+    uploadImage (file: Upload!): File! @isAuthenticated
   }
 `;
 

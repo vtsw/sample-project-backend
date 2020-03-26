@@ -11,4 +11,4 @@ module.exports = applyMiddleware(makeExecutableSchema({
   resolvers,
   directiveResolvers,
 }),
-validation, logging);
+logging, validation);

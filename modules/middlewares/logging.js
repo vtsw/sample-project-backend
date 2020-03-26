@@ -7,18 +7,35 @@
  * @param info
  * @returns {Promise<*>}
  */
-module.exports = async (resolve, parent, args, context, info) => {
-  context.logger.log({
-    level: 'info',
-    message: info,
-  });
-  try {
-    return await resolve(parent, args, context, info);
-  } catch (e) {
+module.exports = {
+  Query: async (resolve, parent, args, context, info) => {
     context.logger.log({
-      level: 'error',
-      message: e,
+      level: 'info',
+      message: info,
     });
-    return e;
-  }
+    try {
+      return await resolve(parent, args, context, info);
+    } catch (e) {
+      context.logger.log({
+        level: 'error',
+        message: e,
+      });
+      return e;
+    }
+  },
+  Mutation: async (resolve, parent, args, context, info) => {
+    context.logger.log({
+      level: 'info',
+      message: info,
+    });
+    try {
+      return await resolve(parent, args, context, info);
+    } catch (e) {
+      context.logger.log({
+        level: 'error',
+        message: e,
+      });
+      return e;
+    }
+  },
 };

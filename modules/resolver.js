@@ -1,5 +1,6 @@
 const { merge } = require('lodash');
 const { GraphQLUpload } = require('graphql-upload');
+const config = require('../config');
 const userResolver = require('./user/graphql/resolver');
 const messageResolver = require('./message/graphql/resolver');
 
@@ -7,7 +8,7 @@ const baseResolver = {
   Upload: GraphQLUpload,
   Mutation: {
     hello: (_, { name }) => `hello ${name}`,
-    uploadAvatar: async (source, { file }, { minio, userProvider, req }) => {
+    uploadImage: async (source, { file }, { minio, userProvider, req }) => {
       const bucketName = 'upload';
       const {
         filename, mimetype, encoding, createReadStream,
@@ -26,13 +27,14 @@ const baseResolver = {
       const link = await minio.presignedUrl('GET', bucketName, filename);
       const url = new URL(link);
       url.search = '';
+      url.host = config.minio.publicEndPoint;
       const { user: loggedUser } = req;
       await userProvider.update(loggedUser.id, { avatar: url.href });
       return {
         filename,
         mimetype,
         encoding,
-        link,
+        link: url.href,
         etag,
       };
     },
