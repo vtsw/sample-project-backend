@@ -12,7 +12,7 @@ services:
       MINIO_USE_SSL: "false"
       MINIO_PORT: 9000
       MINIO_END_POINT: "minioInfra"
-      MINIO_PUBLIC_END_POINT: "localhost"
+      MINIO_PUBLIC_END_POINT: "172.76.10.161"
       MONGODB_URL: "mongodb://foobar:foobarPassword@mongodbInfra:27017/simple_db"
       MONGODB_HOST: "mongodbInfra"
       MONGODB_ROOT_USER: "root"
