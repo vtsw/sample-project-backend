@@ -62,4 +62,5 @@ const publicPolicy = {
       minioClient.makeBucket('logs');
     }
   });
+// eslint-disable-next-line no-console
 })().catch((e) => console.error(e));

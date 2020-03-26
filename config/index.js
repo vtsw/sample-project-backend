@@ -26,12 +26,12 @@ module.exports = {
   },
   // https://github.com/winstonjs/winston-daily-rotate-file#options
   logs: {
-    filename: 'application-%DATE%.log',
-    dirname: `${global.APP_ROOT}/logs/`,
-    datePattern: 'YYYY-MM-DD-HH',
-    zippedArchive: true,
-    maxSize: '20m',
-    maxFiles: '14d',
-    auditFile: `${global.APP_ROOT}/logs/audit.json`,
+    filename: process.env.LOG_FILENAME || 'application-%DATE%.log',
+    dirname: process.env.LOG_DIRNAME || 'logs',
+    datePattern: process.env.DATE_PATTERN || 'YYYY-MM-DD-HH',
+    zippedArchive: process.env.ZIPPED_ARCHIVE ? process.env.ZIPPED_ARCHIVE === 'true' : false,
+    maxSize: process.env.MAX_SIZE || '20m',
+    maxFiles: process.env.MAX_FILE || '14d',
+    auditFile: process.env.AUDIT_FILE || 'audit.json',
   },
 };
