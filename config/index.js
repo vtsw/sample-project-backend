@@ -34,5 +34,5 @@ module.exports = {
     maxFiles: process.env.MAX_FILE || '14d',
     auditFile: process.env.AUDIT_FILE || 'audit.json',
   },
-  graphqlUploadExpress: { maxFileSize: process.env.MAX_FILE_SIZE || 10000000, maxFiles: process.env.MAX_FILES || 10 },
+  graphqlUploadExpress: { maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 10000000, maxFiles: parseInt(process.env.MAX_FILES, 10) || 10 },
 };
