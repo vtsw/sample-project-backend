@@ -9,7 +9,7 @@ const createSessionContext = require('./createSessionContext');
 const app = express();
 app.use(cors());
 
-app.use('/graphql', graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }), graphqlHTTP(async (req) => {
+app.use('/graphql', graphqlUploadExpress(config.graphqlUploadExpress), graphqlHTTP(async (req) => {
   // create new context on every request
   const context = await createSessionContext(req, req.app.appContenxt);
   return {

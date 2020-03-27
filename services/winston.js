@@ -12,7 +12,7 @@ const {
 const dirname = `${global.APP_ROOT}/${config.logs.dirname}/`;
 const auditFile = `${global.APP_ROOT}/${config.logs.dirname}/${config.logs.auditFile}`;
 
-const dailyRotateFile = new (transports.DailyRotateFile)({ ...config.logs, dirname, auditFile });
+const dailyRotateFile = new (transports.DailyRotateFile)({ ...config.winstonDailyRotate, dirname, auditFile });
 
 /**
  * After log file is archived, it will uploaded to MinIO server.

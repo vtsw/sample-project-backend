@@ -25,7 +25,7 @@ module.exports = {
     },
   },
   // https://github.com/winstonjs/winston-daily-rotate-file#options
-  logs: {
+  winstonDailyRotate: {
     filename: process.env.LOG_FILENAME || 'application-%DATE%.log',
     dirname: process.env.LOG_DIRNAME || 'logs',
     datePattern: process.env.DATE_PATTERN || 'YYYY-MM-DD-HH',
@@ -34,4 +34,5 @@ module.exports = {
     maxFiles: process.env.MAX_FILE || '14d',
     auditFile: process.env.AUDIT_FILE || 'audit.json',
   },
+  graphqlUploadExpress: { maxFileSize: process.env.MAX_FILE_SIZE || 10000000, maxFiles: process.env.MAX_FILES || 10 },
 };
