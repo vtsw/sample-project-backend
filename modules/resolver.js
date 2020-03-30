@@ -1,5 +1,6 @@
 const { merge } = require('lodash');
 const { GraphQLUpload } = require('graphql-upload');
+const { v4: uuidv4 } = require('uuid');
 const config = require('../config');
 const userResolver = require('./user/graphql/resolver');
 const messageResolver = require('./message/graphql/resolver');
@@ -22,13 +23,12 @@ const baseResolver = {
       ) {
         throw new Error('Only images are allowed');
       }
-
-      const etag = await minio.putObject(bucketName, filename, createReadStream(), { mimetype, encoding });
-      const link = await minio.presignedUrl('GET', bucketName, filename);
-      const url = new URL(link);
-      url.search = '';
-      url.host = config.minio.publicEndPoint;
+      const hashedFilename = `${uuidv4()}${filename.trim()}`;
+      const etag = await minio.putObject(bucketName, hashedFilename, createReadStream(), { mimetype, encoding });
+      const url = new URL(`${config.app.host}`);
+      url.port = config.app.port;
       const { user: loggedUser } = req;
+      url.pathname = `/api/download/images/${hashedFilename}`;
       const image = {
         filename,
         mimetype,

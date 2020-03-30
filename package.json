@@ -8,7 +8,7 @@
     "test": "jest",
     "migrate-mongo": "migrate-mongo up",
     "migrate-mongo:local": "migrate-mongo up -f migrate-mongo-config.local.js",
-    "minio-init":  "node minIOInit.js"
+    "minio-init": "node minIOInit.js"
   },
   "keywords": [],
   "author": "",
@@ -54,7 +54,7 @@
     "jest": "^25.1.0",
     "migrate-mongo": "^7.1.0",
     "node-fetch": "^2.6.0",
-    "uuid": "latest"
+    "uuid": "^7.0.2"
   },
   "jest": {
     "testRegex": "./tests/.*.js$",

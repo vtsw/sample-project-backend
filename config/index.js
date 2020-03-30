@@ -1,8 +1,8 @@
 module.exports = {
   app: {
-    port: parseInt(process.env.APP_PORT, 10) || 4000,
+    port: parseInt(process.env.APP_PORT, 10) || 80,
     env: process.env.NODE_ENV || 'development',
-    host: process.env.APP_HOST || 'localhost',
+    host: process.env.APP_HOST || 'http://localhost',
   },
   mongodb: {
     url: process.env.MONGODB_URL || 'mongodb://foobar:foobarPassword@mongodb:27017/simple_db',
