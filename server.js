@@ -3,7 +3,6 @@ const path = require('path');
 
 global.APP_ROOT = path.resolve(__dirname);
 
-require('dotenv').config();
 const cluster = require('cluster');
 const os = require('os');
 const app = require('./app');

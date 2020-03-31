@@ -1,5 +1,4 @@
 FROM node:12.16.1
-EXPOSE 4000
 RUN npm install -g nodemon node-gyp
 WORKDIR /usr/src/app
 COPY . ./

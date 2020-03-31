@@ -6,27 +6,29 @@ services:
       dockerfile: Dockerfile.dev
     command: nodemon --legacy-watch server.js
     ports:
-      - "4001:4000"
+      - ${HOST_APP_PORT}:${APP_PORT}
     volumes:
       - .:/usr/src/app
       - ./node_modules:/usr/src/app/node_modules
     environment:
-      MINIO_ACCESS_KEY: "EGN382IMEPNND2JB46PQ"
-      MINIO_SECRET_KEY: "5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM"
-      MINIO_USE_SSL: "false"
-      MINIO_PORT: 9000
-      MINIO_END_POINT: "minioInfra"
-      MINIO_PUBLIC_END_POINT: "172.76.10.161"
-      MONGODB_URL: "mongodb://foobar:foobarPassword@mongodbInfra:27017/simple_db"
-      MONGODB_HOST: "mongodbInfra"
-      MONGODB_ROOT_USER: "root"
-      MONGODB_ROOT_PASSWORD: "root"
-      MONGODB_PORT: "27017"
-      JWT_PRIVATE_KEY: "privateKey"
-      JWT_EXPIRES_IN: "1d"
-      BCRYPT_SALT_ROUND: 10
-      NODE_ENV: "development"
-      APP_PORT: 4000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_USE_SSL: ${MINIO_USE_SSL}
+      MINIO_PORT: ${MINIO_PORT}
+      MINIO_END_POINT: ${MINIO_END_POINT}
+      MINIO_PUBLIC_END_POINT: ${MINIO_PUBLIC_END_POINT}
+      MONGODB_URL: ${MONGODB_URL}
+      MONGODB_HOST: ${MONGODB_HOST}
+      MONGODB_ROOT_USER: ${MONGODB_ROOT_USER}
+      MONGODB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+      MONGODB_PORT: ${MONGODB_PORT}
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      BCRYPT_SALT_ROUND: ${BCRYPT_SALT_ROUND}
+      NODE_ENV: ${NODE_ENV}
+      APP_PORT: ${APP_PORT}
+      APP_HOST: ${APP_HOST}
+      HOST_APP_PORT: ${HOST_APP_PORT}
     networks:
       - localnetwork
   database-backup:
@@ -35,12 +37,12 @@ services:
       dockerfile: Dockerfile.backupdb
     command: bash -c "mc config host remove backup-server ; mc config host add backup-server http://minioInfra:9000 EGN382IMEPNND2JB46PQ 5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM ; mongodump --uri="mongodb://foobar:foobarPassword@mongodbInfra:27017/simple_db" --archive --gzip | mc pipe backup-server/mongo-backup/backup-archive.gz"
     environment:
-      MINIO_ACCESS_KEY: "EGN382IMEPNND2JB46PQ"
-      MINIO_SECRET_KEY: "5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM"
-      MINIO_USE_SSL: "false"
-      MINIO_PORT: 9000
-      MINIO_END_POINT: "minioInfra"
-      MONGODB_URL: "mongodb://foobar:foobarPassword@mongodb:27017/simple_db"
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_USE_SSL: ${MINIO_USE_SSL}
+      MINIO_PORT: ${MINIO_PORT}
+      MINIO_END_POINT: ${MINIO_END_POINT}
+      MONGODB_URL: ${MONGODB_URL}
     networks:
       - localnetwork
 networks:
