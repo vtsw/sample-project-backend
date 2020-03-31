@@ -5,7 +5,7 @@ const MessageProvider = require('./modules/message/MessageProvider');
 const Bcrypt = require('./services/bcrypt');
 const JWT = require('./services/jwt');
 const config = require('./config');
-const Authenticator = require('./modules/user/authenticator');
+const Authenticator = require('./modules/user/Authenticator');
 const winston = require('./services/winston');
 
 module.exports = async () => {

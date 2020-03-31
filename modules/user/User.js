@@ -6,7 +6,7 @@ class User {
       password: null,
       name: null,
       lastModified: null,
-      avatar: null,
+      image: {},
     };
   }
 

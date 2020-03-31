@@ -29,7 +29,7 @@ class Authenticator {
       throw new AuthenticationError('User or password is invalid.');
     }
     return {
-      token: this.jwt.encode(user.toJson()),
+      token: this.jwt.encode({ id: user.id, name: user.name, email: user.email }),
       user,
     };
   }
