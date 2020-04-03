@@ -11,9 +11,9 @@ const bootstrapper = require('./bootstrapper');
 
 function runApp() {
   bootstrapper().then((appContext) => {
-    app.appContenxt = appContext;
+    app.set('appContenxt', appContext);
     app.listen(config.app.port, () => {
-      console.log(`Running a GraphQL API server at http://${config.app.host}:${config.app.port}/graphql`);
+      console.log(`Running a GraphQL API server at ${config.app.host}:${config.app.port}/graphql`);
     });
   });
 }

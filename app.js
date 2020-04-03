@@ -13,7 +13,7 @@ app.use(cors());
 app.use('/api', router);
 app.use('/graphql', graphqlUploadExpress(config.graphqlUploadExpress), graphqlHTTP(async (req) => {
   // create new context on every request
-  const context = await createSessionContext(req, req.app.appContenxt);
+  const context = await createSessionContext(req, req.app.get('appContenxt'));
   return {
     schema,
     graphiql: config.app.env === 'development',

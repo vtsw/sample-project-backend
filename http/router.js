@@ -4,11 +4,12 @@ const { isAuthenticated } = require('./middleware');
 const router = Router();
 
 router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
-  const { minio, userProvider } = req.app.appContenxt;
+  const { minio, userProvider } = req.app.get('appContenxt');
   const user = await userProvider.findById(req.user.id);
   const { filename } = req.params;
   if (user.image.filename !== filename) {
-    return res.send('This resource does not exist or you do not have permission to view the resource.');
+    res.send('This resource does not exist or you do not have permission to view the resource.');
+    return;
   }
   const stat = await minio.statObject('upload', filename);
   const stream = await minio.getObject('upload', filename);

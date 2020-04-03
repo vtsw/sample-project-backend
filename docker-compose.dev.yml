@@ -4,9 +4,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: nodemon --legacy-watch server.js
+    command: nodemon --inspect server.js
     ports:
       - ${HOST_APP_PORT}:${APP_PORT}
+      - 9229:9229
     volumes:
       - .:/usr/src/app
       - ./node_modules:/usr/src/app/node_modules
@@ -29,6 +30,10 @@ services:
       APP_PORT: ${APP_PORT}
       APP_HOST: ${APP_HOST}
       HOST_APP_PORT: ${HOST_APP_PORT}
+      LOG_FREQUENCY: ${LOG_FREQUENCY}
+      MAX_SIZE: ${MAX_SIZE}
+      MAX_FILE: ${MAX_FILE}
+      ZIPPED_ARCHIVE: ${ZIPPED_ARCHIVE}
     networks:
       - localnetwork
   database-backup:

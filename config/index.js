@@ -29,10 +29,12 @@ module.exports = {
     filename: process.env.LOG_FILENAME || 'application-%DATE%.log',
     dirname: process.env.LOG_DIRNAME || 'logs',
     datePattern: process.env.DATE_PATTERN || 'YYYY-MM-DD-HH',
-    zippedArchive: process.env.ZIPPED_ARCHIVE ? process.env.ZIPPED_ARCHIVE === 'true' : false,
+    zippedArchive: process.env.ZIPPED_ARCHIVE === 'true',
     maxSize: process.env.MAX_SIZE || '20m',
     maxFiles: process.env.MAX_FILE || '14d',
     auditFile: process.env.AUDIT_FILE || 'audit.json',
+    frequency: process.env.LOG_FREQUENCY || null,
+    utc: process.env.LOG_UTC === 'true',
   },
   graphqlUploadExpress: { maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 10000000, maxFiles: parseInt(process.env.MAX_FILES, 10) || 10 },
 };
