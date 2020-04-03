@@ -1,9 +1,9 @@
-const express = require('express');
+const { Router } = require('express');
 const { isAuthenticated } = require('./middleware');
 
-const router = express.Router();
+const router = Router();
 
-router.use('/download/images/:filename', isAuthenticated, async (req, res) => {
+router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
   const { minio, userProvider } = req.app.appContenxt;
   const user = await userProvider.findById(req.user.id);
   const { filename } = req.params;
