@@ -7,7 +7,7 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
   const { minio, userProvider } = req.app.get('appContenxt');
   const user = await userProvider.findById(req.user.id);
   const { filename } = req.params;
-  if (user.image.filename !== filename) {
+  if (user.image.hashedFilename !== filename) {
     res.send('This resource does not exist or you do not have permission to view the resource.');
     return;
   }

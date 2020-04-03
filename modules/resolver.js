@@ -31,6 +31,7 @@ const baseResolver = {
       url.pathname = `/api/download/images/${hashedFilename}`;
       const image = {
         filename,
+        hashedFilename,
         mimetype,
         encoding,
         link: url.href,
