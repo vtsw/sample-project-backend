@@ -1,7 +1,7 @@
 const UserProvider = require('./UserProvider');
 const { AuthenticationError } = require('../errors');
 
-class AuthenticationService {
+class Authenticator {
   /**
    *
    * @param {Bcrypt} bcrypt
@@ -29,7 +29,8 @@ class AuthenticationService {
       throw new AuthenticationError('User or password is invalid.');
     }
     return {
-      token: this.jwt.encode(user.toJson()),
+      token: this.jwt.encode({ id: user.id, name: user.name, email: user.email }),
+      user,
     };
   }
 
@@ -65,4 +66,4 @@ class AuthenticationService {
   }
 }
 
-module.exports = AuthenticationService;
+module.exports = Authenticator;

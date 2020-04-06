@@ -4,6 +4,7 @@ const { createUser, updateUser, login } = require('../validationSchema');
 module.exports = {
   Query: {
     user: (_, { id }, { userProvider }) => userProvider.findById(id),
+    me: (_, args, { userProvider, req }) => userProvider.findById(req.user.id),
     userList: async (_, args, { userProvider }) => {
       if (isEmpty(args)) {
         return userProvider

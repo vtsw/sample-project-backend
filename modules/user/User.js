@@ -6,6 +6,7 @@ class User {
       password: null,
       name: null,
       lastModified: null,
+      image: {},
     };
   }
 
@@ -35,6 +36,22 @@ class User {
 
   set name(value) {
     this.data.name = value;
+  }
+
+  set lastModified(value) {
+    this.data.lastModified = value;
+  }
+
+  get lastModified() {
+    return this.data.lastModified;
+  }
+
+  set image(value) {
+    this.data.image = value;
+  }
+
+  get image() {
+    return this.data.image;
   }
 
   toJson() {

@@ -3,21 +3,27 @@ services:
   web:
     build:
       context: .
-    command: bash -c "npm run migrate-mongo ; node server.js"
+    command: bash -c "npm run migrate-mongo ; npm run minio-init; node server.js"
     ports:
       - "4000:4000"
     environment:
-      MINIO_ACCESS_KEY: "AKIAIOSFODNN7EXAMPLE"
-      MINIO_SECRET_KEY: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+      MINIO_ACCESS_KEY: "EGN382IMEPNND2JB46PQ"
+      MINIO_SECRET_KEY: "5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM"
       MINIO_USE_SSL: "false"
       MINIO_PORT: 9000
-      MINIO_END_POINT: "minio"
-      MONGODB_URL: "mongodb://foobar:foobarPassword@mongodb:27017/simple_db"
+      MINIO_END_POINT: "minioInfra"
+      MINIO_PUBLIC_END_POINT: "172.76.10.161"
+      MONGODB_URL: "mongodb://foobar:foobarPassword@mongodbInfra:27017/simple_db"
+      MONGODB_HOST: "mongodbInfra"
+      MONGODB_ROOT_USER: "root"
+      MONGODB_ROOT_PASSWORD: "root"
+      MONGODB_PORT: "27017"
       JWT_PRIVATE_KEY: "privateKey"
       JWT_EXPIRES_IN: "1d"
       BCRYPT_SALT_ROUND: 10
       NODE_ENV: "development"
-      APP_PORT: 4000
+      APP_PORT: ${APP_PORT}
+      APP_HOST: ${APP_HOST}
     networks:
       - localnetwork
 

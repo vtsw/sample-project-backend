@@ -5,7 +5,8 @@ const MessageProvider = require('./modules/message/MessageProvider');
 const Bcrypt = require('./services/bcrypt');
 const JWT = require('./services/jwt');
 const config = require('./config');
-const AuthenticationService = require('./modules/user/authenticationService');
+const Authenticator = require('./modules/user/Authenticator');
+const winston = require('./services/winston');
 
 module.exports = async () => {
   const context = {};
@@ -15,6 +16,7 @@ module.exports = async () => {
   context.messageProvider = new MessageProvider(context.db.collection('messages'));
   context.bcrypt = new Bcrypt(config);
   context.jwt = new JWT(config);
-  context.authService = new AuthenticationService(context.bcrypt, context.userProvider, context.jwt);
+  context.authService = new Authenticator(context.bcrypt, context.userProvider, context.jwt);
+  context.logger = winston;
   return context;
 };

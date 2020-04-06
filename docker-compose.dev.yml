@@ -3,24 +3,51 @@ services:
   webdev:
     build:
       context: .
-    command: nodemon --legacy-watch server.js
+      dockerfile: Dockerfile.dev
+    command: nodemon --inspect server.js
     ports:
-      - "4001:4000"
+      - ${HOST_APP_PORT}:${APP_PORT}
+      - 9229:9229
     volumes:
       - .:/usr/src/app
       - ./node_modules:/usr/src/app/node_modules
     environment:
-      MINIO_ACCESS_KEY: "EGN382IMEPNND2JB46PQ"
-      MINIO_SECRET_KEY: "5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM"
-      MINIO_USE_SSL: "false"
-      MINIO_PORT: 9000
-      MINIO_END_POINT: "localhost"
-      MONGODB_URL: "mongodb://foobar:foobarPassword@mongodb:27017/simple_db"
-      JWT_PRIVATE_KEY: "privateKey"
-      JWT_EXPIRES_IN: "1d"
-      BCRYPT_SALT_ROUND: 10
-      NODE_ENV: "development"
-      APP_PORT: 4000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_USE_SSL: ${MINIO_USE_SSL}
+      MINIO_PORT: ${MINIO_PORT}
+      MINIO_END_POINT: ${MINIO_END_POINT}
+      MINIO_PUBLIC_END_POINT: ${MINIO_PUBLIC_END_POINT}
+      MONGODB_URL: ${MONGODB_URL}
+      MONGODB_HOST: ${MONGODB_HOST}
+      MONGODB_ROOT_USER: ${MONGODB_ROOT_USER}
+      MONGODB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+      MONGODB_PORT: ${MONGODB_PORT}
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      BCRYPT_SALT_ROUND: ${BCRYPT_SALT_ROUND}
+      NODE_ENV: ${NODE_ENV}
+      APP_PORT: ${APP_PORT}
+      APP_HOST: ${APP_HOST}
+      HOST_APP_PORT: ${HOST_APP_PORT}
+      LOG_FREQUENCY: ${LOG_FREQUENCY}
+      MAX_SIZE: ${MAX_SIZE}
+      MAX_FILE: ${MAX_FILE}
+      ZIPPED_ARCHIVE: ${ZIPPED_ARCHIVE}
+    networks:
+      - localnetwork
+  database-backup:
+    build:
+      context: .
+      dockerfile: Dockerfile.backupdb
+    command: bash -c "mc config host remove backup-server ; mc config host add backup-server http://minioInfra:9000 EGN382IMEPNND2JB46PQ 5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM ; mongodump --uri="mongodb://foobar:foobarPassword@mongodbInfra:27017/simple_db" --archive --gzip | mc pipe backup-server/mongo-backup/backup-archive.gz"
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_USE_SSL: ${MINIO_USE_SSL}
+      MINIO_PORT: ${MINIO_PORT}
+      MINIO_END_POINT: ${MINIO_END_POINT}
+      MONGODB_URL: ${MONGODB_URL}
     networks:
       - localnetwork
 networks:

@@ -7,7 +7,8 @@
     "start:local": "cross-env MONGODB_URL=mongodb://foobar:foobarPassword@localhost:27017/simple_db MINIO_END_POINT=localhost node server.js",
     "test": "jest",
     "migrate-mongo": "migrate-mongo up",
-    "migrate-mongo:local": "migrate-mongo up -f migrate-mongo-config.local.js"
+    "migrate-mongo:local": "migrate-mongo up -f migrate-mongo-config.local.js",
+    "minio-init": "node minIOInit.js"
   },
   "keywords": [],
   "author": "",
@@ -17,20 +18,23 @@
     "bcrypt": "^4.0.0",
     "cors": "^2.8.5",
     "dataloader": "^2.0.0",
-    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "graphql": "^14.6.0",
     "graphql-middleware": "^4.0.2",
     "graphql-tag": "^2.10.3",
     "graphql-tools": "^4.0.7",
+    "graphql-upload": "^10.0.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "latest",
     "lodash.get": "^4.4.2",
     "merge-graphql-schemas": "^1.7.6",
     "minio": "^7.0.14",
     "moment": "^2.24.0",
-    "mongodb": "^3.5.4"
+    "mongodb": "^3.5.4",
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^4.4.2",
+    "winston-transport": "^4.3.0"
   },
   "devDependencies": {
     "@hapi/joi": "^17.1.1",
@@ -49,7 +53,7 @@
     "jest": "^25.1.0",
     "migrate-mongo": "^7.1.0",
     "node-fetch": "^2.6.0",
-    "uuid": "latest"
+    "uuid": "^7.0.2"
   },
   "jest": {
     "testRegex": "./tests/.*.js$",

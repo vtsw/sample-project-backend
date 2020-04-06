@@ -1,30 +1,29 @@
 /* eslint-disable no-console */
-require('dotenv').config();
+const path = require('path');
+
+global.APP_ROOT = path.resolve(__dirname);
+
 const cluster = require('cluster');
 const os = require('os');
 const app = require('./app');
 const config = require('./config');
 const bootstrapper = require('./bootstrapper');
 
-if (config.app.env === 'production') {
-  if (cluster.isMaster) {
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < os.cpus().length; i++) {
-      cluster.fork();
-    }
-  } else if (cluster.isWorker) {
-    bootstrapper().then((appContenxt) => {
-      app.appContenxt = appContenxt;
-      app.listen(config.app.port, () => {
-        console.log(`Running a GraphQL API server at http://localhost:${config.app.port}/graphql`);
-      });
-    });
-  }
-} else {
-  bootstrapper().then((appContenxt) => {
-    app.appContenxt = appContenxt;
+function runApp() {
+  bootstrapper().then((appContext) => {
+    app.set('appContenxt', appContext);
     app.listen(config.app.port, () => {
-      console.log(`Running a GraphQL API server at http://localhost:${config.app.port}/graphql`);
+      console.log(`Running a GraphQL API server at ${config.app.host}:${config.app.port}/graphql`);
     });
   });
+}
+
+if (config.app.env === 'production') {
+  if (cluster.isMaster) {
+    os.cpus().forEach(cluster.fork);
+  } else if (cluster.isWorker) {
+    runApp();
+  }
+} else {
+  runApp();
 }

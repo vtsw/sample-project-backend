@@ -1,10 +1,10 @@
 const { ApolloLink } = require('apollo-link');
-
 const { ApolloClient } = require('apollo-client');
 const { InMemoryCache } = require('apollo-cache-inmemory');
 const { createHttpLink } = require('apollo-link-http');
 const { setContext } = require('apollo-link-context');
 const fetch = require('node-fetch');
+
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000/graphql',
   fetch,
@@ -25,8 +25,8 @@ const clientFactory = function clientFactory(token) {
     // Use the setContext method to set the HTTP headers.
     operation.setContext({
       headers: {
-        authorization: token ? `Bearer ${token}` : ''
-      }
+        authorization: token ? `Bearer ${token}` : '',
+      },
     });
 
     // Call the next link in the middleware chain.
@@ -40,5 +40,5 @@ const clientFactory = function clientFactory(token) {
 
 module.exports = {
   client,
-  clientFactory
+  clientFactory,
 };

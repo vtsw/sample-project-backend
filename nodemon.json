@@ -1,0 +1,5 @@
+{
+  "ignore": ["logs/*"],
+  "legacyWatch": true,
+  "delay": 2500
+}

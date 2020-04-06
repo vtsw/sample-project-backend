@@ -3,7 +3,7 @@ const { applyMiddleware } = require('graphql-middleware');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolver');
 const directiveResolvers = require('./directiveResolvers');
-const validationMiddleware = require('./validationMiddleware');
+const { validation, logging } = require('./middlewares');
 
 
 module.exports = applyMiddleware(makeExecutableSchema({
@@ -11,4 +11,4 @@ module.exports = applyMiddleware(makeExecutableSchema({
   resolvers,
   directiveResolvers,
 }),
-validationMiddleware);
+logging, validation);

@@ -1,4 +1,14 @@
 module.exports = {
+  /**
+   *
+   * @param resolve
+   * @param parent
+   * @param args
+   * @param context
+   * @param info
+   * @returns {Promise<*>}
+   * @constructor
+   */
   Mutation: async (resolve, parent, args, context, info) => {
     const mutationField = info.schema.getMutationType();
     const mutationDefinition = mutationField.getFields()[info.fieldName];

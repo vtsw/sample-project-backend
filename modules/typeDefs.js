@@ -7,8 +7,16 @@ const MessageTypeDefs = require('./message/graphql/typedef');
 const baseTypeDefs = gql`
 
   directive @isAuthenticated on FIELD_DEFINITION
-  
+  scalar Upload
   scalar Date
+  
+  type File {
+    filename: String!
+    mimetype: String
+    encoding: String
+    link: String!
+    etag: String
+  }
 
   interface Paginatable {
     hasNext: Boolean
@@ -17,6 +25,7 @@ const baseTypeDefs = gql`
 
   type AuthPayload {
     token: String!
+	  user: User
   }
 
   type Query {
@@ -25,6 +34,7 @@ const baseTypeDefs = gql`
 
   type Mutation {
     hello(name: String): String
+    uploadImage (file: Upload!): File! @isAuthenticated
   }
 `;
 
