@@ -101,10 +101,20 @@ class MessageProvider {
     if (!rawData) {
       return null;
     }
-    const message = new Message(rawData._id || rawData.id);
-    message.content = rawData.content;
-    message.sender = rawData.sender;
-    message.lastModified = rawData.lastModified;
+    // convert all objectId type attribute to string type to decouple from mongodb layer
+    const data = {};
+    Object.keys(rawData).forEach((key) => {
+      if (rawData[key] instanceof ObjectId) {
+        data[key] = rawData[key].toString();
+      } else {
+        data[key] = rawData[key];
+      }
+    });
+
+    const message = new Message(data._id || data.id);
+    message.content = data.content;
+    message.sender = data.sender;
+    message.lastModified = data.lastModified;
     return message;
   }
 }

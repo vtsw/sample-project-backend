@@ -16,6 +16,12 @@ module.exports = {
   globals: {
     "it": "readonly",
     "describe": "readonly",
-    "expect": "readonly"
+    "test": "readonly",
+    "expect": "readonly",
+    "jest": "readonly",
+    "beforeEach": "readonly",
+    "afterEach": "readonly",
+    "beforeAll": "readonly",
+    "afterAll": "readonly",
   }
 };

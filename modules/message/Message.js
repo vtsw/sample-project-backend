@@ -7,7 +7,6 @@ class Message {
     this.attributes = {
       id,
       sender: null,
-      receiver: null,
       content: null,
       lastModified: null,
     };
