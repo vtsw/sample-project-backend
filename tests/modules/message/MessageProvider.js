@@ -114,14 +114,14 @@ describe('MessageProvider', () => {
   describe('#update', () => {
     beforeEach(async () => {
       const messages = db.collection('messages');
-      const mockUser = {
+      const mockMessage = {
         _id: ObjectId('507f1f77bcf86cd799439011'),
         userId: ObjectId('5e68995fb6d0bc05829b6e77'),
         content: 'hello world',
         lastModified: '2020-03-11T07:55:11+00:00',
         deleted: false,
       };
-      await messages.insertOne(mockUser);
+      await messages.insertOne(mockMessage);
       messageProvider = new MessageProvider(messages);
     });
 

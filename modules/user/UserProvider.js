@@ -79,12 +79,10 @@ class UserProvider {
     if (!user) {
       throw new ResourceNotFoundError('User', `id: ${id}`);
     }
-    const { result } = await this.users
-      .updateOne({ _id: ObjectId(id) }, { $set: userUpdate, $currentDate: { lastModified: true } });
-    if (result.ok !== 1) {
-      throw new Error(`Update fail with id: ${id}`);
-    }
-    return UserProvider.factory({ ...user.toJson(), ...userUpdate });
+    const lastModified = moment().format();
+    await this.users
+      .updateOne({ _id: ObjectId(id) }, { $set: { ...userUpdate, lastModified } });
+    return UserProvider.factory(Object.assign(user.toJson(), userUpdate, { lastModified }));
   }
 
   async delete(id) {
@@ -102,12 +100,21 @@ class UserProvider {
     if (!rawData) {
       return null;
     }
-    const user = new User(rawData._id || rawData.id);
-    user.password = rawData.password;
-    user.email = rawData.email;
-    user.name = rawData.name;
-    user.lastModified = rawData.lastModified;
-    user.image = rawData.image;
+    // convert all objectId type attribute to string type to decouple from mongodb layer
+    const data = {};
+    Object.keys(rawData).forEach((key) => {
+      if (rawData[key] instanceof ObjectId) {
+        data[key] = rawData[key].toString();
+      } else {
+        data[key] = rawData[key];
+      }
+    });
+    const user = new User(data._id || data.id);
+    user.password = data.password;
+    user.email = data.email;
+    user.name = data.name;
+    user.lastModified = data.lastModified;
+    user.image = data.image;
     return user;
   }
 }
