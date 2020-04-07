@@ -31,7 +31,7 @@ class MessageProvider {
   async create(message) {
     const inserted = await this.messages.insertOne({
       content: message.content,
-      sender: ObjectId(message.sender),
+      userId: ObjectId(message.userId),
       lastModified: moment().format(),
       deleted: false,
     });
@@ -50,11 +50,8 @@ class MessageProvider {
       throw new ResourceNotFoundError('message', `id: ${id}`);
     }
     const lastModified = moment().format();
-    const { result } = await this.messages
-      .updateOne({ _id: ObjectId(id) }, { $set: messageUpdate });
-    if (result.ok !== 1) {
-      throw new Error(`Update fail with id: ${id}`);
-    }
+    await this.messages
+      .updateOne({ _id: ObjectId(id) }, { $set: { ...messageUpdate, lastModified } });
     return MessageProvider.factory(Object.assign(message.toJson(), messageUpdate, { lastModified }));
   }
 
@@ -113,7 +110,7 @@ class MessageProvider {
 
     const message = new Message(data._id || data.id);
     message.content = data.content;
-    message.sender = data.sender;
+    message.userId = data.userId;
     message.lastModified = data.lastModified;
     return message;
   }
