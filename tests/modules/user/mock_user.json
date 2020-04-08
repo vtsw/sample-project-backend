@@ -1,0 +1,16 @@
+{
+  "id": "5e68995fb6d0bc05829b6e79",
+  "name": "90412",
+  "email": "steve@example.com",
+  "password": "$2b$10$a2Yvs6zYDOgaH1E7UutxTur4ZGZ9XvCCXTDTlLYYnzd8OVxM2ikHS",
+  "lastModified": "2020-04-03T09:39:20.350Z",
+  "deleted": false,
+  "image": {
+    "filename": "macos-catalina-5120x2880-day-mountains-wwdc-2019-5k-21590 (22).jpg",
+    "hashedFilename": "c3bf25ec-47d8-47d2-82fc-728970c08366macos-catalina-5120x2880-day-mountains-wwdc-2019-5k-21590 (22).jpg",
+    "mimetype": "image/jpeg",
+    "encoding": "7bit",
+    "link": "http://172.76.10.161:4001/api/download/images/c3bf25ec-47d8-47d2-82fc-728970c08366macos-catalina-5120x2880-day-mountains-wwdc-2019-5k-21590%20(22).jpg",
+    "etag": "ef8781f4a83faa611944f57e3aacb3c4-1"
+  }
+}
