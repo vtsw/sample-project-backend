@@ -7,7 +7,6 @@ const JWT = require('../../services/jwt');
 const config = require('../../config');
 const Authenticator = require('../../modules/user/Authenticator');
 const winston = require('../../services/winston');
-const mutationRecorder = require('../../services/mutationRecorder');
 
 module.exports = async () => {
   const context = {};

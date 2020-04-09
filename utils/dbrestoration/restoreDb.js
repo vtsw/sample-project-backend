@@ -17,18 +17,14 @@ const setupConfig = () => {
 const doRestoration = () => {
   setupConfig();
   bootstrapper().then(async (context) => {
-    console.log('Done bootstraping');
     let lastTime = 0;
     let fromObjectName = '';
     let endOfData = false;
     while (!endOfData) {
       const loadedData = await mutationRecordLoad(lastTime, fromObjectName, config, context);
-      console.log(loadedData);
-      const mutationResults = await loadedData.mutation.forEach( async (mutation) => {
-        const restoreResult = await resolvers.Mutation[mutation.message.fieldName].resolve({}, mutation.message.args, context);
-        console.log(restoreResult);
+      await loadedData.mutation.forEach( async (mutation) => {
+        await resolvers.Mutation[mutation.message.fieldName].resolve({}, mutation.message.args, context);
       });
-      console.log(mutationResults);
       fromObjectName = loadedData.lastObjectName;
       lastTime = loadedData.lastTime;
       if (loadedData.endOfData) {

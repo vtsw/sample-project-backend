@@ -1,23 +1,70 @@
-const getObject = (minioClient, bucketName, object) => new Promise((resolve, reject) => {
-  const databuffer = [];
-  const data = [];
-  minioClient.getObject(bucketName, object.name, (error, dataStream) => {
-    if (error) {
-      console.log(error);
-      reject(error);
+const inTime = (fromTime, createdTimestamp, endTime) => fromTime <= createdTimestamp && createdTimestamp <= endTime;
+
+const getObjects = (minioClient, bucketName, result, remain, fromTime, config) => new Promise((resolve, reject) => {
+  if (remain.length === 0) {
+    console.log(result);
+    if (result.mutation.length !== 0) {
+      const refinedMutation = result.mutation
+        .map((mutation) => {
+          try {
+            if (mutation.length === 0) {
+              return {};
+            }
+            console.log('correctLine');
+            console.log(mutation);
+            const parsed = JSON.parse(mutation);
+            return parsed;
+          } catch (e) {
+            console.log('errorLine:');
+            console.log(mutation);
+            return {};
+          }
+        })
+        .filter((mutation) => !!mutation.message)
+        .filter((mutation) => inTime(fromTime, mutation.message.timestamp, config.dbRestoration.endTime))
+        .sort((mutationA, mutationB) => mutationA.message.timestamp - mutationB.message.timestamp);
+      const lastTime = refinedMutation.reduce((last, mutation) => (mutation.message.timestamp > last ? mutation.message.timestamp : last));
+      const refinedResult = {
+        ...result,
+        mutation: refinedMutation,
+        lastTime,
+        endOfData: refinedMutation.length === 0,
+        done: true,
+      };
+      resolve(refinedResult);
+    } else {
+      const emptyResult = {
+        ...result,
+        endOfData: true,
+        done: true,
+      };
+      resolve(emptyResult);
     }
-    dataStream.on('data', (chunk) => {
-      databuffer.push(chunk);
+  } else {
+    const databuffer = [];
+    const object = remain[0];
+    minioClient.getObject(bucketName, object.name, (error, dataStream) => {
+      if (error) {
+        console.log(error);
+        reject(error);
+      }
+      dataStream.on('data', (chunk) => {
+        databuffer.push(chunk);
+      });
+      dataStream.on('error', (err) => {
+        console.log(err);
+        reject(err);
+      });
+      dataStream.on('end', () => {
+        const data = Buffer.concat(databuffer).toString('utf8').split('\r\n');
+        result.mutation.push(...data);
+        resolve(result);
+      });
     });
-    dataStream.on('end', () => {
-      data.push(...(Buffer.concat(databuffer).toString('utf8').split('\r\n')));
-      resolve(data);
-    });
-    dataStream.on('error', (errorz) => {
-      console.log(errorz);
-      reject(errorz);
-    });
-  });
+  }
+}).then((resultz) => {
+  if (resultz.done) return Promise.resolve(resultz);
+  getObjects(minioClient, bucketName, resultz, remain.slice(1, remain.length), fromTime, config);
 });
 
 const loadData = (fromTime, fromObjectName, config, context) => new Promise((resolve, reject) => {
@@ -29,7 +76,6 @@ const loadData = (fromTime, fromObjectName, config, context) => new Promise((res
     endOfData: false,
   };
   const bucketName = config.dbRestoration.restorationBucket;
-  console.log('bucketName', bucketName);
   const { endTime } = config.dbRestoration;
   const minioClient = context.minio;
   const mutationObjectsStream = minioClient.extensions.listObjectsV2WithMetadata(bucketName, '', false, fromObjectName);
@@ -37,31 +83,9 @@ const loadData = (fromTime, fromObjectName, config, context) => new Promise((res
   mutationObjectsStream.on('data', (object) => {
     const { metadata } = object;
     const createdTimestamp = Number(metadata['X-Amz-Meta-Createdate']);
-    if (result.mutationObjects.length < 10) {
-      if (fromTime <= createdTimestamp && createdTimestamp <= endTime) {
-        result.mutationObjects.push(object);
-        result.lastObjectName = object.name;
-        getObject(minioClient, bucketName, object)
-          .then((data) => {
-            const mutations = data
-              .map((line) => {
-                if (line.length > 0) {
-                  return JSON.parse(line);
-                }
-                return {};
-              })
-              .filter((obj) => !!obj.timestamp)
-              .filter((mutation) => {
-                console.log(mutation);
-                const { timestamp } = mutation.message;
-                if (!timestamp) return false;
-                return fromTime <= timestamp && timestamp < endTime;
-              });
-            mutations.forEach((mutation) => { if (mutation.timestamp > result.lastTime) result.lastTime = mutation.timestamp; });
-            result.mutation.push(...mutations);
-            resolve(result);
-          });
-      }
+
+    if (inTime(fromTime, createdTimestamp, endTime)) {
+      result.mutationObjects.push(object);
     }
   });
 
@@ -72,8 +96,8 @@ const loadData = (fromTime, fromObjectName, config, context) => new Promise((res
   });
 
   mutationObjectsStream.on('end', () => {
-    // console.log(result);
+    resolve(result);
   });
-});
+}).then((result) => getObjects(context.minio, config.dbRestoration.restorationBucket, result, result.mutationObjects, fromTime, config));
 
 module.exports = loadData;
