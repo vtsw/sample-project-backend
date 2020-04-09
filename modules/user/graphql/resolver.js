@@ -27,9 +27,9 @@ module.exports = {
     },
     updateUser: {
       validationSchema: updateUser,
-      resolve: async (_, { user }, { userProvider, authService }) => {
+      resolve: async (_, args, { userProvider, authService }) => {
+        const { user } = args;
         if (user.password) {
-          // eslint-disable-next-line no-param-reassign
           user.password = await authService.createPassword(user.password);
         }
         return userProvider.update(user.id, user);

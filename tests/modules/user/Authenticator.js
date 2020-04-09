@@ -7,7 +7,7 @@ const User = require('../../../modules/user/User');
 const Bcrypt = require('../../../services/bcrypt');
 const JWT = require('../../../services/jwt');
 
-const mockUser = require('./mock_user');
+const mockUser = require('./user_mock');
 
 // eslint-disable-next-line max-len
 const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlNjg5OTVmYjZkMGJjMDU4MjliNmU3OSIsIm5hbWUiOiI5MDQxMiIsImVtYWlsIjoic3RldmVAZXhhbXBsZS5jb20iLCJpYXQiOjE1ODYzMTk1OTl9.5LXj9f3GILhr36g328XBRVy9kki3DuR-_30_lzIS5rE';

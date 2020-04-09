@@ -3,6 +3,8 @@ const MessageProvider = require('../../../modules/message/MessageProvider');
 const { ResourceNotFoundError } = require('../../../modules/errors');
 const Message = require('../../../modules/message/Message');
 
+const messageMock = require('./message_mock');
+
 jest.mock('moment', () => () => ({ format: () => '2020-03-11T07:55:13+00:00' }));
 
 describe('MessageProvider', () => {
@@ -28,14 +30,14 @@ describe('MessageProvider', () => {
   describe('#findById', () => {
     beforeEach(async () => {
       const messages = db.collection('messages');
-      const mockMessage = {
-        _id: ObjectId('507f1f77bcf86cd799439011'),
-        userId: ObjectId('5e68995fb6d0bc05829b6e77'),
-        content: 'hello world',
-        lastModified: '2020-03-11T07:55:13+00:00',
-        deleted: false,
-      };
-      await messages.insertOne(mockMessage);
+      const cloned = JSON.parse(JSON.stringify(messageMock));
+      await messages.insertMany(cloned.map((message) => {
+        // eslint-disable-next-line no-param-reassign
+        message._id = ObjectId(message._id);
+        // eslint-disable-next-line no-param-reassign
+        message.userId = ObjectId(message.userId);
+        return message;
+      }));
       messageProvider = new MessageProvider(messages);
     });
 
@@ -44,21 +46,20 @@ describe('MessageProvider', () => {
     });
 
     test('Should return an instance of Message.', async () => {
-      const message = await messageProvider.findById('507f1f77bcf86cd799439011');
+      const message = await messageProvider.findById(messageMock[0]._id);
       expect(message).toBeInstanceOf(Message);
     });
 
     test('Should return message.', async () => {
-      const message = await messageProvider.findById('507f1f77bcf86cd799439011');
-      expect(message.id).toEqual('507f1f77bcf86cd799439011');
-      expect(message.content).toEqual('hello world');
-      expect(message.lastModified).toEqual('2020-03-11T07:55:13+00:00');
-      expect(message.userId).toEqual('5e68995fb6d0bc05829b6e77');
+      const message = await messageProvider.findById(messageMock[0]._id);
+      expect(message.id).toEqual(messageMock[0]._id);
+      expect(message.content).toEqual(messageMock[0].content);
+      expect(message.lastModified).toEqual(messageMock[0].lastModified);
+      expect(message.userId).toEqual(messageMock[0].userId);
     });
 
     test('Should return null when requested resource does not exist.', async () => {
-      const notExistId = ObjectId().toString();
-      const message = await messageProvider.findById(notExistId);
+      const message = await messageProvider.findById(ObjectId().toString());
       expect(message).toBeNull();
     });
 
@@ -71,6 +72,15 @@ describe('MessageProvider', () => {
   });
 
   describe('#create', () => {
+    beforeEach(async () => {
+      const messages = db.collection('messages');
+      messageProvider = new MessageProvider(messages);
+    });
+
+    afterEach(async () => {
+      await db.collection('messages').drop();
+    });
+
     test('Should create new message without error', async () => {
       const message = {
         content: 'hello world',
@@ -173,14 +183,14 @@ describe('MessageProvider', () => {
   describe('#delete', () => {
     beforeEach(async () => {
       const messages = db.collection('messages');
-      const mockUser = {
+      const mockMessage = {
         _id: ObjectId('507f1f77bcf86cd799439011'),
         userId: ObjectId('5e68995fb6d0bc05829b6e77'),
         content: 'hello world',
         lastModified: '2020-03-11T07:55:11+00:00',
         deleted: false,
       };
-      await messages.insertOne(mockUser);
+      await messages.insertOne(mockMessage);
       messageProvider = new MessageProvider(messages);
     });
 
@@ -215,45 +225,14 @@ describe('MessageProvider', () => {
   describe('#find', () => {
     beforeEach(async () => {
       const messages = db.collection('messages');
-      const mocksUser = [
-        {
-          userId: ObjectId('5e68995fb6d0bc05829b6e77'),
-          content: 'hello world 5',
-          lastModified: '2020-03-11T07:55:18+00:00',
-          deleted: false,
-        },
-        {
-          userId: ObjectId('5e68995fb6d0bc05829b6e77'),
-          content: 'hello world 6',
-          lastModified: '2020-03-11T07:55:18+00:00',
-          deleted: false,
-        },
-        {
-          userId: ObjectId('5e68995fb6d0bc05829b6e77'),
-          content: 'hello world 4',
-          lastModified: '2020-03-11T07:55:17+00:00',
-          deleted: false,
-        },
-        {
-          userId: ObjectId('5e68995fb6d0bc05829b6e77'),
-          content: 'hello world 3',
-          lastModified: '2020-03-11T07:55:16+00:00',
-          deleted: false,
-        },
-        {
-          userId: ObjectId('5e68995fb6d0bc05829b6e77'),
-          content: 'hello world 2',
-          lastModified: '2020-03-11T07:55:14+00:00',
-          deleted: false,
-        },
-        {
-          userId: ObjectId('5e68995fb6d0bc05829b6e77'),
-          content: 'hello world 1',
-          lastModified: '2020-03-11T07:55:13+00:00',
-          deleted: false,
-        },
-      ];
-      await messages.insertMany(mocksUser);
+      const cloned = JSON.parse(JSON.stringify(messageMock));
+      await messages.insertMany(cloned.map((message) => {
+        // eslint-disable-next-line no-param-reassign
+        message._id = ObjectId(message._id);
+        // eslint-disable-next-line no-param-reassign
+        message.userId = ObjectId(message.userId);
+        return message;
+      }));
       messageProvider = new MessageProvider(messages);
     });
 
@@ -264,7 +243,7 @@ describe('MessageProvider', () => {
 
     test('Should return an array of all messages', async () => {
       const result = await messageProvider.find();
-      expect(result.total).toEqual(6);
+      expect(result.total).toEqual(10);
     });
 
     test('Should return result with hasNext', async () => {
