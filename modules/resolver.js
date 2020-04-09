@@ -45,5 +45,5 @@ const baseResolver = {
     hello: () => 'world',
   },
 };
-
-module.exports = merge(baseResolver, userResolver, messageResolver);
+const mergedResolver = merge(baseResolver, userResolver, messageResolver);
+module.exports = mergedResolver

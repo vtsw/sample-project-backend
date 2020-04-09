@@ -4,4 +4,7 @@ module.exports = {
   globals: {
     __DEV__: true,
   },
+  testPathIgnorePatterns: [
+    './tests/int/client.js',
+  ],
 };

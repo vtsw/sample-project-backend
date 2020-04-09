@@ -26,7 +26,7 @@ module.exports = gql`
   input MessageListInput {
     skip: Int = 0,
     limit: Int = 10,
-	  searchText: String
+	searchText: String
     userId: ID
   }
 	

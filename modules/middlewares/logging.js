@@ -14,7 +14,8 @@ module.exports = {
       message: info,
     });
     try {
-      return await resolve(parent, args, context, info);
+      const result = await resolve(parent, args, context, info);
+      return result;
     } catch (e) {
       context.logger.log({
         level: 'error',
@@ -29,7 +30,8 @@ module.exports = {
       message: info,
     });
     try {
-      return await resolve(parent, args, context, info);
+      const result = await resolve(parent, args, context, info);
+      return result;
     } catch (e) {
       context.logger.log({
         level: 'error',
