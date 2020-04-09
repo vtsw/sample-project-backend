@@ -4,6 +4,7 @@ const { ResourceNotFoundError } = require('../../../modules/errors');
 const Message = require('../../../modules/message/Message');
 
 const messageMock = require('./message_mock');
+const userMock = require('../user/user_mock');
 
 jest.mock('moment', () => () => ({ format: () => '2020-03-11T07:55:13+00:00' }));
 
@@ -243,6 +244,11 @@ describe('MessageProvider', () => {
 
     test('Should return an array of all messages', async () => {
       const result = await messageProvider.find();
+      expect(result.total).toEqual(10);
+    });
+
+    test('Should return an array of all messages that associated with user', async () => {
+      const result = await messageProvider.find({ query: { userId: userMock[0]._id }, page: { limit: 10, skip: 0 } });
       expect(result.total).toEqual(10);
     });
 

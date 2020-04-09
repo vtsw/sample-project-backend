@@ -221,11 +221,11 @@ describe('User trivial resolver', () => {
 
     test('Should find all messages that associated with user and match the condition', async () => {
       expect.assertions(1);
-      await User.messages(mockUser[0], { query: { searchText: 'foobar', limit: 10, skip: 0 } }, {
+      await User.messages(UserProvider.factory(mockUser[0]), { query: { searchText: 'foobar', limit: 10, skip: 0 } }, {
         messageProvider,
       });
       expect(messageProvider.find).toBeCalledOnceWith({
-        query: { userId: mockUser[0].id, content: new RegExp('foobar') },
+        query: { userId: mockUser[0]._id, content: new RegExp('foobar') },
         page: { limit: 10, skip: 0 },
       });
     });

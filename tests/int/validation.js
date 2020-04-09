@@ -23,7 +23,7 @@ const CREATE_USER = gql`
 
 const defaultUser = {
   email: 'steve@example.com',
-  password: '123',
+  password: '1234',
 };
 
 const validUser = {

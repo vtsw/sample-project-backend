@@ -36,7 +36,7 @@ describe('Authenticator', () => {
   describe('#login', () => {
     test('Should login without error', async () => {
       expect.assertions(2);
-      userProviderStub.findByEmail.resolves(UserProvider.factory(mockUser));
+      userProviderStub.findByEmail.resolves(UserProvider.factory(mockUser[0]));
       const { token, user } = await authenticator.login('steve@example.com', '1234');
       expect(token).toBeTruthy();
       expect(user).toBeTruthy();
@@ -44,7 +44,7 @@ describe('Authenticator', () => {
 
     test('Should find user by email correctly.', async () => {
       expect.assertions(1);
-      userProviderStub.findByEmail.resolves(UserProvider.factory(mockUser));
+      userProviderStub.findByEmail.resolves(UserProvider.factory(mockUser[0]));
       await authenticator.login('steve@example.com', '1234');
       expect(userProviderStub.findByEmail).toHaveBeenCalledWith('steve@example.com');
     });
@@ -61,7 +61,7 @@ describe('Authenticator', () => {
     });
 
     test('Should throw error when received password is invalid.', async () => {
-      userProviderStub.findByEmail.resolves(UserProvider.factory(mockUser));
+      userProviderStub.findByEmail.resolves(UserProvider.factory(mockUser[0]));
       expect.assertions(1);
       try {
         await authenticator.login('steve@example.com', 'invalidPassword');
@@ -73,7 +73,7 @@ describe('Authenticator', () => {
 
     test('Should return encode logged user.', async () => {
       expect.assertions(1);
-      userProviderStub.findByEmail.resolves(UserProvider.factory(mockUser));
+      userProviderStub.findByEmail.resolves(UserProvider.factory(mockUser[0]));
       const { token } = await authenticator.login('steve@example.com', '1234');
       const { id, name, email } = jwt.decode(token);
       expect({
@@ -111,7 +111,7 @@ describe('Authenticator', () => {
 
   describe('#register', () => {
     test('Should register without error .', async () => {
-      userProviderStub.create.resolves(UserProvider.factory(mockUser));
+      userProviderStub.create.resolves(UserProvider.factory(mockUser[0]));
       const user = {
         password: 'fooBar',
         email: 'foobar@sample.com',
@@ -125,7 +125,7 @@ describe('Authenticator', () => {
     test('Should find user by email correctly.', async () => {
       expect.assertions(1);
       userProviderStub.findByEmail.resolves(null);
-      userProviderStub.create.resolves(UserProvider.factory(mockUser));
+      userProviderStub.create.resolves(UserProvider.factory(mockUser[0]));
       const user = {
         password: 'fooBar',
         email: 'foobar@sample.com',
@@ -137,7 +137,7 @@ describe('Authenticator', () => {
 
     test('Should throw error when email is duplicated.', async () => {
       expect.assertions(1);
-      userProviderStub.findByEmail.resolves(UserProvider.factory(mockUser));
+      userProviderStub.findByEmail.resolves(UserProvider.factory(mockUser[0]));
       const user = {
         password: 'fooBar',
         email: 'duplocatedEmail@sample.com',

@@ -1,9 +1,11 @@
 const { MongoClient, ObjectId } = require('mongodb');
 const UserProvider = require('../../../modules/user/UserProvider');
 const User = require('../../../modules/user/User');
-const { ResourceNotFoundError } = require('../../../modules/errors');
+const { ResourceNotFoundError, ResourceAlreadyExist } = require('../../../modules/errors');
 
 jest.mock('moment', () => () => ({ format: () => '2020-03-11T07:55:13+00:00' }));
+
+const userMock = require('./user_mock');
 
 describe('UserProvider', () => {
   let connection;
@@ -191,35 +193,23 @@ describe('UserProvider', () => {
   describe('#update', () => {
     beforeEach(async () => {
       const users = db.collection('users');
-      const mockUser = {
-        _id: ObjectId('5e68995fb6d0bc05829b6e79'),
-        name: '90412',
-        email: 'steve@example.com',
-        password: '$2b$10$a2Yvs6zYDOgaH1E7UutxTur4ZGZ9XvCCXTDTlLYYnzd8OVxM2ikHS',
-        lastModified: '2020-04-03T09:39:20.350Z',
-        deleted: false,
-        id: '5e68995fb6d0bc05829b6e79',
-        image: {
-          filename: 'macos-catalina-5120x2880-day-mountains-wwdc-2019-5k-21590 (22).jpg',
-          hashedFilename: 'c3bf25ec-47d8-47d2-82fc-728970c08366macos-catalina-5120x2880-day-mountains-wwdc-2019-5k-21590 (22).jpg',
-          mimetype: 'image/jpeg',
-          encoding: '7bit',
-          // eslint-disable-next-line max-len
-          link: 'http://172.76.10.161:4001/api/download/images/c3bf25ec-47d8-47d2-82fc-728970c08366macos-catalina-5120x2880-day-mountains-wwdc-2019-5k-21590%20(22).jpg',
-          etag: 'ef8781f4a83faa611944f57e3aacb3c4-1',
-        },
-      };
-      await users.insertOne(mockUser);
+      const cloned = JSON.parse(JSON.stringify(userMock));
+      await users.insertMany(cloned.map((user) => {
+        // eslint-disable-next-line no-param-reassign
+        user._id = ObjectId(user._id);
+        return user;
+      }));
       userProvider = new UserProvider(users);
     });
 
     afterEach(async () => {
       await db.collection('users').drop();
+      userProvider = null;
     });
 
-
     test('Should update user without error', async () => {
-      const existedId = '5e68995fb6d0bc05829b6e79';
+      expect.assertions(3);
+      const existedId = userMock[0]._id;
       const user = {
         name: 'new name',
       };
@@ -230,16 +220,30 @@ describe('UserProvider', () => {
       expect(foundedUser.lastModified).toEqual('2020-03-11T07:55:13+00:00');
     });
 
+    test('Should throw error when received email already exist.', async () => {
+      expect.assertions(1);
+      const user = userMock[0];
+      user.email = userMock[1].email;
+      try {
+        await userProvider.update(user._id, {
+          email: user.email,
+        });
+      } catch (e) {
+        expect(e).toEqual(new ResourceAlreadyExist('User', `id: ${userMock[0]._id}`));
+      }
+    });
+
     test('Should return an instance of User', async () => {
-      const existedId = '5e68995fb6d0bc05829b6e79';
+      expect.assertions(1);
       const user = {
         name: 'new name',
       };
-      const updatedUser = await userProvider.update(existedId, user);
+      const updatedUser = await userProvider.update(userMock[0]._id, user);
       expect(updatedUser).toBeInstanceOf(User);
     });
 
     test('Should throw error when received user does not exist.', () => {
+      expect.assertions(1);
       const newId = ObjectId();
       const user = {
         name: 'new name',
@@ -280,6 +284,7 @@ describe('UserProvider', () => {
     });
 
     test('Should soft-delete user without error.', async () => {
+      expect.assertions(1);
       const existedId = '5e68995fb6d0bc05829b6e79';
       await userProvider.delete(existedId);
       const foundedUser = await db.collection('users').findOne({ _id: ObjectId(existedId) });
@@ -287,6 +292,7 @@ describe('UserProvider', () => {
     });
 
     test('Deleting and re-fetching.', async () => {
+      expect.assertions(2);
       const existedId = '5e68995fb6d0bc05829b6e79';
       const user = await userProvider.findById(existedId);
       await userProvider.delete(existedId);
@@ -296,6 +302,7 @@ describe('UserProvider', () => {
     });
 
     test('Should throw error when received user does not exist.', () => {
+      expect.assertions(1);
       const newId = ObjectId();
       expect(
         userProvider.delete(newId),
@@ -359,7 +366,7 @@ describe('UserProvider', () => {
       db.collection('users').drop();
     });
 
-    test('Should return an array of all messages', async () => {
+    test('Should return an array of all users', async () => {
       const result = await userProvider.find();
       expect(result.total).toEqual(6);
     });

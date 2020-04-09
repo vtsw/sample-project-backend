@@ -40,6 +40,17 @@ describe('createUser', () => {
     }
   });
 
+  test('Should throw error when received email is already exist.', async () => {
+    expect.assertions(1);
+    const user = {};
+    authenticator.register.rejects(new Error('fooBar'));
+    try {
+      await Mutation.createUser.resolve({}, { user }, { authService: authenticator });
+    } catch (e) {
+      expect(e).toEqual(new Error('fooBar'));
+    }
+  });
+
   test('Should call authenticator.register with correct params.', async () => {
     expect.assertions(1);
     const user = {
@@ -152,6 +163,7 @@ describe('updateUser', () => {
       expect(e).toEqual(new Error('fooBar'));
     }
   });
+
   test('Should throw error when updating password is fail.', async () => {
     expect.assertions(1);
     authenticator.createPassword.resolves('hashedPassword');
