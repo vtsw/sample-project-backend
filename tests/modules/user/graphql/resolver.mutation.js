@@ -1,23 +1,35 @@
 const sinon = require('sinon');
+const awilix = require('awilix');
 const Authenticator = require('../../../../modules/user/Authenticator');
 const UserProvider = require('../../../../modules/user/UserProvider');
 const { Mutation } = require('../../../../modules/user/graphql/resolver');
 
+const { createContainer, InjectionMode, asValue } = awilix;
 const userMock = require('../user_mock');
 
 describe('createUser', () => {
   let authenticator;
+  let container;
   beforeEach(() => {
+    container = createContainer({ injectionMode: InjectionMode.CLASSIC });
     authenticator = sinon.createStubInstance(Authenticator, {
       register: sinon.stub(),
     });
+    container.register({
+      authService: asValue(authenticator),
+    });
+  });
+
+  afterEach(() => {
+    container = null;
+    authenticator = null;
   });
 
   test('Should register user without error.', async () => {
     expect.assertions(1);
     const user = {};
     authenticator.register.resolves(UserProvider.factory(userMock[0]));
-    const createdUser = await Mutation.createUser.resolve({}, { user }, { authService: authenticator });
+    const createdUser = await Mutation.createUser.resolve({}, { user }, { container });
     expect(createdUser).toBeTruthy();
   });
 
@@ -25,7 +37,7 @@ describe('createUser', () => {
     expect.assertions(1);
     const user = {};
     authenticator.register.resolves(UserProvider.factory(userMock[0]));
-    const createdUser = await Mutation.createUser.resolve({}, { user }, { authService: authenticator });
+    const createdUser = await Mutation.createUser.resolve({}, { user }, { container });
     expect(createdUser).toEqual(UserProvider.factory(userMock[0]));
   });
 
@@ -34,7 +46,7 @@ describe('createUser', () => {
     const user = {};
     authenticator.register.rejects(new Error('fooBar'));
     try {
-      await Mutation.createUser.resolve({}, { user }, { authService: authenticator });
+      await Mutation.createUser.resolve({}, { user }, { container });
     } catch (e) {
       expect(e).toEqual(new Error('fooBar'));
     }
@@ -45,7 +57,7 @@ describe('createUser', () => {
     const user = {};
     authenticator.register.rejects(new Error('fooBar'));
     try {
-      await Mutation.createUser.resolve({}, { user }, { authService: authenticator });
+      await Mutation.createUser.resolve({}, { user }, { container });
     } catch (e) {
       expect(e).toEqual(new Error('fooBar'));
     }
@@ -59,17 +71,27 @@ describe('createUser', () => {
       password: '123',
     };
     authenticator.register.resolves(UserProvider.factory(userMock[0]));
-    await Mutation.createUser.resolve({}, { user }, { authService: authenticator });
+    await Mutation.createUser.resolve({}, { user }, { container });
     expect(authenticator.register).toBeCalledOnceWith(user);
   });
 });
 
 describe('login', () => {
   let authenticator;
+  let container;
   beforeEach(() => {
+    container = createContainer({ injectionMode: InjectionMode.CLASSIC });
     authenticator = sinon.createStubInstance(Authenticator, {
       login: sinon.stub(),
     });
+    container.register({
+      authService: asValue(authenticator),
+    });
+  });
+
+  afterEach(() => {
+    container = null;
+    authenticator = null;
   });
 
   test('Should login without error.', async () => {
@@ -82,7 +104,7 @@ describe('login', () => {
       user: UserProvider.factory(userMock[0]),
       token: 'foobarToken',
     });
-    const createdUser = await Mutation.login.resolve({}, { user }, { authService: authenticator });
+    const createdUser = await Mutation.login.resolve({}, { user }, { container });
     expect(createdUser).toBeTruthy();
   });
 
@@ -96,7 +118,7 @@ describe('login', () => {
       user: UserProvider.factory(userMock[0]),
       token: 'foobarToken',
     });
-    const createdUser = await Mutation.login.resolve({}, { user }, { authService: authenticator });
+    const createdUser = await Mutation.login.resolve({}, { user }, { container });
     expect(createdUser).toEqual({
       user: UserProvider.factory(userMock[0]),
       token: 'foobarToken',
@@ -108,7 +130,7 @@ describe('login', () => {
     const user = {};
     authenticator.login.rejects(new Error('fooBar'));
     try {
-      await Mutation.login.resolve({}, { user }, { authService: authenticator });
+      await Mutation.login.resolve({}, { user }, { container });
     } catch (e) {
       expect(e).toEqual(new Error('fooBar'));
     }
@@ -121,7 +143,7 @@ describe('login', () => {
       password: '123',
     };
     authenticator.login.resolves(UserProvider.factory(userMock[0]));
-    await Mutation.login.resolve({}, { user }, { authService: authenticator });
+    await Mutation.login.resolve({}, { user }, { container });
     expect(authenticator.login).toBeCalledOnceWith('sam@sample.com', '123');
   });
 });
@@ -129,20 +151,32 @@ describe('login', () => {
 describe('updateUser', () => {
   let authenticator;
   let userProvider;
+  let container;
   beforeEach(() => {
+    container = createContainer({ injectionMode: InjectionMode.CLASSIC });
     authenticator = sinon.createStubInstance(Authenticator, {
       createPassword: sinon.stub(),
     });
     userProvider = sinon.createStubInstance(UserProvider, {
       update: sinon.stub(),
     });
+    container.register({
+      authService: asValue(authenticator),
+      userProvider: asValue(userProvider),
+    });
+  });
+
+  afterEach(() => {
+    container = null;
+    authenticator = null;
+    userProvider = null;
   });
 
   test('Should update user without error.', async () => {
     expect.assertions(1);
     userProvider.update.resolves(UserProvider.factory(userMock[0]));
     authenticator.createPassword.resolves('hashedPassword');
-    const updatedUser = await Mutation.updateUser.resolve({}, { user: { password: 'fooBar' } }, { authService: authenticator, userProvider });
+    const updatedUser = await Mutation.updateUser.resolve({}, { user: { password: 'fooBar' } }, { container });
     expect(updatedUser).toBeTruthy();
   });
 
@@ -150,7 +184,7 @@ describe('updateUser', () => {
     expect.assertions(1);
     userProvider.update.resolves(UserProvider.factory(userMock[0]));
     authenticator.createPassword.resolves('hashedPassword');
-    const createdUser = await Mutation.updateUser.resolve({}, { user: { password: 'fooBar' } }, { authService: authenticator, userProvider });
+    const createdUser = await Mutation.updateUser.resolve({}, { user: { password: 'fooBar' } }, { container });
     expect(createdUser).toEqual(UserProvider.factory(userMock[0]));
   });
 
@@ -158,7 +192,7 @@ describe('updateUser', () => {
     expect.assertions(1);
     authenticator.createPassword.rejects(new Error('fooBar'));
     try {
-      await Mutation.updateUser.resolve({}, { user: { password: 'foobar' } }, { authService: authenticator, userProvider });
+      await Mutation.updateUser.resolve({}, { user: { password: 'foobar' } }, { container });
     } catch (e) {
       expect(e).toEqual(new Error('fooBar'));
     }
@@ -169,7 +203,7 @@ describe('updateUser', () => {
     authenticator.createPassword.resolves('hashedPassword');
     userProvider.update.rejects(new Error('fooBar'));
     try {
-      await Mutation.updateUser.resolve({}, { user: { password: 'foobar' } }, { authService: authenticator, userProvider });
+      await Mutation.updateUser.resolve({}, { user: { password: 'foobar' } }, { container });
     } catch (e) {
       expect(e).toEqual(new Error('fooBar'));
     }
@@ -182,7 +216,7 @@ describe('updateUser', () => {
     };
     authenticator.createPassword.resolves('hashedPassword');
     userProvider.update.resolves(UserProvider.factory(userMock[0]));
-    await Mutation.updateUser.resolve({}, { user }, { authService: authenticator, userProvider });
+    await Mutation.updateUser.resolve({}, { user }, { container });
     expect(authenticator.createPassword).toBeCalledOnceWith('123');
   });
 
@@ -196,7 +230,7 @@ describe('updateUser', () => {
     };
     authenticator.createPassword.resolves('hashedPassword');
     userProvider.update.resolves(UserProvider.factory(userMock[0]));
-    await Mutation.updateUser.resolve({}, { user }, { authService: authenticator, userProvider });
+    await Mutation.updateUser.resolve({}, { user }, { container });
     expect(userProvider.update).toBeCalledOnceWith('foobarID', {
       id: 'foobarID',
       password: 'hashedPassword',
@@ -209,27 +243,33 @@ describe('updateUser', () => {
 
 describe('deleteUser', () => {
   let userProvider;
+  let container;
   beforeEach(() => {
+    container = createContainer({ injectionMode: InjectionMode.CLASSIC });
     userProvider = sinon.createStubInstance(UserProvider, {
       delete: sinon.stub(),
+    });
+    container.register({
+      userProvider: asValue(userProvider),
     });
   });
 
   afterEach(() => {
     userProvider = null;
+    container = null;
   });
 
   test('Should update message without error.', async () => {
     expect.assertions(1);
     userProvider.delete.resolves(UserProvider.factory(userMock[0]));
-    const deletedMessage = await Mutation.deleteUser({}, { id: 'foobar' }, { userProvider });
+    const deletedMessage = await Mutation.deleteUser({}, { id: 'foobar' }, { container });
     expect(deletedMessage).toBeTruthy();
   });
 
   test('Should return deleted user.', async () => {
     expect.assertions(1);
     userProvider.delete.resolves(UserProvider.factory(userMock[0]));
-    const deletedMessage = await Mutation.deleteUser({}, { id: 'foobar' }, { userProvider });
+    const deletedMessage = await Mutation.deleteUser({}, { id: 'foobar' }, { container });
     expect(deletedMessage).toEqual(UserProvider.factory(userMock[0]));
   });
 
@@ -237,7 +277,7 @@ describe('deleteUser', () => {
     expect.assertions(1);
     userProvider.delete.rejects(new Error('fooBar'));
     try {
-      await Mutation.deleteUser({}, { id: 'foobar' }, { userProvider });
+      await Mutation.deleteUser({}, { id: 'foobar' }, { container });
     } catch (e) {
       expect(e).toEqual(new Error('fooBar'));
     }
@@ -246,7 +286,7 @@ describe('deleteUser', () => {
   test('Should call userProvider.delete with correct params.', async () => {
     expect.assertions(1);
     userProvider.delete.resolves(UserProvider.factory(userMock[0]));
-    await Mutation.deleteUser({}, { id: 'foobar' }, { userProvider });
+    await Mutation.deleteUser({}, { id: 'foobar' }, { container });
     expect(userProvider.delete).toBeCalledOnceWith('foobar');
   });
 });

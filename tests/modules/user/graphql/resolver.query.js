@@ -1,19 +1,32 @@
 const sinon = require('sinon');
+const awilix = require('awilix');
 const { Query, User } = require('../../../../modules/user/graphql/resolver');
 const UserProvider = require('../../../../modules/user/UserProvider');
 const MessageProvider = require('../../../../modules/message/MessageProvider');
 
+const { createContainer, InjectionMode, asValue } = awilix;
 const mockUser = require('../user_mock');
 const mockMessage = require('../../message/message_mock');
 
 describe('Query', () => {
   describe('user', () => {
+    let container;
     let userProviderStub;
     beforeEach(() => {
+      container = createContainer({ injectionMode: InjectionMode.CLASSIC });
       userProviderStub = sinon.createStubInstance(UserProvider, {
         findById: sinon.stub(),
       });
+      container.register({
+        userProvider: asValue(userProviderStub),
+      });
     });
+
+    afterEach(() => {
+      container = null;
+      userProviderStub = null;
+    });
+
 
     test('Should return user without error', async () => {
       expect.assertions(1);
@@ -21,7 +34,7 @@ describe('Query', () => {
       const user = await Query.user({}, {
         id: 'foo',
       }, {
-        userProvider: userProviderStub,
+        container,
       });
       expect(user).toBeTruthy();
     });
@@ -32,7 +45,7 @@ describe('Query', () => {
       await Query.user({}, {
         id: 'foo',
       }, {
-        userProvider: userProviderStub,
+        container,
       });
       expect(userProviderStub.findById).toBeCalledOnceWith('foo');
     });
@@ -43,7 +56,7 @@ describe('Query', () => {
         await Query.user({}, {
           id: 'foo',
         }, {
-          userProvider: userProviderStub,
+          container,
         });
       } catch (e) {
         expect(e).toEqual(new Error('fooBar'));
@@ -53,17 +66,27 @@ describe('Query', () => {
 
   describe('me', () => {
     let userProviderStub;
+    let container;
     beforeEach(() => {
+      container = createContainer({ injectionMode: InjectionMode.CLASSIC });
       userProviderStub = sinon.createStubInstance(UserProvider, {
         findById: sinon.stub(),
       });
+      container.register({
+        userProvider: asValue(userProviderStub),
+      });
+    });
+
+    afterEach(() => {
+      container = null;
+      userProviderStub = null;
     });
 
     test('Should return logged without error', async () => {
       expect.assertions(1);
       userProviderStub.findById.resolves(UserProvider.factory(mockUser[0]));
       const user = await Query.me({}, {}, {
-        userProvider: userProviderStub,
+        container,
         req: {
           user: {
             id: 'foobar',
@@ -77,7 +100,7 @@ describe('Query', () => {
       expect.assertions(1);
       userProviderStub.findById.resolves(UserProvider.factory(mockUser[0]));
       await Query.me({}, {}, {
-        userProvider: userProviderStub,
+        container,
         req: {
           user: {
             id: 'foobar',
@@ -91,7 +114,7 @@ describe('Query', () => {
       userProviderStub.findById.rejects(new Error('fooBar'));
       try {
         await Query.me({}, {}, {
-          userProvider: userProviderStub,
+          container,
           req: {
             user: {
               id: 'foobar',
@@ -106,20 +129,31 @@ describe('Query', () => {
 
   describe('userList', () => {
     let userProviderStub;
+    let container;
     beforeEach(() => {
+      container = createContainer({ injectionMode: InjectionMode.CLASSIC });
       userProviderStub = sinon.createStubInstance(UserProvider, {
-        find: sinon.stub(),
+        findById: sinon.stub(),
       });
       userProviderStub.find.resolves({
         hasNext: true,
         total: 5,
         items: mockUser,
       });
+      container.register({
+        userProvider: asValue(userProviderStub),
+      });
     });
+
+    afterEach(() => {
+      container = null;
+      userProviderStub = null;
+    });
+
     test('Should return list of users without error', async () => {
       expect.assertions(1);
       const user = await Query.userList({}, {}, {
-        userProvider: userProviderStub,
+        container,
       });
       expect(user).toBeTruthy();
     });
@@ -131,7 +165,7 @@ describe('Query', () => {
         items,
         total,
       } = await Query.userList({}, {}, {
-        userProvider: userProviderStub,
+        container,
       });
       expect(hasNext).toEqual(true);
       expect(total).toEqual(5);
@@ -141,7 +175,7 @@ describe('Query', () => {
     test('Should use default query condition', async () => {
       expect.assertions(1);
       await Query.userList({}, {}, {
-        userProvider: userProviderStub,
+        container,
       });
       expect(userProviderStub.find).toBeCalledOnceWith({ query: { }, page: { limit: 10, skip: 0 } });
     });
@@ -149,7 +183,7 @@ describe('Query', () => {
     test('Should query with searchtext param', async () => {
       expect.assertions(1);
       await Query.userList({}, { query: { searchText: 'foobar', limit: 10, skip: 0 } }, {
-        userProvider: userProviderStub,
+        container,
       });
       expect(userProviderStub.find).toBeCalledOnceWith({
         query: { $or: [{ name: new RegExp('foobar') }, { email: new RegExp('foobar') }] },
@@ -162,7 +196,7 @@ describe('Query', () => {
       userProviderStub.find.rejects(new Error('fooBar'));
       try {
         await Query.userList({}, {}, {
-          userProvider: userProviderStub,
+          container,
         });
       } catch (e) {
         expect(e).toEqual(new Error('fooBar'));
@@ -174,7 +208,9 @@ describe('Query', () => {
 describe('User trivial resolver', () => {
   describe('Message', () => {
     let messageProvider;
+    let container;
     beforeEach(() => {
+      container = createContainer({ injectionMode: InjectionMode.CLASSIC });
       messageProvider = sinon.createStubInstance(MessageProvider, {
         find: sinon.stub(),
       });
@@ -183,16 +219,20 @@ describe('User trivial resolver', () => {
         total: 5,
         items: mockMessage,
       });
+      container.register({
+        messageProvider: asValue(messageProvider),
+      });
     });
 
     afterEach(() => {
       messageProvider = null;
+      container = null;
     });
 
     test('Should return list of messages without error', async () => {
       expect.assertions(1);
       const messages = await User.messages(mockUser[0], {}, {
-        messageProvider,
+        container,
       });
       expect(messages).toBeTruthy();
     });
@@ -204,7 +244,7 @@ describe('User trivial resolver', () => {
         items,
         total,
       } = await User.messages(mockUser[0], {}, {
-        messageProvider,
+        container,
       });
       expect(hasNext).toEqual(true);
       expect(total).toEqual(5);
@@ -214,7 +254,7 @@ describe('User trivial resolver', () => {
     test('Should find all messages that associated with user', async () => {
       expect.assertions(1);
       await User.messages(mockUser[0], {}, {
-        messageProvider,
+        container,
       });
       expect(messageProvider.find).toBeCalledOnceWith({ query: { userId: mockUser[0].id }, page: { limit: 10, skip: 0 } });
     });
@@ -222,7 +262,7 @@ describe('User trivial resolver', () => {
     test('Should find all messages that associated with user and match the condition', async () => {
       expect.assertions(1);
       await User.messages(UserProvider.factory(mockUser[0]), { query: { searchText: 'foobar', limit: 10, skip: 0 } }, {
-        messageProvider,
+        container,
       });
       expect(messageProvider.find).toBeCalledOnceWith({
         query: { userId: mockUser[0]._id, content: new RegExp('foobar') },
@@ -235,7 +275,7 @@ describe('User trivial resolver', () => {
       messageProvider.find.rejects(new Error('fooBar'));
       try {
         await User.messages(mockUser[0], {}, {
-          messageProvider,
+          container,
         });
       } catch (e) {
         expect(e).toEqual(new Error('fooBar'));
