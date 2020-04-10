@@ -8,7 +8,7 @@ const isAuthenticated = async (req, res, next) => {
     return;
   }
   try {
-    const { authService } = req.app.get('appContenxt');
+    const authService = req.container.resolve('authService');
     req.user = await authService.verify(token);
     next();
   } catch (e) {

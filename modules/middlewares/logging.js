@@ -9,14 +9,15 @@
  */
 module.exports = {
   Query: async (resolve, parent, args, context, info) => {
-    context.logger.log({
+    const { container } = context;
+    container.resolve('logger').log({
       level: 'info',
       message: info,
     });
     try {
       return await resolve(parent, args, context, info);
     } catch (e) {
-      context.logger.log({
+      container.resolve('logger').log({
         level: 'error',
         message: e,
       });
@@ -24,14 +25,15 @@ module.exports = {
     }
   },
   Mutation: async (resolve, parent, args, context, info) => {
-    context.logger.log({
+    const { container } = context;
+    container.resolve('logger').log({
       level: 'info',
       message: info,
     });
     try {
       return await resolve(parent, args, context, info);
     } catch (e) {
-      context.logger.log({
+      container.resolve('logger').log({
         level: 'error',
         message: e,
       });

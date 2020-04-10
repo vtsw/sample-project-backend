@@ -16,6 +16,8 @@
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "@shelf/jest-mongodb": "^1.1.5",
+    "awilix": "^4.2.5",
+    "awilix-express": "^3.0.0",
     "bcrypt": "^4.0.0",
     "cors": "^2.8.5",
     "dataloader": "^2.0.0",

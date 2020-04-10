@@ -3,9 +3,10 @@ const { createUser, updateUser, login } = require('../validationSchema');
 
 module.exports = {
   Query: {
-    user: (_, { id }, { userProvider }) => userProvider.findById(id),
-    me: (_, args, { userProvider, req }) => userProvider.findById(req.user.id),
-    userList: async (_, args, { userProvider }) => {
+    user: (_, { id }, { container }) => container.resolve('userProvider').findById(id),
+    me: (_, args, { container, req }) => container.resolve('userProvider').findById(req.user.id),
+    userList: async (_, args, { container }) => {
+      const userProvider = container.resolve('userProvider');
       if (isEmpty(args)) {
         return userProvider
           .find({ query: { }, page: { limit: 10, skip: 0 } });
@@ -19,26 +20,27 @@ module.exports = {
   Mutation: {
     createUser: {
       validationSchema: createUser,
-      resolve: (_, { user }, { authService }) => authService.register(user),
+      resolve: (_, { user }, { container }) => container.resolve('authService').register(user),
     },
     login: {
       validationSchema: login,
-      resolve: (_, { user }, { authService }) => authService.login(user.email, user.password),
+      resolve: (_, { user }, { container }) => container.resolve('authService').login(user.email, user.password),
     },
     updateUser: {
       validationSchema: updateUser,
-      resolve: async (_, args, { userProvider, authService }) => {
+      resolve: async (_, args, { container }) => {
         const { user } = args;
         if (user.password) {
-          user.password = await authService.createPassword(user.password);
+          user.password = await container.resolve('authService').createPassword(user.password);
         }
-        return userProvider.update(user.id, user);
+        return container.resolve('userProvider').update(user.id, user);
       },
     },
-    deleteUser: (_, { id }, { userProvider }) => userProvider.delete(id),
+    deleteUser: (_, { id }, { container }) => container.resolve('userProvider').delete(id),
   },
   User: {
-    messages: (user, args, { messageProvider }) => {
+    messages: (user, args, { container }) => {
+      const messageProvider = container.resolve('messageProvider');
       if (isEmpty(args)) {
         return messageProvider
           .find({ query: { userId: user.id }, page: { limit: 10, skip: 0 } });

@@ -5,14 +5,13 @@ global.APP_ROOT = path.resolve(__dirname);
 
 const cluster = require('cluster');
 const os = require('os');
-const app = require('./app');
+const createApp = require('./app');
 const config = require('./config');
 const bootstrapper = require('./bootstrapper');
 
 function runApp() {
-  bootstrapper().then((appContext) => {
-    app.set('appContenxt', appContext);
-    app.listen(config.app.port, () => {
+  bootstrapper().then((container) => {
+    createApp(container).listen(config.app.port, () => {
       console.log(`Running a GraphQL API server at ${config.app.host}:${config.app.port}/graphql`);
     });
   });
