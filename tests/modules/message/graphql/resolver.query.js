@@ -1,16 +1,28 @@
 const sinon = require('sinon');
+const awilix = require('awilix');
 const { Query } = require('../../../../modules/message/graphql/resolver');
 const MessageProvider = require('../../../../modules/message/MessageProvider');
+
+const { createContainer, InjectionMode, asValue } = awilix;
 
 const messageMock = require('../../message/message_mock');
 
 describe('Query', () => {
   describe('message', () => {
     let messageProvider;
+    let container;
     beforeEach(() => {
+      container = createContainer({ injectionMode: InjectionMode.CLASSIC });
       messageProvider = sinon.createStubInstance(MessageProvider, {
         findById: sinon.stub(),
       });
+      container.register({
+        messageProvider: asValue(messageProvider),
+      });
+    });
+
+    afterEach(() => {
+      container = null;
     });
 
     test('Should return messages without error', async () => {
@@ -19,7 +31,7 @@ describe('Query', () => {
       const message = await Query.message({}, {
         id: 'foo',
       }, {
-        messageProvider,
+        container,
       });
       expect(message).toBeTruthy();
     });
@@ -30,7 +42,7 @@ describe('Query', () => {
       await Query.message({}, {
         id: 'foo',
       }, {
-        messageProvider,
+        container,
       });
       expect(messageProvider.findById).toBeCalledOnceWith('foo');
     });
@@ -41,7 +53,7 @@ describe('Query', () => {
         await Query.message({}, {
           id: 'foo',
         }, {
-          messageProvider,
+          container,
         });
       } catch (e) {
         expect(e).toEqual(new Error('fooBar'));
@@ -51,7 +63,9 @@ describe('Query', () => {
 
   describe('messageList', () => {
     let messageProvider;
+    let container;
     beforeEach(() => {
+      container = createContainer({ injectionMode: InjectionMode.CLASSIC });
       messageProvider = sinon.createStubInstance(MessageProvider, {
         find: sinon.stub(),
       });
@@ -60,11 +74,19 @@ describe('Query', () => {
         total: 5,
         items: messageMock,
       });
+      container.register({
+        messageProvider: asValue(messageProvider),
+      });
     });
+
+    afterEach(() => {
+      container = null;
+    });
+
     test('Should return list of messages without error', async () => {
       expect.assertions(1);
       const messages = await Query.messageList({}, {}, {
-        messageProvider,
+        container,
       });
       expect(messages).toBeTruthy();
     });
@@ -76,7 +98,7 @@ describe('Query', () => {
         items,
         total,
       } = await Query.messageList({}, {}, {
-        messageProvider,
+        container,
       });
       expect(hasNext).toEqual(true);
       expect(total).toEqual(5);
@@ -86,7 +108,7 @@ describe('Query', () => {
     test('Should message default query condition', async () => {
       expect.assertions(1);
       await Query.messageList({}, {}, {
-        messageProvider,
+        container,
       });
       expect(messageProvider.find).toBeCalledOnceWith({ query: { }, page: { limit: 10, skip: 0 } });
     });
@@ -94,7 +116,7 @@ describe('Query', () => {
     test('Should query with searchtext param', async () => {
       expect.assertions(1);
       await Query.messageList({}, { query: { searchText: 'foobar', limit: 10, skip: 0 } }, {
-        messageProvider,
+        container,
       });
       expect(messageProvider.find).toBeCalledOnceWith({
         query: { content: new RegExp('foobar') },
@@ -107,7 +129,7 @@ describe('Query', () => {
       messageProvider.find.rejects(new Error('fooBar'));
       try {
         await Query.messageList({}, {}, {
-          messageProvider,
+          container,
         });
       } catch (e) {
         expect(e).toEqual(new Error('fooBar'));
