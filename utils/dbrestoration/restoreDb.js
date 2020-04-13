@@ -1,10 +1,11 @@
 const bootstrapper = require('./bootstrapper.tmp');
-const mutationRecordLoad = require('./mutationRecordLoader');
+const loadMutationRecords = require('./mutationRecordLoader');
 const config = require('../../config');
 const path = require('path');
 const resolvers = require('../../modules/resolver');
 
 global.APP_ROOT = path.resolve(__dirname);
+console.log(global.APP_ROOT);
 
 const setupConfig = () => {
   config.middlewares = ['validation', 'logging'];
@@ -21,7 +22,7 @@ const doRestoration = () => {
     let fromObjectName = '';
     let endOfData = false;
     while (!endOfData) {
-      const loadedData = await mutationRecordLoad(lastTime, fromObjectName, config, context);
+      const loadedData = await loadMutationRecords(lastTime, fromObjectName, config, context);
       await loadedData.mutation.forEach( async (mutation) => {
         await resolvers.Mutation[mutation.message.fieldName].resolve({}, mutation.message.args, context);
       });
@@ -32,5 +33,6 @@ const doRestoration = () => {
       }
     }
   }).catch((e) => console.log(e));
+
 };
 doRestoration();

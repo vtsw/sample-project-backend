@@ -2,16 +2,10 @@ const inTime = (fromTime, createdTimestamp, endTime) => fromTime <= createdTimes
 
 const getObjects = (minioClient, bucketName, result, remain, fromTime, config) => new Promise((resolve, reject) => {
   if (remain.length === 0) {
-    console.log(result);
     if (result.mutation.length !== 0) {
       const refinedMutation = result.mutation
         .map((mutation) => {
           try {
-            if (mutation.length === 0) {
-              return {};
-            }
-            console.log('correctLine');
-            console.log(mutation);
             const parsed = JSON.parse(mutation);
             return parsed;
           } catch (e) {
@@ -63,8 +57,8 @@ const getObjects = (minioClient, bucketName, result, remain, fromTime, config) =
     });
   }
 }).then((resultz) => {
-  if (resultz.done) return Promise.resolve(resultz);
-  getObjects(minioClient, bucketName, resultz, remain.slice(1, remain.length), fromTime, config);
+  if (resultz.done) return new Promise((resolve, reject) => resolve(resultz));
+  return getObjects(minioClient, bucketName, resultz, remain.slice(1, remain.length), fromTime, config);
 });
 
 const loadData = (fromTime, fromObjectName, config, context) => new Promise((resolve, reject) => {
