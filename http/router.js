@@ -4,7 +4,8 @@ const { isAuthenticated } = require('./middleware');
 const router = Router();
 
 router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
-  const { minio, userProvider } = req.app.get('appContenxt');
+  const userProvider = req.container.resolve('userProvider');
+  const minio = req.container.resolve('minio');
   const user = await userProvider.findById(req.user.id);
   const { filename } = req.params;
   if (user.image.hashedFilename !== filename) {

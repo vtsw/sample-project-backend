@@ -6,19 +6,18 @@ class Message {
   constructor(id) {
     this.attributes = {
       id,
-      sender: null,
-      receiver: null,
+      userId: null,
       content: null,
       lastModified: null,
     };
   }
 
-  get sender() {
-    return this.attributes.sender;
+  get userId() {
+    return this.attributes.userId;
   }
 
-  set sender(value) {
-    this.attributes.sender = value;
+  set userId(value) {
+    this.attributes.userId = value;
   }
 
   get id() {

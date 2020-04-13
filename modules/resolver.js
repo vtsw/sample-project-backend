@@ -9,7 +9,9 @@ const baseResolver = {
   Upload: GraphQLUpload,
   Mutation: {
     hello: (_, { name }) => `hello ${name}`,
-    uploadImage: async (source, { file }, { minio, userProvider, req }) => {
+    uploadImage: async (source, { file }, { container, req }) => {
+      const minio = container.resolve('minio');
+      const userProvider = container.resolve('userProvider');
       const bucketName = 'upload';
       const {
         filename, mimetype, encoding, createReadStream,
