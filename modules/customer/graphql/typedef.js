@@ -13,7 +13,7 @@ module.exports = gql`
   }
 
   extend type Mutation {
-    createCustomer(customer: createCustomerInput!): Customer
+    createCustomer(customer: createCustomerInput!): String
   }
   
   extend type Query {

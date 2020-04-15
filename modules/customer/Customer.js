@@ -16,7 +16,7 @@ class Customer {
     }
   
     set name(value) {
-      this.data.name = name;
+      this.data.name = value;
     }
   
     get phoneNo() {

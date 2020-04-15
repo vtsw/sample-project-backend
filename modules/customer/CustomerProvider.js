@@ -17,19 +17,22 @@ class CustomerProvider {
    * @param {Object} customer
    * @returns {Promise<User>}
    */
-  async create(customer, container) {
-    // const inserted = await this.users.insertOne({
-    //   email: user.email,
-    //   name: user.name,
-    //   password: user.password,
-    //   deleted: false,
-    //   lastModified: moment().format(),
-    // });
-    // return UserProvider.factory(inserted.ops[0]);
+  async create(customer) {
 
-    console.log('111111', container);
+    try {
+    const inserted = await this.customers.insertOne({
+      name: customer.name,
+      phoneNo: customer.phoneNo,
+    });
 
     return '11111';
+
+    // return CustomerProvider.factory(inserted.ops[0]);
+    
+  } catch(err) {
+    console.log(err);
+  }
+
   }
 
   /**
@@ -50,13 +53,12 @@ class CustomerProvider {
         data[key] = rawData[key];
       }
     });
-    const user = new User(data._id || data.id);
-    user.password = data.password;
-    user.email = data.email;
-    user.name = data.name;
-    user.lastModified = data.lastModified;
-    user.image = data.image;
-    return user;
+
+    console.log(data);
+    const customer = new Customer(data._id || data.id);
+    customer.name = data.name;
+    customer.phoneNo = data.phoneNo;
+    return customer;
   }
 }
 
