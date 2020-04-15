@@ -17,7 +17,7 @@ class CustomerProvider {
    * @param {Object} customer
    * @returns {Promise<User>}
    */
-  async create(customer) {
+  async create(customer, container) {
     // const inserted = await this.users.insertOne({
     //   email: user.email,
     //   name: user.name,
@@ -26,6 +26,8 @@ class CustomerProvider {
     //   lastModified: moment().format(),
     // });
     // return UserProvider.factory(inserted.ops[0]);
+
+    console.log('111111', container);
 
     return '11111';
   }

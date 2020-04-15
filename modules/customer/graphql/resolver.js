@@ -2,6 +2,7 @@
 
 module.exports = {
   Query: {
-    customer: (() => 'asdsd'),
+    customer:  (_, { id }, { container }) => container.resolve('customerProvider').create(id, container),
+    // customer: (() => "asdasd"),
   },
 };
