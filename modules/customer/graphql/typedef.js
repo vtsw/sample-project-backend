@@ -7,15 +7,12 @@ module.exports = gql`
     phoneNo:String
   }
 
-  
+
   extend type Mutation {
-    login(user: LoginUserInput!): AuthPayload
-    createUser(user: CreateUserInput!): User
-    updateUser(user: UpdateUserInput!): User @isAuthenticated
-    deleteUser(id: ID!): User @isAuthenticated
+    createCustomer(user: Customer!): User
   }
   
   extend type Query {
-    customer: Customer
+    customer: String
   }
 `;

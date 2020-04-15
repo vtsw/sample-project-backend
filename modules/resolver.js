@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const config = require('../config');
 const userResolver = require('./user/graphql/resolver');
 const messageResolver = require('./message/graphql/resolver');
+const customerResolver = require('./customer/graphql/resolver');
 
 const baseResolver = {
   Upload: GraphQLUpload,
@@ -48,4 +49,4 @@ const baseResolver = {
   },
 };
 
-module.exports = merge(baseResolver, userResolver, messageResolver);
+module.exports = merge(baseResolver, userResolver, messageResolver, customerResolver);
