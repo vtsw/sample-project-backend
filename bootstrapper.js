@@ -20,7 +20,7 @@ module.exports = async () => {
   container.register({
     db: asValue(db),
     userProvider: asClass(UserProvider).inject((injectedContainer) => ({ users: injectedContainer.resolve('db').collection('users') })).singleton(),
-    cserProvider: asClass(CustomerProvider)
+    customerProvider: asClass(CustomerProvider)
       .inject((injectedContainer) => ({ customers: injectedContainer.resolve('db').collection('customers') })).singleton(),
     messageProvider: asClass(MessageProvider)
       .inject((injectedContainer) => ({ messages: injectedContainer.resolve('db').collection('messages') })).singleton(),
