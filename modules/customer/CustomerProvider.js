@@ -15,30 +15,22 @@ class CustomerProvider {
   /**
    *
    * @param {Object} customer
-   * @returns {Promise<User>}
+   * @returns {Promise<Customer>}
    */
   async create(customer) {
-
-    try {
     const inserted = await this.customers.insertOne({
       name: customer.name,
       phoneNo: customer.phoneNo,
     });
 
-    return '11111';
-
-    // return CustomerProvider.factory(inserted.ops[0]);
-    
-  } catch(err) {
-    console.log(err);
-  }
+    return CustomerProvider.factory(inserted.ops[0]);
 
   }
 
   /**
    *
    * @param {Object} rawData
-   * @returns {null|User}
+   * @returns {null|Customer}
    */
   static factory(rawData) {
     if (!rawData) {
@@ -54,7 +46,6 @@ class CustomerProvider {
       }
     });
 
-    console.log(data);
     const customer = new Customer(data._id || data.id);
     customer.name = data.name;
     customer.phoneNo = data.phoneNo;
