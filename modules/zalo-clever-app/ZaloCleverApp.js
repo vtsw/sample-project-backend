@@ -28,14 +28,6 @@ class ZaloCleverApp {
     this.data.appSecret = value;
   }
 
-  get appSecret() {
-    return this.data.appSecret;
-  }
-
-  set appSecret(value) {
-    this.data.appSecret = value;
-  }
-
   get appCallbackUrl() {
     return this.data.appCallbackUrl;
   }
