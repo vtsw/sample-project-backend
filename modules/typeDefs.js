@@ -4,6 +4,7 @@ const { mergeTypes } = require('merge-graphql-schemas');
 const UserTypeDefs = require('./user/graphql/typedef');
 const MessageTypeDefs = require('./message/graphql/typedef');
 const CustomerTypeDefs = require('./customer/graphql/typedef');
+const CleverZaloBindingTypeDefs = require('./clever-zalo-binding/graphql/typedef');
 const baseTypeDefs = gql`
 
   directive @isAuthenticated on FIELD_DEFINITION
@@ -39,6 +40,6 @@ const baseTypeDefs = gql`
 `;
 
 const typeDefs = [
-  baseTypeDefs, UserTypeDefs, MessageTypeDefs, CustomerTypeDefs
+  baseTypeDefs, UserTypeDefs, MessageTypeDefs, CustomerTypeDefs, CleverZaloBindingTypeDefs
 ];
 module.exports = mergeTypes(typeDefs, { all: true });

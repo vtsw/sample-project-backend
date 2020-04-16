@@ -13,6 +13,6 @@ module.exports = gql`
   }
 
   extend type Mutation {
-    createCleverZaloBinding(customer: createCleverZaloBinding!): CleverZaloBinding
+    createCleverZaloBinding(clerveZaloBinding: createCleverZaloBinding!): CleverZaloBinding
   }
 `;
