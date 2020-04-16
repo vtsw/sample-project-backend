@@ -19,8 +19,6 @@ class ZaloCleverAppProvider {
    */
   async create(zaloCleverApp) {
 
-    console.log(zaloCleverApp);
-
     const inserted = await this.zaloCleverApp.insertOne({
       appId: zaloCleverApp.appId,
       appSecret: zaloCleverApp.appSecret,

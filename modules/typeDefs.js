@@ -7,6 +7,7 @@ const CustomerTypeDefs = require('./customer/graphql/typedef');
 const CleverZaloBindingTypeDefs = require('./clever-zalo-binding/graphql/typedef');
 const ZaloCleverAppTypeDefs = require('./zalo-clever-app/graphql/typedef');
 const UserGroupTypeDefs =   require('./user-group/graphql/typedef');
+const UserGroupsBindingTypeDefs =   require('./user-groups-binding/graphql/typedef');
 
 const baseTypeDefs = gql`
 
@@ -43,8 +44,7 @@ const baseTypeDefs = gql`
 `;
 
 const typeDefs = [
-  baseTypeDefs, UserTypeDefs, MessageTypeDefs, 
-  CustomerTypeDefs, CleverZaloBindingTypeDefs,
-  ZaloCleverAppTypeDefs, UserGroupTypeDefs
+  baseTypeDefs, UserTypeDefs, MessageTypeDefs, CustomerTypeDefs, CleverZaloBindingTypeDefs,
+  ZaloCleverAppTypeDefs, UserGroupTypeDefs, UserGroupsBindingTypeDefs
 ];
 module.exports = mergeTypes(typeDefs, { all: true });
