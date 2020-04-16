@@ -6,6 +6,7 @@ const { scopePerRequest } = require('awilix-express');
 const config = require('./config');
 const schema = require('./modules');
 const router = require('./http/router');
+const zalo = require('./http/zalo/zaloRouter');
 
 /**
  *
@@ -22,6 +23,7 @@ module.exports = (container) => {
     graphiql: config.app.env === 'development',
     context: { container: req.container, req }, // bind http request context to graphQl context
   })));
+  app.use('/zalo', zalo)
 
   return app;
 };

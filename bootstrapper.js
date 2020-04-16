@@ -4,6 +4,7 @@ const mongodb = require('./services/mongodb');
 const minio = require('./services/minio');
 const UserProvider = require('./modules/user/UserProvider');
 const MessageProvider = require('./modules/message/MessageProvider');
+const ZaloProvider = require('./modules/zalo/ZaloProvider');
 const Bcrypt = require('./services/bcrypt');
 const JWT = require('./services/jwt');
 const config = require('./config');
@@ -21,12 +22,14 @@ module.exports = async () => {
     userProvider: asClass(UserProvider).inject((injectedContainer) => ({ users: injectedContainer.resolve('db').collection('users') })).singleton(),
     messageProvider: asClass(MessageProvider)
       .inject((injectedContainer) => ({ messages: injectedContainer.resolve('db').collection('messages') })).singleton(),
+    zaloProvider: asClass(ZaloProvider).inject((injectedContainer) => ({ zalos: injectedContainer.resolve('db') })).transient,
     config: asValue(config),
     minio: asFunction(minio).singleton(),
     jwt: asClass(JWT).singleton(),
     bcrypt: asClass(Bcrypt).singleton(),
     authService: asClass(Authenticator).singleton(),
     logger: asValue(winston),
+
   });
   return container;
 };
