@@ -3,14 +3,13 @@ const { createCleverZaloBinding } = require('../validationSchema');
 
 module.exports = {
   Query: {
-
+    cleverZB: (() => 'Clever zalo binding')
   },
 
   Mutation: {
     createCleverZaloBinding: {
       validationSchema: createCleverZaloBinding,
-      // resolve: (_, { user }, { container }) => container.resolve('authService').register(user),
-      resolve: (_, { clerverZB }, { container }) => container.resolve('clerverZaloBindingProvider').create(clerverZB),
+      resolve: (_, { cleverZaloBinding }, { container }) => container.resolve('cleverZaloBindingProvider').create(cleverZaloBinding),
     }
   },
 };
