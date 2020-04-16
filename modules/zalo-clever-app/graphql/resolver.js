@@ -3,7 +3,7 @@ const { createZaloCleverApp } = require('../validationSchema');
 
 module.exports = {
   Query: {
-  
+    zaloCleverApp: (() => "Zalo clever App")
   },
 
   Mutation: {
