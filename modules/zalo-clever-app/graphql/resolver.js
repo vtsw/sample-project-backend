@@ -8,7 +8,7 @@ module.exports = {
 
   Mutation: {
     createZaloCleverApp: {
-      // validationSchema: createCustomer,
+      validationSchema: createZaloCleverApp,
       // resolve: (_, { user }, { container }) => container.resolve('authService').register(user),
       resolve: (_, { zaloCleverApp }, { container }) => container.resolve('zaloCleverAppProvider').create(zaloCleverApp),
     }

@@ -3,17 +3,19 @@ const gql = require('graphql-tag');
 module.exports = gql`
   type ZaloCleverApp {
     id: ID!
-    name: String
-    phoneNo:String
+    appId: String
+    appSecret: String
+    appCallbackUrl: String
   }
 
   input createZaloCleverAppInput {
-    name: String !
-    phoneNo: String !
+    appId: String
+    appSecret: String
+    appCallbackUrl: String
   }
 
   extend type Mutation {
-    createZaloCleverApp(customer: createZaloCleverAppInput!): ZaloCleverApp
+    createZaloCleverApp(zaloCleverApp: createZaloCleverAppInput!): ZaloCleverApp
   }
   
   extend type Query {
