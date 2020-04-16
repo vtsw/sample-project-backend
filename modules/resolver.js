@@ -7,6 +7,7 @@ const messageResolver = require('./message/graphql/resolver');
 const customerResolver = require('./customer/graphql/resolver');
 const CleverZaloBindingResolver = require('./clever-zalo-binding/graphql/resolver');
 const ZaloCleverAppResolver = require('./zalo-clever-app/graphql/resolver');
+const UserGroupResolver = require('./user-group/graphql/resolver');
 
 const baseResolver = {
   Upload: GraphQLUpload,
@@ -53,5 +54,5 @@ const baseResolver = {
 
 module.exports = merge(
   baseResolver, userResolver, messageResolver, customerResolver, 
-  CleverZaloBindingResolver, ZaloCleverAppResolver
+  CleverZaloBindingResolver, ZaloCleverAppResolver, UserGroupResolver
 );
