@@ -19,29 +19,23 @@ const winston = require('./services/winston');
  */
 module.exports = async () => {
   const db = (await mongodb(config)).db('simple_db');
-  console.log(ClerverZaloBindingProvider);
 
-  console.log('11111', CustomerProvider)
-
-  try {
-    container.register({
-      db: asValue(db),
-      userProvider: asClass(UserProvider).inject((injectedContainer) => ({ users: injectedContainer.resolve('db').collection('users') })).singleton(),
-      messageProvider: asClass(MessageProvider)
-        .inject((injectedContainer) => ({ messages: injectedContainer.resolve('db').collection('messages') })).singleton(),
-      customerProvider: asClass(CustomerProvider)
-        .inject((injectedContainer) => ({ customers: injectedContainer.resolve('db').collection('customers') })).singleton(),
-      cleverZaloBindingProvider: asClass(ClerverZaloBindingProvider)
-        .inject((injectedContainer) => ({ cleverZaloBinding: injectedContainer.resolve('db').collection('cleverZaloBinding') })).singleton(),
-      config: asValue(config),
-      minio: asFunction(minio).singleton(),
-      jwt: asClass(JWT).singleton(),
-      bcrypt: asClass(Bcrypt).singleton(),
-      authService: asClass(Authenticator).singleton(),
-      logger: asValue(winston),
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  container.register({
+    db: asValue(db),
+    userProvider: asClass(UserProvider).inject((injectedContainer) => ({ users: injectedContainer.resolve('db').collection('users') })).singleton(),
+    messageProvider: asClass(MessageProvider)
+      .inject((injectedContainer) => ({ messages: injectedContainer.resolve('db').collection('messages') })).singleton(),
+    customerProvider: asClass(CustomerProvider)
+      .inject((injectedContainer) => ({ customers: injectedContainer.resolve('db').collection('customers') })).singleton(),
+    cleverZaloBindingProvider: asClass(ClerverZaloBindingProvider)
+      .inject((injectedContainer) => ({ cleverZaloBinding: injectedContainer.resolve('db').collection('cleverZaloBinding') })).singleton(),
+    config: asValue(config),
+    minio: asFunction(minio).singleton(),
+    jwt: asClass(JWT).singleton(),
+    bcrypt: asClass(Bcrypt).singleton(),
+    authService: asClass(Authenticator).singleton(),
+    logger: asValue(winston),
+  });
+ 
   return container;
 };
