@@ -1,3 +1,6 @@
+const dotenv = require('dotenv');
+
+dotenv.config({ path: '.env.local' })
 module.exports = {
   mongodb: {
     url: `mongodb://${process.env.MONGODB_ROOT_USER}:${process.env.MONGODB_ROOT_PASSWORD}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`,
