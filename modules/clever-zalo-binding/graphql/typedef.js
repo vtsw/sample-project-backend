@@ -7,13 +7,13 @@ module.exports = gql`
     zaloOAId: String
   }
 
-  input createCleverZaloBindingInput {
+  input CreateCleverZaloBindingInput {
     userId: String !
     zaloOAId: String !
   }
 
   extend type Mutation {
-    createCleverZaloBinding(cleverZaloBinding: createCleverZaloBindingInput!): CleverZaloBinding
+    createCleverZaloBinding(cleverZaloBinding: CreateCleverZaloBindingInput!): CleverZaloBinding
   }
 
   extend type Query {

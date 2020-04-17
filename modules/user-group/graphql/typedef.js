@@ -6,12 +6,12 @@ module.exports = gql`
     name: String
   }
 
-  input createUserGroupInput {
+  input CreateUserGroupInput {
     name: String !
   }
 
   extend type Mutation {
-    createUserGroup(userGroup: createUserGroupInput!): UserGroup
+    createUserGroup(userGroup: CreateUserGroupInput!): UserGroup
   }
 
   extend type Query {

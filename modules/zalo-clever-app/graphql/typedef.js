@@ -8,14 +8,14 @@ module.exports = gql`
     appCallbackUrl: String
   }
 
-  input createZaloCleverAppInput {
+  input CreateZaloCleverAppInput {
     appId: String
     appSecret: String
     appCallbackUrl: String
   }
 
   extend type Mutation {
-    createZaloCleverApp(zaloCleverApp: createZaloCleverAppInput!): ZaloCleverApp
+    createZaloCleverApp(zaloCleverApp: CreateZaloCleverAppInput!): ZaloCleverApp
   }
   
   extend type Query {

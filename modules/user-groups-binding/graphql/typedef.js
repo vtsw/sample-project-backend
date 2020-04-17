@@ -7,13 +7,13 @@ module.exports = gql`
     groupId: String
   }
 
-  input createUserGroupsBindingInput {
+  input CreateUserGroupsBindingInput {
     userId: String
     groupId: String
   }
 
   extend type Mutation {
-    createUserGroupsBinding(userGroupsBinding : createUserGroupsBindingInput!): UserGroupsBinding
+    createUserGroupsBinding(userGroupsBinding : CreateUserGroupsBindingInput!): UserGroupsBinding
   }
   
   extend type Query {
