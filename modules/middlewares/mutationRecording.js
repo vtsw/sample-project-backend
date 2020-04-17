@@ -11,13 +11,13 @@ const mutationLogging = {
         fieldName: info.fieldName,
         result,
       }
-      context.mutationRecorder.log({
+      context.container.resolve('mutationRecorder').log({
         level: 'info',
         message: record,
       });
       return result;
     } catch (e) {
-      context.logger.log({
+      context.container.resolve('logger').log({
         level: 'error',
         message: `Cannot record mutation\n${e}`,
       });

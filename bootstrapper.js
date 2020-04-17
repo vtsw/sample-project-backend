@@ -28,6 +28,7 @@ module.exports = async () => {
     bcrypt: asClass(Bcrypt).singleton(),
     authService: asClass(Authenticator).singleton(),
     logger: asValue(winston),
+    mutationRecorder: asValue(mutationRecorder),
   });
   return container;
 };

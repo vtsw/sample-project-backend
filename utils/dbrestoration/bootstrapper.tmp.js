@@ -11,16 +11,6 @@ const winston = require('../../services/winston');
 const container = require('../../container');
 
 module.exports = async () => {
-
-  // context.db = (await mongodb(config)).db(config.mongodb.dbname);
-  // context.minio = minio(config);
-  // context.userProvider = new UserProvider(context.db.collection('users'));
-  // context.messageProvider = new MessageProvider(context.db.collection('messages'));
-  // context.bcrypt = new Bcrypt(config);
-  // context.jwt = new JWT(config);
-  // context.authService = new Authenticator(context.bcrypt, context.userProvider, context.jwt);
-  // context.logger = winston;
-
   const db = (await mongodb(config)).db(config.mongodb.dbname);
   container.register({
     db: asValue(db),

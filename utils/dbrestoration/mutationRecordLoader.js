@@ -1,6 +1,7 @@
 const inTime = (fromTime, createdTimestamp, endTime) => fromTime <= createdTimestamp && createdTimestamp <= endTime;
 
-const getObjects = (minioClient, bucketName, result, remain, fromTime, config) => new Promise((resolve, reject) => {
+const getObjects = (bucketName, result, remain, fromTime, config, context) => new Promise((resolve, reject) => {
+  const minioClient = context.resolve('minio');
   if (remain.length === 0) {
     if (result.mutation.length !== 0) {
       const refinedMutation = result.mutation
@@ -58,16 +59,12 @@ const getObjects = (minioClient, bucketName, result, remain, fromTime, config) =
   }
 }).then((resultz) => {
   if (resultz.done) return new Promise((resolve, reject) => resolve(resultz));
-  return getObjects(minioClient, bucketName, resultz, remain.slice(1, remain.length), fromTime, config);
+  return getObjects(bucketName, resultz, remain.slice(1, remain.length), fromTime, config);
 });
 
 const loadData = (fromTime, fromObjectName, config, context) => new Promise((resolve, reject) => {
   const result = {
-    mutation: [],
     mutationObjects: [],
-    lastObjectName: undefined,
-    lastTime: fromTime,
-    endOfData: false,
   };
   const bucketName = config.dbRestoration.restorationBucket;
   const { endTime } = config.dbRestoration;
@@ -85,13 +82,13 @@ const loadData = (fromTime, fromObjectName, config, context) => new Promise((res
 
   mutationObjectsStream.on('error', (error) => {
     console.log('error', error);
-    result.endOfData = true;
     reject(error);
   });
 
   mutationObjectsStream.on('end', () => {
+
     resolve(result);
   });
-}).then((result) => getObjects(context.minio, config.dbRestoration.restorationBucket, result, result.mutationObjects, fromTime, config));
+});
 
 module.exports = loadData;

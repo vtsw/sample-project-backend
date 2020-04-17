@@ -23,6 +23,7 @@ const doRestoration = () => {
     let endOfData = false;
     while (!endOfData) {
       const loadedData = await loadMutationRecords(lastTime, fromObjectName, config, context);
+      // getObjects(config.dbRestoration.restorationBucket, loadedData, loadedData.mutationObjects, fromTime, config, context));
       await loadedData.mutation.forEach( async (mutation) => {
         await resolvers.Mutation[mutation.message.fieldName].resolve({}, mutation.message.args, context);
       });
@@ -33,6 +34,6 @@ const doRestoration = () => {
       }
     }
   }).catch((e) => console.log(e));
-
 };
+
 doRestoration();

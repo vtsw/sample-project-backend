@@ -1,0 +1,19 @@
+{
+    "keep": {
+        "days": false,
+        "amount": 5
+    },
+    "auditLog": "C:\\Users\\EVN0014\\WebstormProjects\\github\\sample-project-backend\\mutationRecords\\audit.json",
+    "files": [
+        {
+            "date": 1587108679696,
+            "name": "C:\\Users\\EVN0014\\WebstormProjects\\github\\sample-project-backend\\mutationRecords\\mutation-2020-04-17-14.log",
+            "hash": "0d79f168774fc60fdc44217df6368325"
+        },
+        {
+            "date": 1587110533585,
+            "name": "C:\\Users\\EVN0014\\WebstormProjects\\github\\sample-project-backend\\mutationRecords\\mutation-2020-04-17-15.log",
+            "hash": "8566832fc2420142d819d20ad8a96d06"
+        }
+    ]
+}
