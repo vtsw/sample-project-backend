@@ -9,6 +9,7 @@ const ClerverZaloBindingProvider = require('./modules/clever-zalo-binding/Clever
 const ZaloCleverAppProvider = require('./modules/zalo-clever-app/ZaloCleverAppProvider');
 const UserGroupProvider = require('./modules/user-group/UserGroupProvider');
 const UserGroupsBindingProvider = require('./modules/user-groups-binding/userGroupsBindingProvider');
+const ZaloOAProvider = require('./modules/zalo-oa/ZaloOAProvider');
 const Bcrypt = require('./services/bcrypt');
 const JWT = require('./services/jwt');
 const config = require('./config');
@@ -38,6 +39,8 @@ module.exports = async () => {
       .inject((injectedContainer) => ({ userGroup: injectedContainer.resolve('db').collection('userGroup') })).singleton(),
     userGroupsBindingProvider: asClass(UserGroupsBindingProvider)
       .inject((injectedContainer) => ({ userGroupsBinding : injectedContainer.resolve('db').collection('userGroupsBinding') })).singleton(),
+    zaloOAProvider: asClass(ZaloOAProvider)
+      .inject((injectedContainer) => ({ zaloOA : injectedContainer.resolve('db').collection('zaloOA') })).singleton(),
     config: asValue(config),
     minio: asFunction(minio).singleton(),
     jwt: asClass(JWT).singleton(),
