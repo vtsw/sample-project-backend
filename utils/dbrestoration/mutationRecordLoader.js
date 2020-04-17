@@ -71,7 +71,7 @@ const loadData = (fromTime, fromObjectName, config, context) => new Promise((res
   };
   const bucketName = config.dbRestoration.restorationBucket;
   const { endTime } = config.dbRestoration;
-  const minioClient = context.minio;
+  const minioClient = context.resolve('minio');
   const mutationObjectsStream = minioClient.extensions.listObjectsV2WithMetadata(bucketName, '', false, fromObjectName);
 
   mutationObjectsStream.on('data', (object) => {
