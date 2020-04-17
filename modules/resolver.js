@@ -10,7 +10,7 @@ const ZaloCleverAppResolver = require('./zalo-clever-app/graphql/resolver');
 const UserGroupResolver = require('./user-group/graphql/resolver');
 const UserGroupsBindingResolver  = require('./user-groups-binding/graphql/resolver');
 const ZaloOAResolver  = require('./zalo-oa/graphql/resolver');
-
+const ZaloSocialAccountResolver = require('./zalo-social-account/graphql/resolver');
 
 const baseResolver = {
   Upload: GraphQLUpload,
@@ -57,5 +57,6 @@ const baseResolver = {
 
 module.exports = merge(
   baseResolver, userResolver, messageResolver, customerResolver, ZaloOAResolver,
-  CleverZaloBindingResolver, ZaloCleverAppResolver, UserGroupResolver, UserGroupsBindingResolver
+  CleverZaloBindingResolver, ZaloCleverAppResolver, UserGroupResolver, UserGroupsBindingResolver,
+  ZaloSocialAccountResolver
 );
