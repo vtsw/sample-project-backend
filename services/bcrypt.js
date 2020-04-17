@@ -10,10 +10,6 @@ class Bcrypt {
     return bcrypt.hash(plainText, this.saltRounds);
   }
 
-  genSalt() {
-    return bcrypt.genSaltSync(this.saltRounds);
-  }
-
   // eslint-disable-next-line class-methods-use-this
   compare(plainText, hash) {
     return bcrypt.compareSync(plainText, hash);

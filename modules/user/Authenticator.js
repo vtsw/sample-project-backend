@@ -36,15 +36,16 @@ class Authenticator {
 
   /**
    *
-   * @param {String} token
-   * @returns {Promise<User>}
+   * @param token
+   * @returns {User}
    */
-  async verify(token) {
-    const payload = this.jwt.decode(token);
-    if (!payload) {
-      throw new AuthenticationError('Invalid token');
+  verify(token) {
+    try {
+      const payload = this.jwt.decode(token);
+      return UserProvider.factory(payload);
+    } catch (err) {
+      throw new AuthenticationError('Invalid token', err);
     }
-    return UserProvider.factory(payload);
   }
 
   /**

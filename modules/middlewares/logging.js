@@ -9,7 +9,8 @@
  */
 module.exports = {
   Query: async (resolve, parent, args, context, info) => {
-    context.logger.log({
+    const { container } = context;
+    container.resolve('logger').log({
       level: 'info',
       message: info,
     });
@@ -17,7 +18,7 @@ module.exports = {
       const result = await resolve(parent, args, context, info);
       return result;
     } catch (e) {
-      context.logger.log({
+      container.resolve('logger').log({
         level: 'error',
         message: e,
       });
@@ -25,7 +26,8 @@ module.exports = {
     }
   },
   Mutation: async (resolve, parent, args, context, info) => {
-    context.logger.log({
+    const { container } = context;
+    container.resolve('logger').log({
       level: 'info',
       message: info,
     });
@@ -33,7 +35,7 @@ module.exports = {
       const result = await resolve(parent, args, context, info);
       return result;
     } catch (e) {
-      context.logger.log({
+      container.resolve('logger').log({
         level: 'error',
         message: e,
       });

@@ -47,7 +47,7 @@
     * Turn on mongodb and minio using docker-compose
     * Run mongo-db migration:
       
-      `npm run mongo-migration:local`
+      `npm run migrate-mongo:local`
     * Turn on backend service:
     
       `npm run start:local`

@@ -7,4 +7,5 @@ module.exports = {
   testPathIgnorePatterns: [
     './tests/int/client.js',
   ],
+  setupFilesAfterEnv: ['jest-sinon'],
 };

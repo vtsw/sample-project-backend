@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
 const moment = require('moment');
-const { ResourceNotFoundError } = require('../errors');
+const { ResourceNotFoundError, ResourceAlreadyExist } = require('../errors');
 const User = require('./User');
 
 class UserProvider {
@@ -78,6 +78,11 @@ class UserProvider {
     const user = await this.findById(id);
     if (!user) {
       throw new ResourceNotFoundError('User', `id: ${id}`);
+    }
+    if (userUpdate.email && userUpdate.email !== user.email) {
+      if (await this.findByEmail(userUpdate.email)) {
+        throw new ResourceAlreadyExist('User', `email: ${userUpdate.email}`);
+      }
     }
     const lastModified = moment().format();
     await this.users
