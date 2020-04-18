@@ -6,14 +6,29 @@
     "auditLog": "C:\\Users\\EVN0014\\WebstormProjects\\github\\sample-project-backend\\mutationRecords\\audit.json",
     "files": [
         {
-            "date": 1587108679696,
-            "name": "C:\\Users\\EVN0014\\WebstormProjects\\github\\sample-project-backend\\mutationRecords\\mutation-2020-04-17-14.log",
-            "hash": "0d79f168774fc60fdc44217df6368325"
+            "date": 1587183549111,
+            "name": "C:\\Users\\EVN0014\\WebstormProjects\\github\\sample-project-backend\\mutationRecords\\mutation-2020-04-18-11.log.3",
+            "hash": "aa10ff98c3ee378595067dafee07bd6c"
         },
         {
-            "date": 1587110533585,
-            "name": "C:\\Users\\EVN0014\\WebstormProjects\\github\\sample-project-backend\\mutationRecords\\mutation-2020-04-17-15.log",
-            "hash": "8566832fc2420142d819d20ad8a96d06"
+            "date": 1587183566291,
+            "name": "C:\\Users\\EVN0014\\WebstormProjects\\github\\sample-project-backend\\mutationRecords\\mutation-2020-04-18-11.log.4",
+            "hash": "41f4713edb562e30f0914cd0b164e8e5"
+        },
+        {
+            "date": 1587184379052,
+            "name": "C:\\Users\\EVN0014\\WebstormProjects\\github\\sample-project-backend\\mutationRecords\\mutation-2020-04-18-11.log.5",
+            "hash": "aa4fc570d9b5d1c37704fc292b1aeb5c"
+        },
+        {
+            "date": 1587184384683,
+            "name": "C:\\Users\\EVN0014\\WebstormProjects\\github\\sample-project-backend\\mutationRecords\\mutation-2020-04-18-11.log.6",
+            "hash": "9884e157bccf85ef735eaa9938baa90e"
+        },
+        {
+            "date": 1587184528042,
+            "name": "C:\\Users\\EVN0014\\WebstormProjects\\github\\sample-project-backend\\mutationRecords\\mutation-2020-04-18-11.log.7",
+            "hash": "3ad1933ead27fae728967257ace6af34"
         }
     ]
 }

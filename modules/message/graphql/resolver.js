@@ -23,7 +23,7 @@ module.exports = {
   Mutation: {
     createMessage: {
       validationSchema: createMessage,
-      resolve: (source, { message }, { container, req }) => container.resolve('messageProvider').create({
+      resolve: (source, { message }, container, req ) => container.resolve('messageProvider').create({
         ...message,
         userId: req.user.id,
       }),

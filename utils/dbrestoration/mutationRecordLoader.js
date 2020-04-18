@@ -1,71 +1,51 @@
-const inTime = (fromTime, createdTimestamp, endTime) => fromTime <= createdTimestamp && createdTimestamp <= endTime;
+const inTime = (createdTimestamp, endTime) => createdTimestamp <= endTime;
 
-const getObjects = (bucketName, result, remain, fromTime, config, context) => new Promise((resolve, reject) => {
+const getObjects = (bucketName, objectName, context) => new Promise((resolve, reject) => {
   const minioClient = context.resolve('minio');
-  if (remain.length === 0) {
-    if (result.mutation.length !== 0) {
-      const refinedMutation = result.mutation
-        .map((mutation) => {
-          try {
-            const parsed = JSON.parse(mutation);
-            return parsed;
-          } catch (e) {
-            console.log('errorLine:');
-            console.log(mutation);
-            return {};
-          }
-        })
-        .filter((mutation) => !!mutation.message)
-        .filter((mutation) => inTime(fromTime, mutation.message.timestamp, config.dbRestoration.endTime))
-        .sort((mutationA, mutationB) => mutationA.message.timestamp - mutationB.message.timestamp);
-      const lastTime = refinedMutation.reduce((last, mutation) => (mutation.message.timestamp > last ? mutation.message.timestamp : last));
-      const refinedResult = {
-        ...result,
-        mutation: refinedMutation,
-        lastTime,
-        endOfData: refinedMutation.length === 0,
-        done: true,
-      };
-      resolve(refinedResult);
-    } else {
-      const emptyResult = {
-        ...result,
-        endOfData: true,
-        done: true,
-      };
-      resolve(emptyResult);
+  const databuffer = [];
+  minioClient.getObject(bucketName, objectName, (error, dataStream) => {
+    if (error) {
+      console.log(error);
+      reject(error);
     }
-  } else {
-    const databuffer = [];
-    const object = remain[0];
-    minioClient.getObject(bucketName, object.name, (error, dataStream) => {
-      if (error) {
-        console.log(error);
-        reject(error);
-      }
-      dataStream.on('data', (chunk) => {
-        databuffer.push(chunk);
-      });
-      dataStream.on('error', (err) => {
-        console.log(err);
-        reject(err);
-      });
-      dataStream.on('end', () => {
-        const data = Buffer.concat(databuffer).toString('utf8').split('\r\n');
-        result.mutation.push(...data);
-        resolve(result);
-      });
+    dataStream.on('data', (chunk) => {
+      databuffer.push(chunk);
     });
-  }
-}).then((resultz) => {
-  if (resultz.done) return new Promise((resolve, reject) => resolve(resultz));
-  return getObjects(bucketName, resultz, remain.slice(1, remain.length), fromTime, config);
+    dataStream.on('error', (err) => {
+      console.log(err);
+      reject(err);
+    });
+    dataStream.on('end', () => {
+      const data = Buffer.concat(databuffer).toString('utf8').split('\r\n');
+      resolve(data);
+    });
+  });
 });
 
-const loadData = (fromTime, fromObjectName, config, context) => new Promise((resolve, reject) => {
-  const result = {
-    mutationObjects: [],
-  };
+const parseObject = (objectData, config) => {
+  if (objectData.length !== 0) {
+    const result = objectData
+      .map((mutation) => {
+        try {
+          const parsed = JSON.parse(mutation);
+          return parsed;
+        } catch (e) {
+          return {};
+        }
+      })
+      .filter((mutation) => !!mutation.message)
+      .filter((mutation) => inTime(mutation.message.timestamp, config.dbRestoration.endTime))
+      .sort((mutationA, mutationB) => mutationA.message.timestamp - mutationB.message.timestamp);
+    // const lastTime = refinedMutation.reduce((last, mutation) => (mutation.message.timestamp > last ? mutation.message.timestamp : last));
+    return result;
+  }
+  const result = [];
+  return result;
+};
+
+const getObjectList = (fromObjectName, config, context) => new Promise((resolve, reject) => {
+  const mutationObjects = [];
+
   const bucketName = config.dbRestoration.restorationBucket;
   const { endTime } = config.dbRestoration;
   const minioClient = context.resolve('minio');
@@ -75,20 +55,47 @@ const loadData = (fromTime, fromObjectName, config, context) => new Promise((res
     const { metadata } = object;
     const createdTimestamp = Number(metadata['X-Amz-Meta-Createdate']);
 
-    if (inTime(fromTime, createdTimestamp, endTime)) {
-      result.mutationObjects.push(object);
+    if (inTime(createdTimestamp, endTime)) {
+      if (mutationObjects.length <= config.dbRestoration.numberOfObjectsPerBatch) {
+        mutationObjects.push(object);
+      } else {
+        mutationObjectsStream.destroy({
+          error: {
+            type: 'batchlimit',
+            detail: {
+              limit: config.dbRestoration.numberOfObjectsPerBatch,
+            },
+          },
+        });
+      }
     }
   });
 
   mutationObjectsStream.on('error', (error) => {
-    console.log('error', error);
-    reject(error);
+    try {
+      const {
+        error: {
+          type,
+          detail: {
+            limit,
+          },
+        },
+      } = error;
+      console.log(`stop listing object due to: ${type}, ${limit}`);
+    } catch (e) {
+      console.log(`error while handling ${error}`);
+      reject(e);
+    }
+    console.log(`${error}`);
   });
-
+  mutationObjectsStream.on('close', () => {
+    resolve(mutationObjects);
+  });
   mutationObjectsStream.on('end', () => {
-
-    resolve(result);
+    resolve(mutationObjects);
   });
 });
 
-module.exports = loadData;
+module.exports = {
+  getObjectList, getObjects, parseObject,
+};
