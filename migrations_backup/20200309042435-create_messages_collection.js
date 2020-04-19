@@ -3,7 +3,7 @@ const faker = require('faker');
 
 module.exports = {
   async up(db, client) {
-    const dbname = process.env.DB_NAME || 'simple_db'
+    const dbname = process.env.DB_NAME || 'simple_db_backup'
     const simpleDb = client.db(dbname);
     const users = await simpleDb.collection('users').find({}, { _id: true }).toArray();
 
@@ -25,7 +25,7 @@ module.exports = {
   },
 
   async down(db, client) {
-    const simpleDb = client.db(process.env.DB_NAME || 'simple_db');
+    const simpleDb = client.db(process.env.DB_NAME || 'simple_db_backup');
     await simpleDb.collection('messages').deleteMany({});
   },
 };

@@ -35,7 +35,7 @@ class MessageProvider {
       lastModified: moment().format(),
       deleted: false,
     });
-    return MessageProvider.factory(inserted.ops[0]);
+    return this.findById(inserted.ops[0]._id);
   }
 
   /**

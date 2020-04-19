@@ -1,7 +1,7 @@
 const inTime = (createdTimestamp, endTime) => createdTimestamp <= endTime;
 
 const getObjects = (bucketName, objectName, context) => new Promise((resolve, reject) => {
-  const minioClient = context.resolve('minio');
+  const minioClient = context.container.resolve('minio');
   const databuffer = [];
   minioClient.getObject(bucketName, objectName, (error, dataStream) => {
     if (error) {
@@ -33,10 +33,10 @@ const parseObject = (objectData, config) => {
           return {};
         }
       })
-      .filter((mutation) => !!mutation.message)
-      .filter((mutation) => inTime(mutation.message.timestamp, config.dbRestoration.endTime))
-      .sort((mutationA, mutationB) => mutationA.message.timestamp - mutationB.message.timestamp);
-    // const lastTime = refinedMutation.reduce((last, mutation) => (mutation.message.timestamp > last ? mutation.message.timestamp : last));
+      .filter((mutation) => !!mutation.record)
+      .filter((mutation) => inTime(mutation.record.timestamp, config.dbRestoration.endTime))
+      .sort((mutationA, mutationB) => mutationA.record.timestamp - mutationB.record.timestamp);
+    // const lastTime = refinedMutation.reduce((last, mutation) => (mutation.record.timestamp > last ? mutation.record.timestamp : last));
     return result;
   }
   const result = [];
@@ -48,7 +48,7 @@ const getObjectList = (fromObjectName, config, context) => new Promise((resolve,
 
   const bucketName = config.dbRestoration.restorationBucket;
   const { endTime } = config.dbRestoration;
-  const minioClient = context.resolve('minio');
+  const minioClient = context.container.resolve('minio');
   const mutationObjectsStream = minioClient.extensions.listObjectsV2WithMetadata(bucketName, '', false, fromObjectName);
 
   mutationObjectsStream.on('data', (object) => {

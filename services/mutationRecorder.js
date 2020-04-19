@@ -18,10 +18,8 @@ const APP_ROOT = `${global.APP_ROOT}`;
 const mutationRecordConfig = config.app.mutationRecord;
 const dirname = path.join(APP_ROOT, mutationRecordConfig.storeDir);
 const auditFile = path.join(dirname, mutationRecordConfig.auditFile);
-const { zippedArchive } = mutationRecordConfig.zippedArchive;
-const { frequency } = mutationRecordConfig;
 const winstonConfig = {
-  ...config.winstonDailyRotate, dirname, auditFile, filename: mutationRecordConfig.filename, frequency,
+  ...config.winstonDailyRotate, ...mutationRecordConfig, dirname, auditFile,
 };
 const mutationRecorder = new (transports.DailyRotateFile)(winstonConfig);
 const { mutationRecordMinioBucket } = mutationRecordConfig;

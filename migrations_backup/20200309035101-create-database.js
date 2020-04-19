@@ -1,12 +1,11 @@
 module.exports = {
   async up(db, client) {
-    const dbname = process.env.DB_NAME || 'simple_db';
+    const dbname = process.env.DB_NAME || 'simple_db_backup';
     const simpleDb = client.db(dbname);
     await simpleDb.addUser('foobar', 'foobarPassword',
       {
         roles: [
           { role: 'readWrite', db: dbname },
-          { role: 'readWriteAnyDatabase', db: 'admin' },
         ],
       });
     await simpleDb.createCollection('users');
@@ -15,7 +14,7 @@ module.exports = {
   },
 
   async down(db, client) {
-    const simpleDb = client.db(process.env.DB_NAME || 'simple_db');
+    const simpleDb = client.db(process.env.DB_NAME || 'simple_db_backup');
     await simpleDb.removeUser('foobar');
     await simpleDb.dropDatabase();
   },

@@ -19,7 +19,8 @@ module.exports = async () => {
   const db = (await mongodb(config)).db('simple_db');
   container.register({
     db: asValue(db),
-    userProvider: asClass(UserProvider).inject((injectedContainer) => ({ users: injectedContainer.resolve('db').collection('users') })).singleton(),
+    userProvider: asClass(UserProvider)
+      .inject((injectedContainer) => ({ users: injectedContainer.resolve('db').collection('users') })).singleton(),
     messageProvider: asClass(MessageProvider)
       .inject((injectedContainer) => ({ messages: injectedContainer.resolve('db').collection('messages') })).singleton(),
     config: asValue(config),

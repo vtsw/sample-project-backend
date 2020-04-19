@@ -8,6 +8,7 @@ global.APP_ROOT = path.resolve(__dirname);
 console.log(global.APP_ROOT);
 
 const setupConfig = () => {
+  config.mongodb.dbname = 'simple_db_backup';
   config.middlewares = ['validation', 'logging'];
   config.dbRestoration = {
     endTime: process.env.RESTORE_TO_TIME || Number.MAX_SAFE_INTEGER,
@@ -18,7 +19,10 @@ const setupConfig = () => {
 
 const doRestoration = () => {
   setupConfig();
-  bootstrapper().then(async (context) => {
+  bootstrapper().then(async (container) => {
+    const context = {
+      container,
+    };
     let startAfterObject = '';
     let endOfData = false;
     const bucketName = config.dbRestoration.restorationBucket;
@@ -32,16 +36,30 @@ const doRestoration = () => {
             const objectData = await getObjects(bucketName, obj.name, context);
             return parseObject(objectData, config);
           }));
-        const objMutations = await getObjectMutations().then((objectMutations) => {
-          return objectMutations.reduce((last, current) => {
-            return last.concat(current);
-          });
-        });
+        const objMutations = await getObjectMutations().then((objectMutations) => objectMutations.reduce((last, current) => last.concat(current)));
         console.log(objMutations);
-        await objMutations.forEach(async (mutation) => {
+        for (const mutation of objMutations) {
           console.log(mutation);
-          await resolvers.Mutation[mutation.message.fieldName].resolve({}, mutation.message.args, context);
-        });
+          if (resolvers.Mutation[mutation.record.fieldName].resolve) {
+            const result = await resolvers.Mutation[mutation.record.fieldName].resolve({}, {
+              ...mutation.record.args,
+              ...mutation.result.data,
+            }, {
+              ...context,
+              req: mutation.record.req,
+            });
+            console.log(result);
+          } else {
+            const result = await resolvers.Mutation[mutation.record.fieldName]({},  {
+              ...mutation.record.args,
+              ...mutation.result.data,
+            }, {
+              ...context,
+              req: mutation.record.req,
+            });
+            console.log(result);
+          }
+        }
         startAfterObject = objectLists[objectLists.length - 1].name;
       }
     }

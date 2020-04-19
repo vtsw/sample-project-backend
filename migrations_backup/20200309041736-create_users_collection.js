@@ -5,7 +5,7 @@ const Bcrypt = require('../services/bcrypt');
 
 module.exports = {
   async up(db, client) {
-    const dbname = process.env.DB_NAME || 'simple_db';
+    const dbname = process.env.DB_NAME || 'simple_db_backup';
     const simpleDb = client.db(dbname);
     const bcrypt = new Bcrypt(config);
     const users = [
@@ -35,7 +35,7 @@ module.exports = {
   },
 
   async down(db, client) {
-    const simpleDb = client.db(process.env.DB_NAME || 'simple_db');
+    const simpleDb = client.db(process.env.DB_NAME || 'simple_db_backup');
     await simpleDb.collection('users').remove();
   },
 };

@@ -23,14 +23,19 @@ module.exports = {
   Mutation: {
     createMessage: {
       validationSchema: createMessage,
-      resolve: (source, { message }, container, req ) => container.resolve('messageProvider').create({
-        ...message,
-        userId: req.user.id,
-      }),
+      resolve: async (source, { message }, { container, req }) => {
+        const inputMessage = {
+          ...message,
+          userId: req.user.id,
+        };
+        return container.resolve('messageProvider').create(inputMessage);
+      },
     },
     updateMessage: {
       validationSchema: updateMessage,
-      resolve: (_, { message }, { container }) => container.resolve('messageProvider').update(message.id, message),
+      resolve: async (_, { message }, { container }) => {
+        return container.resolve('messageProvider').update(message.id, message);
+      },
     },
     deleteMessage: (_, { id }, { container }) => container.resolve('messageProvider').delete(id),
   },
