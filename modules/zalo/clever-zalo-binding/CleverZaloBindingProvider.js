@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
 const moment = require('moment');
-const { ResourceNotFoundError, ResourceAlreadyExist } = require('../errors');
+const { ResourceNotFoundError, ResourceAlreadyExist } = require('../../errors');
 const CleverZaloBinding = require('./CleverZaloBinding');
 
 class CleverZaloBindingProvider {

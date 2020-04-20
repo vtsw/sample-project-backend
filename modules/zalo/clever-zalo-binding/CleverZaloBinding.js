@@ -3,7 +3,7 @@ class CleverZaloBinding {
     this.data = {
       id,
       userId: null,
-      zaloOAId: null
+      zaloOAId: null,
     };
   }
 

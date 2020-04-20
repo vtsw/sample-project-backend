@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
 const moment = require('moment');
-const { ResourceNotFoundError, ResourceAlreadyExist } = require('../errors');
+const { ResourceNotFoundError, ResourceAlreadyExist } = require('../../errors');
 const ZaloCleverApp = require('./ZaloCleverApp');
 
 class ZaloCleverAppProvider {
@@ -26,7 +26,6 @@ class ZaloCleverAppProvider {
     });
 
     return ZaloCleverAppProvider.factory(inserted.ops[0]);
-
   }
 
   /**

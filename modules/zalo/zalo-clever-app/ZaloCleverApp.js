@@ -4,7 +4,7 @@ class ZaloCleverApp {
       id,
       appId: null,
       appSecret: null,
-      appCallbackUrl: null
+      appCallbackUrl: null,
     };
   }
 
