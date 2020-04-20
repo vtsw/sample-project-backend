@@ -8,6 +8,8 @@
     "test": "jest",
     "migrate-mongo": "migrate-mongo up",
     "migrate-mongo:local": "migrate-mongo up -f migrate-mongo-config.local.js",
+    "migrate-mongo:localbackup": "migrate-mongo up -f migrate-mongo-config.local.backup.js",
+    "utils:restoredb": "node utils/dbrestoration/restoreDb.js",
     "minio-init": "node minIOInit.js"
   },
   "keywords": [],
