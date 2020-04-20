@@ -30,6 +30,7 @@ class MessageProvider {
    */
   async create(message) {
     const inserted = await this.messages.insertOne({
+      _id: message.id ? message.id : undefined,
       content: message.content,
       userId: ObjectId(message.userId),
       lastModified: moment().format(),
