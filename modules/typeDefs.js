@@ -4,12 +4,12 @@ const { mergeTypes } = require('merge-graphql-schemas');
 const UserTypeDefs = require('./user/graphql/typedef');
 const MessageTypeDefs = require('./message/graphql/typedef');
 const CustomerTypeDefs = require('./customer/graphql/typedef');
-const CleverZaloBindingTypeDefs = require('./clever-zalo-binding/graphql/typedef');
-const ZaloCleverAppTypeDefs = require('./zalo-clever-app/graphql/typedef');
+const CleverZaloBindingTypeDefs = require('./zalo/clever-zalo-binding/graphql/typedef');
+const ZaloCleverAppTypeDefs = require('./zalo/zalo-clever-app/graphql/typedef');
 const UserGroupTypeDefs =   require('./user-group/graphql/typedef');
 const UserGroupsBindingTypeDefs =   require('./user-groups-binding/graphql/typedef');
-const ZaloOATypeDefs =   require('./zalo-oa/graphql/typedef');
-const ZaloSocialAccountTypeDefs = require('./zalo-social-account/graphql/typedef');
+const ZaloOATypeDefs =   require('./zalo/zalo-oa/graphql/typedef');
+const ZaloSocialAccountTypeDefs = require('./customer/zalo-social-account/graphql/typedef');
 
 const baseTypeDefs = gql`
 

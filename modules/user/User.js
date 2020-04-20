@@ -7,6 +7,7 @@ class User {
       name: null,
       lastModified: null,
       image: {},
+      zaloID: null,
     };
   }
 

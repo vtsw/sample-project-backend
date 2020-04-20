@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
 const moment = require('moment');
-const { ResourceNotFoundError, ResourceAlreadyExist } = require('../errors');
+const { ResourceNotFoundError, ResourceAlreadyExist } = require('../../errors');
 const ZaloSocialAccount = require('./ZaloSocialAccount');
 
 class ZaloSocialAccountProvider {
@@ -20,14 +20,10 @@ class ZaloSocialAccountProvider {
   async create(zaloSocialAccount) {
     const inserted = await this.zaloSocialAccount.insertOne({
       socialId: zaloSocialAccount.socialId,
-      socialAccessToken: zaloSocialAccount.socialAccessToken,
-      socialAccessTokenLastUpdated: zaloSocialAccount.socialAccessTokenLastUpdated,
-      zaloCleverApp: zaloSocialAccount.zaloCleverApp,
       socialInfo: zaloSocialAccount.socialInfo,
     });
 
     return ZaloSocialAccountProvider.factory(inserted.ops[0]);
-
   }
 
   /**
@@ -51,9 +47,6 @@ class ZaloSocialAccountProvider {
 
     const zaloSocialAccount = new ZaloSocialAccount(data._id || data.id);
     zaloSocialAccount.socialId = data.socialId;
-    zaloSocialAccount.socialAccessToken = data.socialAccessToken;
-    zaloSocialAccount.socialAccessTokenLastUpdated = data.socialAccessTokenLastUpdated;
-    zaloSocialAccount.zaloCleverApp = data.zaloCleverApp;
     zaloSocialAccount.socialInfo = data.socialInfo;
     return zaloSocialAccount;
   }
