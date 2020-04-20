@@ -1,4 +1,6 @@
 const { Router } = require('express');
+const utils = require('../config/utils');
+const fetch = require('node-fetch');
 const { isAuthenticated } = require('./middleware');
 
 const router = Router();
@@ -19,6 +21,10 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
   res.setHeader('Content-Length', stat.size);
 
   stream.pipe(res);
+});
+
+router.get('/zalo/webhook', (req, res) => {
+  res.json(req.query);
 });
 
 

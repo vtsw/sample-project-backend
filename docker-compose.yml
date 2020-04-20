@@ -22,8 +22,8 @@ services:
       JWT_EXPIRES_IN: "1d"
       BCRYPT_SALT_ROUND: 10
       NODE_ENV: "development"
-      APP_PORT: ${APP_PORT}
-      APP_HOST: ${APP_HOST}
+      APP_PORT: "4000"
+      APP_HOST: "4000"
     networks:
       - localnetwork
 

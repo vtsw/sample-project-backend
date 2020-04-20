@@ -7,6 +7,7 @@ class User {
       name: null,
       lastModified: null,
       image: {},
+      ZALOA: null,
     };
   }
 
@@ -52,6 +53,14 @@ class User {
 
   get image() {
     return this.data.image;
+  }
+
+  set ZALOA(value) {
+    this.data.ZALOA = value;
+  }
+
+  get ZALOA() {
+    return this.data.ZALOA;
   }
 
   toJson() {
