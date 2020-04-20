@@ -8,7 +8,7 @@ const CustomerProvider = require('./modules/customer/CustomerProvider');
 const ClerverZaloBindingProvider = require('./modules/zalo/clever-zalo-binding/CleverZaloBindingProvider');
 const ZaloCleverAppProvider = require('./modules/zalo/zalo-clever-app/ZaloCleverAppProvider');
 const ZaloOAProvider = require('./modules/zalo/zalo-oa/ZaloOAProvider');
-const zaloSocialAccountProvider = require('./modules/customer/zalo-social-account/zaloSocialAccountProvider');
+const ZaloSocialAccountProvider = require('./modules/customer/zalo-social-account/ZaloSocialAccountProvider');
 const ZaloProvider = require('./modules/zalo/ZaloProvider');
 const Bcrypt = require('./services/bcrypt');
 const JWT = require('./services/jwt');
@@ -44,7 +44,7 @@ module.exports = async () => {
       .inject((injectedContainer) => ({ cleverZaloBinding: injectedContainer.resolve('db').collection('cleverZaloBinding') })).singleton(),
     zaloCleverAppProvider: asClass(ZaloCleverAppProvider)
       .inject((injectedContainer) => ({ zaloCleverApp: injectedContainer.resolve('db').collection('zaloCleverApp') })).singleton(),
-    zaloSocialAccountProvider: asClass(zaloSocialAccountProvider)
+    zaloSocialAccountProvider: asClass(ZaloSocialAccountProvider)
       .inject((injectedContainer) => ({ zaloSocialAccount: injectedContainer.resolve('db').collection('zaloSocialAccount ') })).singleton(),
   };
 
@@ -62,6 +62,7 @@ module.exports = async () => {
         zaloSocialAccount: container.resolve('zaloSocialAccountProvider'),
       })).singleton(),
   }
+
   container.register({
     ...baseContainer,
     ...daoContainer,

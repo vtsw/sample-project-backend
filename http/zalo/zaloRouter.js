@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const QueryString = require('querystring');
-const { isAuthenticated } = require('./middleware');
+const { isAuthenticated } = require('../middleware');
 
 const router = Router();
 
@@ -23,4 +23,6 @@ router.get('/permission/callback', isAuthenticated, async (req, res) => {
   const accessToken = req.query.access_token;
   const oaID = req.query.oaId;
   req.container.zaloProvider.saveOrUpdateOAToken(oaID, accessToken);
-})
+});
+
+module.exports = router;

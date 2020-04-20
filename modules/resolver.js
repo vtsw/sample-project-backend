@@ -7,8 +7,8 @@ const messageResolver = require('./message/graphql/resolver');
 const customerResolver = require('./customer/graphql/resolver');
 const CleverZaloBindingResolver = require('./zalo/clever-zalo-binding/graphql/resolver');
 const ZaloCleverAppResolver = require('./zalo/zalo-clever-app/graphql/resolver');
-const UserGroupResolver = require('./user-group/graphql/resolver');
-const UserGroupsBindingResolver  = require('./user-groups-binding/graphql/resolver');
+// const UserGroupResolver = require('./user-group/graphql/resolver');
+// const UserGroupsBindingResolver  = require('./user-groups-binding/graphql/resolver');
 const ZaloOAResolver  = require('./zalo/zalo-oa/graphql/resolver');
 const ZaloSocialAccountResolver = require('./customer/zalo-social-account/graphql/resolver');
 
@@ -57,6 +57,6 @@ const baseResolver = {
 
 module.exports = merge(
   baseResolver, userResolver, messageResolver, customerResolver, ZaloOAResolver,
-  CleverZaloBindingResolver, ZaloCleverAppResolver, UserGroupResolver, UserGroupsBindingResolver,
+  CleverZaloBindingResolver, ZaloCleverAppResolver,
   ZaloSocialAccountResolver
 );
