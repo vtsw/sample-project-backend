@@ -10,7 +10,6 @@ class ZaloProvider {
     this.zaloCleverApps = db.collection('zaloCleverApps');
     this.zaloOAs = db.collection('zaloOA');
   }
-
   // sendMessageFromOA()
 
   saveOrUpdateOAToken(oaId, token) {
@@ -25,6 +24,10 @@ class ZaloProvider {
     } else {
       throw new ResourceNotFoundError('zaloOA', `id: ${oaId}`);
     }
+  }
+
+  findAllZaloOas() {
+    return this.zaloOAs.find().toArray();
   }
 }
 

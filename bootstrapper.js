@@ -55,7 +55,7 @@ module.exports = async () => {
         zaloOAs: container.resolve('zaloOAProvider'),
         cleverZaloBindings: container.resolve('cleverZaloBindingProvider'),
         zaloCleverApps: container.resolve('zaloCleverAppProvider'),
-      })).transient,
+      })).singleton(),
     customerProvider: asClass(CustomerProvider)
       .inject((injectedContainer) => ({
         customers: injectedContainer.resolve('db').collection('customers'),

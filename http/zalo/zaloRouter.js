@@ -4,6 +4,12 @@ const { isAuthenticated } = require('../middleware');
 
 const router = Router();
 
+router.get('/', async (req, res) => {
+  const zaloProvider = req.container.resolve('zaloProvider');
+  const zaloOA = await zaloProvider.findAllZaloOas();
+  res.json(zaloOA);
+})
+
 router.get('/refreshtoken', isAuthenticated, async (req, res) => {
   const zaloProvider = req.container.resolve('zaloProvider');
   const zalo = zaloProvider.findById(req.user.id)
