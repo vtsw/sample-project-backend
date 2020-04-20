@@ -39,6 +39,7 @@ class UserProvider {
    */
   async create(user) {
     const inserted = await this.users.insertOne({
+      _id: user.id || undefined,
       email: user.email,
       name: user.name,
       password: user.password,

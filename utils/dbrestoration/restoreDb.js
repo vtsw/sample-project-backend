@@ -19,6 +19,24 @@ const setupConfig = () => {
 
 const doRestoration = () => {
   setupConfig();
+
+  function createRestorationInput(mutation) {
+    const newArg = {
+      ...mutation.record.args,
+      user: mutation.record.args.user ? {
+        ...mutation.record.args.user,
+        id: mutation.record.result.data && mutation.record.result.data.id
+          ? mutation.record.result.data.id
+          : undefined,
+      } : undefined,
+      message: mutation.record.args.message ? {
+        ...mutation.record.args.message,
+        id: mutation.record.result.attributes && mutation.record.result.attributes.id ? mutation.record.result.attributes.id : undefined,
+      } : undefined,
+    };
+    return newArg;
+  }
+
   bootstrapper().then(async (container) => {
     const context = {
       container,
@@ -41,19 +59,15 @@ const doRestoration = () => {
         for (const mutation of objMutations) {
           console.log(mutation);
           if (resolvers.Mutation[mutation.record.fieldName].resolve) {
-            const result = await resolvers.Mutation[mutation.record.fieldName].resolve({}, {
-              ...mutation.record.args,
-              ...mutation.record.res,
-            }, {
+            const restorationInput = createRestorationInput(mutation);
+            const result = await resolvers.Mutation[mutation.record.fieldName].resolve({}, restorationInput, {
               ...context,
               req: mutation.record.req,
             });
             console.log(result);
           } else {
-            const result = await resolvers.Mutation[mutation.record.fieldName]({},  {
-              ...mutation.record.args,
-              ...mutation.record.res,
-            }, {
+            const restorationInput = createRestorationInput(mutation);
+            const result = await resolvers.Mutation[mutation.record.fieldName]({}, restorationInput, {
               ...context,
               req: mutation.record.req,
             });
