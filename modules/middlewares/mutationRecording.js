@@ -3,7 +3,6 @@ const moment = require('moment');
 const mutationLogging = {
   Mutation: async (resolve, parent, args, context, info) => {
     const result = await resolve(parent, args, context, info);
-    console.log(result);
     context.container.resolve('mutationRecorder').log({
       level: 'info',
       record: {

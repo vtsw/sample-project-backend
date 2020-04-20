@@ -43,7 +43,7 @@ const doRestoration = () => {
           if (resolvers.Mutation[mutation.record.fieldName].resolve) {
             const result = await resolvers.Mutation[mutation.record.fieldName].resolve({}, {
               ...mutation.record.args,
-              ...mutation.result.data,
+              ...mutation.record.res,
             }, {
               ...context,
               req: mutation.record.req,
@@ -52,7 +52,7 @@ const doRestoration = () => {
           } else {
             const result = await resolvers.Mutation[mutation.record.fieldName]({},  {
               ...mutation.record.args,
-              ...mutation.result.data,
+              ...mutation.record.res,
             }, {
               ...context,
               req: mutation.record.req,
