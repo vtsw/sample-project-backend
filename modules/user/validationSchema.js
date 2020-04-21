@@ -8,6 +8,11 @@ exports.createUser = Joi.object({
       .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
     name: Joi.string().min(3).max(255)
       .required(),
+    ZaloOA: Joi.object({
+      accessToken: Joi.string(),
+      oaId: Joi.string(),
+      secretKey: Joi.string(),
+    }),
   }),
 });
 
@@ -20,6 +25,11 @@ exports.updateUser = Joi.object({
     name: Joi.string().min(3).max(255),
     password: Joi.string()
       .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+    ZaloOA: Joi.object({
+      accessToken: Joi.string(),
+      oaId: Joi.string(),
+      secretKey: Joi.string(),
+    }),
   }),
 });
 

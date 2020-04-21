@@ -3,12 +3,12 @@ const gql = require('graphql-tag');
 module.exports = gql`
   input ZaloOAInput {
     accessToken: String!
-    OAID: String!
+    oaId: String!
     secretKey: String!
   }
 
   type ZaloOA {
-    OAID: String!
+    oaId: String!
   }
   
   type User {
