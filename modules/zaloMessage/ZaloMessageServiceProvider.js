@@ -6,7 +6,7 @@ class ZaloMessageServiceProvider extends ServiceProvider {
   register() {
     this.container.register({
       zaloMessageProvider: asClass(ZaloMessageProvider)
-        .inject((injectedContainer) => ({ messages: injectedContainer.resolve('db').collection('zaloMessages') })).singleton(),
+        .inject((injectedContainer) => ({ zaloMessages: injectedContainer.resolve('db').collection('zaloMessages') })).singleton(),
     });
   }
 }

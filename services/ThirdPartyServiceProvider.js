@@ -17,20 +17,17 @@ class ThirdPartyServiceProvider extends ServiceProvider {
   }
 
   async boot() {
-    const options = {
-      host: 'localhost',
-      port: '32768',
-    };
+    const config = this.container.resolve('config');
     const pubsub = new RedisPubSub({
-      publisher: new Redis(options),
-      subscriber: new Redis(options),
+      publisher: new Redis(config.redis),
+      subscriber: new Redis(config.redis),
     });
-    const db = (await mongodb(this.container.resolve('config'))).db('simple_db');
+    const db = (await mongodb(config)).db('simple_db');
     this.container.register({
       db: asValue(db),
       pubsub: asValue(pubsub),
       minio: asFunction(minio).singleton(),
-      logger: asFunction(winston).singleton(),
+      logger: asFunction(() => ({ log: () => {} })).singleton(),
     });
   }
 }

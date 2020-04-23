@@ -1,7 +1,7 @@
 const express = require('express');
+const get = require('lodash.get');
 const bodyParser = require('body-parser');
 const { ApolloServer } = require('apollo-server-express');
-const { graphqlUploadExpress } = require('graphql-upload');
 const cors = require('cors');
 const { scopePerRequest } = require('awilix-express');
 const schema = require('./modules');
@@ -20,10 +20,23 @@ module.exports = (container) => {
   app.use('/api', router);
   const graphQlServer = new ApolloServer({
     schema,
-    context: ({ req }) => ({
+    context: async ({ req, connection = {} }) => ({
       container,
       req,
+      subContext: connection.context,
     }),
+    subscriptions: {
+      onConnect: (connectionParams) => {
+        const token = get(connectionParams, 'Authorization', '').replace('Bearer ', '');
+        if (!token) {
+          throw new Error('You must supply a JWT for authorization!');
+        }
+        const authService = container.resolve('authService');
+        return {
+          loggedUser: authService.verify(token),
+        };
+      },
+    },
     debug: true,
   });
   graphQlServer.applyMiddleware({ app });

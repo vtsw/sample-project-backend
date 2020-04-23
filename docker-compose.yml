@@ -24,6 +24,8 @@ services:
       NODE_ENV: "development"
       APP_PORT: "4000"
       APP_HOST: "4000"
+      REDIS_HOST: "redisInfra"
+      REDIS_PORT: "6379"
     networks:
       - localnetwork
 

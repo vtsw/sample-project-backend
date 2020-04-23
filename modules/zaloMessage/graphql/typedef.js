@@ -23,8 +23,17 @@ module.exports = gql`
   input ZaloMessageListInput {
     from: ID!
     to: ID!
+    skip: Int = 0,
+    limit: Int = 10
   }
-	
+  input OnZaloMessageCreatedInput {
+    to: String
+  }
+
+  input OnZaloMessageReceivedInput {
+      from: String
+  }
+
   extend type Mutation {
     createZaloMessage(message: CreateZaloMessageInput!): ZaloMessage @isAuthenticated
   }
@@ -35,7 +44,7 @@ module.exports = gql`
   }
   
   extend type Subscription  {
-    onZaloMessageCreated: ZaloMessage
-    onZaloMessageReceived: ZaloMessage
+    onZaloMessageCreated(filter: OnZaloMessageCreatedInput): ZaloMessage
+    onZaloMessageReceived(filter: OnZaloMessageReceivedInput): ZaloMessage
   }
 `;

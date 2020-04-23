@@ -15,7 +15,7 @@ class OASendTextEventHandler {
       to: data.recipient.id,
       metaData: data,
     });
-    this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageCreated: createdMessage.toJson() });
+    await this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageCreated: createdMessage.toJson() });
     return createdMessage;
   }
 
