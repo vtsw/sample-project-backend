@@ -16,7 +16,6 @@ module.exports = gql`
   }
 
   input CreateZaloMessageInput {
-    from: ID!
     to: ID!
     content: String!
   }
@@ -33,5 +32,10 @@ module.exports = gql`
   extend type Query {
     zaloMessage(id: ID!): ZaloMessage @isAuthenticated
     zaloMessageList(query: ZaloMessageListInput): ZaloMessageList @isAuthenticated
+  }
+  
+  extend type Subscription  {
+    onZaloMessageCreated: ZaloMessage
+    onZaloMessageReceived: ZaloMessage
   }
 `;

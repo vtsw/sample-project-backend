@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 module.exports = {
   app: {
     port: parseInt(process.env.APP_PORT, 10) || 80,
@@ -37,4 +39,10 @@ module.exports = {
     utc: process.env.LOG_UTC === 'true',
   },
   graphqlUploadExpress: { maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 10000000, maxFiles: parseInt(process.env.MAX_FILES, 10) || 10 },
+  serviceProviders: [
+    require('../services/ThirdPartyServiceProvider'),
+    require('../modules/zalo/ZaloServiceProvider'),
+    require('../modules/zaloMessage/ZaloMessageServiceProvider'),
+    require('../modules/user/UserServiceProvider')
+  ]
 };

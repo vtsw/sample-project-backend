@@ -9,6 +9,10 @@ class ZaloMessage {
     };
   }
 
+  get id() {
+    return this.data.id;
+  }
+
   get from() {
     return this.data.from;
   }
@@ -39,6 +43,10 @@ class ZaloMessage {
 
   set timestamp(value) {
     this.data.timestamp = value;
+  }
+
+  toJson() {
+    return this.data;
   }
 }
 

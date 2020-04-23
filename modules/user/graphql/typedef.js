@@ -36,7 +36,7 @@ module.exports = gql`
     password: String!
     name: String!
     email: String!
-    OAZalo: ZaloOAInput
+    ZaloOA: ZaloOAInput
   }
   
   input UpdateUserInput {

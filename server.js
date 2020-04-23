@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const path = require('path');
+require('dotenv').config();
 
 global.APP_ROOT = path.resolve(__dirname);
 
@@ -13,12 +14,15 @@ const bootstrapper = require('./bootstrapper');
 
 async function runApp() {
   const container = await bootstrapper();
-  const app = createApp(container);
+  const { graphQlServer, app } = createApp(container);
   const privateKey = fs.readFileSync('./sslcert/server.key', 'utf8');
   const certificate = fs.readFileSync('./sslcert/server.crt', 'utf8');
   const credentials = { key: privateKey, cert: certificate };
-  https.createServer(credentials, app).listen(config.app.port, () => {
+  const httpsServer = https.createServer(credentials, app);
+  graphQlServer.installSubscriptionHandlers(httpsServer);
+  httpsServer.listen(config.app.port, () => {
     console.log(`Running a GraphQL API server at ${config.app.host}:${config.app.port}/graphql`);
+    console.log(`Subscriptions ready at ws://${config.app.host}:${config.app.port}${graphQlServer.subscriptionsPath}`);
   });
 }
 

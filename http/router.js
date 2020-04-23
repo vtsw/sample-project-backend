@@ -1,7 +1,6 @@
 const { Router } = require('express');
-const utils = require('../config/utils');
-const fetch = require('node-fetch');
 const { isAuthenticated } = require('./middleware');
+const { ZALO_MESSAGE_RECEIVED } = require('../modules/zaloMessage/events');
 
 const router = Router();
 
@@ -23,8 +22,12 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
   stream.pipe(res);
 });
 
-router.get('/zalo/webhook', (req, res) => {
-  res.json(req.query);
+router.post('/zalo/webhook', (req, res) => {
+  const { container } = req;
+  container.resolve('ZaloMessageHandlerProvider')
+    .provide(req.body.event_name).handle(req.body);
+  res.status(200);
+  res.send('ok');
 });
 
 

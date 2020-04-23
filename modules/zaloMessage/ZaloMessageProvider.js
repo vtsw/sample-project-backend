@@ -28,9 +28,9 @@ class ZaloMessageProvider {
   async create(message) {
     const inserted = await this.messages.insertOne({
       content: message.content,
-      from: ObjectId(message.from),
-      to: ObjectId(message.to),
-      lastModified: message.timeStamp,
+      from: message.from,
+      to: message.to,
+      timestamp: message.timestamp,
     });
     return ZaloMessageProvider.factory(inserted.ops[0]);
   }

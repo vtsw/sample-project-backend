@@ -37,6 +37,10 @@ const baseTypeDefs = gql`
     hello(name: String): String
     uploadImage (file: Upload!): File! @isAuthenticated
   }
+
+  type Subscription {
+      onHello: String
+  }
 `;
 
 const typeDefs = [baseTypeDefs, UserTypeDefs, MessageTypeDefs, ZaloMessageTypeDefs];
