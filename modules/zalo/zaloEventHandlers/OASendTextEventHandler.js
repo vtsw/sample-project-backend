@@ -1,16 +1,26 @@
 const { ZALO_MESSAGE_SENT } = require('../../zaloMessage/events');
 
 class OASendTextEventHandler {
-  constructor(zaloMessageProvider, pubsub) {
+  constructor(zaloMessageProvider, pubsub, userProvider) {
     this.name = OASendTextEventHandler.getEvent();
     this.zaloMessageProvider = zaloMessageProvider;
     this.pubsub = pubsub;
+    this.userProvider = userProvider;
+    this.context = {};
+  }
+
+  setContext(context) {
+    this.context = context;
   }
 
   async handle(data) {
+    let { user } = this.context;
+    if (!user) {
+      user = await this.userProvider.findByZaloOI(data.sender.id);
+    }
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
-      from: data.sender.id,
+      from: user.id,
       content: data.message.text,
       to: data.recipient.id,
       metaData: data,

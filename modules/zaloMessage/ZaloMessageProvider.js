@@ -44,7 +44,7 @@ class ZaloMessageProvider {
     const messages = await this.messages
       .find(condition.query)
       .limit(condition.page.limit + 1)
-      .skip(condition.page.skip).sort({ lastModified: -1 })
+      .skip(condition.page.skip).sort({ timestamp: -1 })
       .toArray();
     const hasNext = (messages.length === condition.page.limit + 1);
     if (hasNext) {

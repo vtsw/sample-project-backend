@@ -7,19 +7,6 @@ const {
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_RECEIVED } = require('../events');
 const OASendTextEventHandler = require('../../zalo/zaloEventHandlers/OASendTextEventHandler');
 
-const shouldReturn = (schema, filter, user) => {
-  if (filter.from && filter.to) {
-    return (schema.from === filter.from && schema.to === filter.to);
-  }
-  if (filter.from) {
-    return (schema.from === filter.from && schema.to === user.id);
-  }
-  if (filter.to) {
-    return (schema.to === filter.to && schema.from === user.from);
-  }
-
-  return true;
-};
 
 module.exports = {
   Query: {
@@ -50,9 +37,10 @@ module.exports = {
       }
       return container.resolve('ZaloMessageHandlerProvider')
         .provide(OASendTextEventHandler.getEvent())
+        .setContext({ user: loggedUser })
         .handle({
           sender: {
-            id: loggedUser.id,
+            id: loggedUser.zaloOA.OAID,
           },
           recipient: {
             id: message.to,
@@ -71,10 +59,7 @@ module.exports = {
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_SENT),
         ({ onZaloMessageCreated }, { filter }, { subContext }) => {
           const { loggedUser } = subContext;
-          console.log(onZaloMessageCreated);
-          console.log(loggedUser);
-          console.log(onZaloMessageCreated.from === loggedUser.id && filter.to === onZaloMessageCreated.to)
-          if (filter.to) {
+          if (filter && filter.to) {
             return onZaloMessageCreated.from === loggedUser.id && filter.to === onZaloMessageCreated.to;
           }
           return onZaloMessageCreated.from === loggedUser.id;
@@ -86,7 +71,7 @@ module.exports = {
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_RECEIVED),
         ({ onZaloMessageReceived }, { filter }, { subContext }) => {
           const { loggedUser } = subContext;
-          if (filter.from) {
+          if (filter && filter.from) {
             return onZaloMessageReceived.to === loggedUser.id && filter.from === onZaloMessageReceived.from;
           }
           return onZaloMessageReceived.to === loggedUser.id;
