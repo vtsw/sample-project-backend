@@ -11,12 +11,13 @@ class OASendTextEventHandler {
 
   setContext(context) {
     this.context = context;
+    return this;
   }
 
   async handle(data) {
     let { user } = this.context;
     if (!user) {
-      user = await this.userProvider.findByZaloOI(data.sender.id);
+      user = await this.userProvider.findByZaloId(data.sender.id);
     }
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,

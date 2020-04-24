@@ -10,7 +10,7 @@ class UserSendTextEventHandler {
   }
 
   async handle(data) {
-    const user = await this.userProvider.findByZaloOI(data.recipient.id);
+    const user = await this.userProvider.findByZaloId(data.recipient.id);
     if (!user) {
       throw new ResourceNotFoundError('User', {
         ZaloOI: data.recipient.id,

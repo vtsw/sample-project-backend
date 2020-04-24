@@ -19,6 +19,7 @@ module.exports = gql`
     messages(query: MessageListInput): MessageList
     image: File
     zaloOA: ZaloOA
+    followers(query: ZaloInterestedUserListInput): ZaloInterestedUserList
   }
 
   type UserList implements Paginatable {
@@ -36,7 +37,7 @@ module.exports = gql`
     password: String!
     name: String!
     email: String!
-    ZaloOA: ZaloOAInput
+    zaloOA: ZaloOAInput
   }
   
   input UpdateUserInput {
@@ -44,7 +45,7 @@ module.exports = gql`
     name: String
     email: String
     password: String
-    ZaloOA: ZaloOAInput
+    zaloOA: ZaloOAInput
   }
 
   input UserListInput {

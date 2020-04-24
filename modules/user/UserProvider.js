@@ -22,8 +22,8 @@ class UserProvider {
       .then(UserProvider.factory);
   }
 
-  findByZaloOI(id) {
-    return this.users.findOne({ 'ZaloOA.oaId': id, deleted: false })
+  findByZaloId(id) {
+    return this.users.findOne({ 'zaloOA.oaId': id, deleted: false })
       .then(UserProvider.factory);
   }
 

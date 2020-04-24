@@ -5,6 +5,7 @@ const config = require('../config');
 const userResolver = require('./user/graphql/resolver');
 const messageResolver = require('./message/graphql/resolver');
 const zaloMessageResolver = require('./zaloMessage/graphql/resolver');
+const zaloResolver = require('./zalo/graphql/resolver');
 
 const baseResolver = {
   Upload: GraphQLUpload,
@@ -49,4 +50,4 @@ const baseResolver = {
   },
 };
 
-module.exports = merge(baseResolver, userResolver, messageResolver, zaloMessageResolver);
+module.exports = merge(baseResolver, userResolver, messageResolver, zaloMessageResolver, zaloResolver);
