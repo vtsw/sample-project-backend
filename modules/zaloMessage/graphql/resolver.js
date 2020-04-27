@@ -59,7 +59,6 @@ module.exports = {
           to,
         };
       });
-      console.log(result);
       return result;
     },
   },

@@ -4,7 +4,7 @@ module.exports = gql`
     type ZaloInterestedUser {
       id: ID!
       avatar: String
-      displayName: String,
+      displayName: String
     }
     
     type ZaloInterestedUserList implements Paginatable{
@@ -14,8 +14,8 @@ module.exports = gql`
     }
     
     input ZaloInterestedUserListInput {
-        offset: Int = 0
         limit: Int = 10
+        skip: Int = 0
     }
 
     extend type Query {
