@@ -18,7 +18,7 @@ class ZaloServiceProvider extends ServiceProvider {
       userProvider: injectedContainer.resolve('userProvider'),
     }))
       .singleton());
-    this.container.register('ZaloMessageHandlerProvider', asClass(ZaloMessageHandlerProvider)
+    this.container.register('zaloMessageHandlerProvider', asClass(ZaloMessageHandlerProvider)
       .singleton());
     this.container.register('zaloMessageBroker', asClass(ZaloMessageBroker).inject((injectedContainer) => ({
       http: fetch,
@@ -30,7 +30,7 @@ class ZaloServiceProvider extends ServiceProvider {
   }
 
   async boot() {
-    const zaloMessageHandlerProvider = this.container.resolve('ZaloMessageHandlerProvider');
+    const zaloMessageHandlerProvider = this.container.resolve('zaloMessageHandlerProvider');
     zaloMessageHandlerProvider.register(UserSendTextEventHandler.getEvent(), this.container.resolve('userSendTextEventHandler'));
     zaloMessageHandlerProvider.register(OASendTextEventHandler.getEvent(), this.container.resolve('oASendTextEventHandler'));
     zaloMessageHandlerProvider.register(UserFollowOAEventHandler.getEvent(), this.container.resolve('userFollowOAEventHandler'));

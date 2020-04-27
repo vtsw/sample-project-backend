@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const get = require('lodash.get');
 
 module.exports = class Jwt {
-
   /**
    *
    * @param config
@@ -17,7 +16,7 @@ module.exports = class Jwt {
   /**
    *
    * @param payload
-   * @returns {undefined|*}
+   * @returns {String|*}
    */
   encode(payload) {
     return jwt.sign(payload, get(this.authConfig, 'jwt.privateKey', 'privateKey'));

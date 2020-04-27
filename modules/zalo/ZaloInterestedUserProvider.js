@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
 const moment = require('moment');
-const { ResourceNotFoundError, ResourceAlreadyExist } = require('../errors');
+const { ResourceNotFoundError } = require('../errors');
 const User = require('./ZaloInterestedUser');
 
 class ZaloInterestedUserProvider {
@@ -123,6 +123,7 @@ class ZaloInterestedUserProvider {
     user.timestamp = data.timestamp;
     user.followings = data.followings;
     user.info = data.info;
+    user.zaloId = data.zaloId;
     return user;
   }
 }

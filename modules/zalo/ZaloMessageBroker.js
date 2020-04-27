@@ -6,9 +6,11 @@ class ZaloMessageBroker {
 
   async send(message, recipient, sender) {
     const { accessToken } = sender.zaloOA;
+    console.log(accessToken);
+    console.log(recipient);
     const body = {
       recipient: {
-        user_id: recipient,
+        user_id: recipient.zaloId,
       },
       message: {
         text: message,
