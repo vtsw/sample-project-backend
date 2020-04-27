@@ -5,7 +5,7 @@ const ZaloMessageHandlerProvider = require('../zalo/ZaloEventHandlerProvider');
 const UserSendTextEventHandler = require('../zalo/zaloEventHandlers/UserSendTextEventHandler');
 const OASendTextEventHandler = require('../zalo/zaloEventHandlers/OASendTextEventHandler');
 const UserFollowOAEventHandler = require('../zalo/zaloEventHandlers/UserFollowOAEventHandler');
-const ZaloMessageBroker = require('../zalo/ZaloMessageBroker');
+const ZaloMessageSender = require('./ZaloMessageSender');
 const ZaloInterestedUserProvider = require('../zalo/ZaloInterestedUserProvider');
 
 class ZaloServiceProvider extends ServiceProvider {
@@ -20,7 +20,7 @@ class ZaloServiceProvider extends ServiceProvider {
       .singleton());
     this.container.register('zaloMessageHandlerProvider', asClass(ZaloMessageHandlerProvider)
       .singleton());
-    this.container.register('zaloMessageBroker', asClass(ZaloMessageBroker).inject((injectedContainer) => ({
+    this.container.register('zaloMessageSender', asClass(ZaloMessageSender).inject((injectedContainer) => ({
       http: fetch,
       config: injectedContainer.resolve('config'),
     })));

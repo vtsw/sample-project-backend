@@ -1,4 +1,4 @@
-class ZaloMessageBroker {
+class ZaloMessageSender {
   constructor(http, config) {
     this.http = http;
     this.config = config;
@@ -6,8 +6,6 @@ class ZaloMessageBroker {
 
   async send(message, recipient, sender) {
     const { accessToken } = sender.zaloOA;
-    console.log(accessToken);
-    console.log(recipient);
     const body = {
       recipient: {
         user_id: recipient.zaloId,
@@ -25,4 +23,4 @@ class ZaloMessageBroker {
   }
 }
 
-module.exports = ZaloMessageBroker;
+module.exports = ZaloMessageSender;

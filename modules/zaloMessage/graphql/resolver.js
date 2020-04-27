@@ -12,6 +12,7 @@ module.exports = {
     zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findById(id),
     zaloMessageList: async (_, args, { container, req }) => {
       const { user } = req;
+      const loggedUser = await container.resolve('userProvider').findById(user.id);
       const messageProvider = container.resolve('zaloMessageProvider');
       const {
         query: {
@@ -23,14 +24,14 @@ module.exports = {
         throw new UserInputError('InterestedUserId is invalid');
       }
       const result = await messageProvider
-        .find({ query: { from: [user.id, interestedUserId], to: [user.id, interestedUserId] }, page: { limit, skip } });
+        .find({ query: { from: [loggedUser.id, interestedUserId], to: [loggedUser.id, interestedUserId] }, page: { limit, skip } });
       const { items } = result;
       result.items = items.map((message) => message.toJson()).map((message) => {
-        if (message.from === user.id) {
+        if (message.from === loggedUser.id) {
           const from = {
-            id: user.id,
-            avatar: user.avatar,
-            displayName: user.displayName,
+            id: loggedUser.id,
+            avatar: loggedUser.image.link,
+            displayName: loggedUser.name,
           };
           const to = {
             id: interestedUser.id,
@@ -44,9 +45,9 @@ module.exports = {
           };
         }
         const to = {
-          id: user.id,
-          avatar: user.avatar,
-          displayName: user.displayName,
+          id: loggedUser.id,
+          avatar: loggedUser.image.link,
+          displayName: loggedUser.name,
         };
         const from = {
           id: interestedUserId,
@@ -68,7 +69,7 @@ module.exports = {
       const loggedUser = await container.resolve('userProvider').findById(user.id);
       const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
       const timestamp = new Date().getTime();
-      const response = await container.resolve('zaloMessageBroker').send(message.content, interestedUser, loggedUser);
+      const response = await container.resolve('zaloMessageSender').send(message.content, interestedUser, loggedUser);
       if (response.error) {
         throw new Error(response.message);
       }
@@ -110,11 +111,8 @@ module.exports = {
     onZaloMessageReceived: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_RECEIVED),
-        ({ onZaloMessageReceived }, { filter }, { subContext }) => {
+        ({ onZaloMessageReceived }, args, { subContext }) => {
           const { loggedUser } = subContext;
-          if (filter && filter.from) {
-            return onZaloMessageReceived.to === loggedUser.id && filter.from === onZaloMessageReceived.from;
-          }
           return onZaloMessageReceived.to === loggedUser.id;
         },
       ),
