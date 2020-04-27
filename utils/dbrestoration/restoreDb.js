@@ -43,7 +43,7 @@ const doRestoration = () => {
       container,
     };
 
-    const { bucketName, prefix, startTime, endTime } = config.dbRestoration;
+    const { bucketName, startTime, endTime } = config.dbRestoration;
 
     const startTimeFormat = moment(startTime).format('YYYY-MM-DD-HH');
     const endTimeFormat = moment(endTime).format('YYYY-MM-DD-HH');
