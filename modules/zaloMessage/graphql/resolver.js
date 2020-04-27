@@ -1,60 +1,101 @@
-const { isEmpty, pickBy, identity } = require('lodash');
 const { withFilter } = require('apollo-server-express');
 const {
   UserInputError,
 } = require('apollo-server-express');
 
-const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_RECEIVED } = require('../events');
+const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../events');
 const OASendTextEventHandler = require('../../zalo/zaloEventHandlers/OASendTextEventHandler');
 
 
 module.exports = {
   Query: {
     zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findById(id),
-    zaloMessageList: async (_, args, { container }) => {
+    zaloMessageList: async (_, args, { container, req }) => {
+      const { user } = req;
       const messageProvider = container.resolve('zaloMessageProvider');
-      if (isEmpty(args)) {
-        return messageProvider
-          .find({ query: { }, page: { limit: 10, skip: 0 } });
-      }
       const {
         query: {
-          from, to, limit, skip,
+          interestedUserId, limit, skip,
         },
       } = args;
-      return messageProvider
-        .find({ query: pickBy({ from, to }, identity), page: { limit, skip } });
+      const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(interestedUserId);
+      if (!interestedUser) {
+        throw new UserInputError('InterestedUserId is invalid');
+      }
+      const result = await messageProvider
+        .find({ query: { from: [user.id, interestedUserId], to: [user.id, interestedUserId] }, page: { limit, skip } });
+      const { items } = result;
+      result.items = items.map((message) => message.toJson()).map((message) => {
+        if (message.from === user.id) {
+          const from = {
+            id: user.id,
+            avatar: user.avatar,
+            displayName: user.displayName,
+          };
+          const to = {
+            id: interestedUser.id,
+            displayName: interestedUser.displayName,
+            avatar: interestedUser.avatar,
+          };
+          return {
+            ...message,
+            from,
+            to,
+          };
+        }
+        const to = {
+          id: user.id,
+          avatar: user.avatar,
+          displayName: user.displayName,
+        };
+        const from = {
+          id: interestedUserId,
+          displayName: interestedUser.displayName,
+          avatar: interestedUser.avatar,
+        };
+        return {
+          ...message,
+          from,
+          to,
+        };
+      });
+      return result;
     },
   },
   Mutation: {
     createZaloMessage: async (_, { message }, { container, req }) => {
       const { user } = req;
       const loggedUser = await container.resolve('userProvider').findById(user.id);
+      const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
       const timestamp = new Date().getTime();
-      const response = await container.resolve('zaloMessageBroker').send(message.content, message.to, loggedUser);
-      if (response.error === '-201') {
-        throw new UserInputError('Recipient id is invalid');
+      const response = await container.resolve('zaloMessageBroker').send(message.content, interestedUser, loggedUser);
+      if (response.error) {
+        throw new Error(response.message);
       }
-      return container.resolve('ZaloMessageHandlerProvider')
-        .provide(OASendTextEventHandler.getEvent())
-        .setContext({ user: loggedUser })
-        .handle({
-          sender: {
-            id: loggedUser.zaloOA.OAID,
-          },
-          recipient: {
-            id: message.to,
-          },
-          event_name: OASendTextEventHandler.getEvent(),
-          message: {
-            text: message.content,
-          },
-          timestamp,
-        });
+      const zaloInterestedUserProvider = container.resolve('zaloMessageHandlerProvider');
+      const handler = zaloInterestedUserProvider.provide(OASendTextEventHandler.getEvent());
+      const createdMessage = await handler.handle(await handler.mapDataFromZalo({
+        event_name: OASendTextEventHandler.getEvent(),
+        message: {
+          text: message.content,
+        },
+        timestamp,
+      }, loggedUser, interestedUser));
+      createdMessage.to = {
+        id: interestedUser.id,
+        displayName: interestedUser.displayName,
+        avatar: interestedUser.avatar,
+      };
+      createdMessage.from = {
+        id: loggedUser.id,
+        displayName: loggedUser.name,
+        avatar: loggedUser.avatar,
+      };
+      return createdMessage;
     },
   },
   Subscription: {
-    onZaloMessageCreated: {
+    onZaloMessageSent: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_SENT),
         ({ onZaloMessageCreated }, { filter }, { subContext }) => {
@@ -75,6 +116,15 @@ module.exports = {
             return onZaloMessageReceived.to === loggedUser.id && filter.from === onZaloMessageReceived.from;
           }
           return onZaloMessageReceived.to === loggedUser.id;
+        },
+      ),
+    },
+    onZaloMessageCreated: {
+      subscribe: withFilter(
+        (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_CREATED),
+        ({ onZaloMessageCreated }, { filter }, { subContext }) => {
+          const participants = [subContext.loggedUser.id, filter.interestedUserId];
+          return (participants.includes(onZaloMessageCreated.from) && participants.includes(onZaloMessageCreated.to));
         },
       ),
     },

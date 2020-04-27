@@ -41,8 +41,10 @@ class ZaloMessageProvider {
    * @returns {Promise<*>}
    */
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
+    let { query } = condition;
+    query = { from: { $in: query.from }, to: { $in: query.to } };
     const messages = await this.messages
-      .find(condition.query)
+      .find(query)
       .limit(condition.page.limit + 1)
       .skip(condition.page.skip).sort({ timestamp: -1 })
       .toArray();

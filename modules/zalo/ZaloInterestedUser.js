@@ -79,9 +79,18 @@ class ZaloInterestedUser {
     this.data.id = value;
   }
 
+  get zaloId() {
+    return this.data.zaloId;
+  }
+
+  set zaloId(value) {
+    this.data.zaloId = value;
+  }
+
   constructor(id) {
     this.data = {
       id,
+      zaloId: null,
       displayName: null,
       dob: null,
       gender: null,

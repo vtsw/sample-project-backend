@@ -7,7 +7,7 @@ module.exports = {
     zaloInterestedUser: async (_, { id }, { container }) => {
       const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(id);
       if (!interestedUser) {
-        throw new ResourceNotFoundError();
+        throw new ResourceNotFoundError('ZaloInterestedUser');
       }
       return interestedUser;
     },

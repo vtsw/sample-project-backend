@@ -30,6 +30,11 @@ class UserFollowOAEventHandler {
   static getEvent() {
     return 'follow';
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  async mapDataFromZalo(data) {
+    return data;
+  }
 }
 
 module.exports = UserFollowOAEventHandler;

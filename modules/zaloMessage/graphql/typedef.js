@@ -3,10 +3,16 @@ const gql = require('graphql-tag');
 module.exports = gql`
   type ZaloMessage {
     id: ID!
-    from: ID!
-    to: ID!
+    from: ZaloMessageParticipant!
+    to: ZaloMessageParticipant!
     content: String!
     timestamp: Date
+  }
+  
+  type ZaloMessageParticipant {
+    id: ID!
+    displayName: String
+    avatar: String
   }
 
   type ZaloMessageList implements Paginatable {
@@ -21,17 +27,21 @@ module.exports = gql`
   }
 
   input ZaloMessageListInput {
-    from: ID!
-    to: ID!
+    interestedUserId: ID!
     skip: Int = 0,
     limit: Int = 10
   }
-  input OnZaloMessageCreatedInput {
+  
+  input OnZaloMessageSentInput {
     to: String
+  }
+  
+  input OnZaloMessageCreatedInput {
+    interestedUserId: ID!
   }
 
   input OnZaloMessageReceivedInput {
-      from: String
+    from: String
   }
 
   extend type Mutation {
@@ -44,7 +54,8 @@ module.exports = gql`
   }
   
   extend type Subscription  {
-    onZaloMessageCreated(filter: OnZaloMessageCreatedInput): ZaloMessage
+    onZaloMessageSent(filter: OnZaloMessageSentInput): ZaloMessage
     onZaloMessageReceived(filter: OnZaloMessageReceivedInput): ZaloMessage
+    onZaloMessageCreated(filter: OnZaloMessageCreatedInput!): ZaloMessage
   }
 `;
