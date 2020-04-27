@@ -4,9 +4,7 @@ const util = require('util');
 const fs = require('fs');
 const config = require('../config');
 const minio = require('./minio');
-
 require('winston-daily-rotate-file');
-
 
 const minioClient = minio(config);
 
@@ -38,7 +36,12 @@ mutationRecorder.on('rotate', (oldFileName, newFileName) => {
         fs.createReadStream(`${oldFileName}`),
         stats.size,
         metadata,
-        () => {},
+        (err, etag) => {
+          // console.log(etag);
+          if(err) {
+            console.log('Rotate err :', err);
+          }
+        },
       );
     })
     // eslint-disable-next-line no-console

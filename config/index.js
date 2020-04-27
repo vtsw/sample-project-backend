@@ -9,7 +9,7 @@ const config = {
       auditFile: 'audit.json',
       mutationRecordMinioBucket: 'mutationrecord',
       datePattern: process.env.DATE_PATTERN || 'YYYY-MM-DD-HH-mm',
-      filename: process.env.LOG_FILENAME || 'mutation-%DATE%.log',
+      filename: process.env.LOG_FILENAME || '%DATE%.log',
       frequency: '1m',
     },
   },

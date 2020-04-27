@@ -1,3 +1,5 @@
+
+const config = require('../../config');
 const inTime = (createdTimestamp, endTime) => createdTimestamp <= endTime;
 
 const getObjects = (bucketName, objectName, context) => new Promise((resolve, reject) => {
@@ -47,46 +49,19 @@ const parseObject = (objectData, config) => {
   return result;
 };
 
-const getObjectList = (fromObjectName, config, context) => new Promise((resolve, reject) => {
+const getObjectList = (prefix, context) => new Promise((resolve, reject) => {
   const mutationObjects = [];
-
-  const bucketName = config.dbRestoration.restorationBucket;
-  const { endTime } = config.dbRestoration;
+  const { bucketName }  = config.dbRestoration;
   const minioClient = context.container.resolve('minio');
+  const mutationObjectsStream = minioClient.listObjects(bucketName, prefix);
 
-  // Tìm cách tìm hiểu xem cách listObjectsV2WithMetadata theo thứ tự như nào
-  const mutationObjectsStream = minioClient.extensions.listObjectsV2WithMetadata(bucketName, '', false, fromObjectName);
-
-
-  mutationObjectsStream.on('data', (object) => {
-    const { metadata } = object;
-
-    const createdTimestamp = Number(metadata['X-Amz-Meta-Createdate']);
-
-    if (inTime(createdTimestamp, endTime)) {
-      const { numberOfObjectsPerBatch } = config.dbRestoration;
-      const mutationObjectsLength = mutationObjects.length;
-
-
-      if (mutationObjectsLength <= numberOfObjectsPerBatch) {
-        mutationObjects.push(object);
-      } 
-
-      if(mutationObjectsLength > numberOfObjectsPerBatch) {
-        mutationObjectsStream.destroy({
-          error: {
-            type: 'batchlimit',
-            detail: {
-              limit: numberOfObjectsPerBatch,
-            },
-          },
-        });
-      }
-    }
+  mutationObjectsStream.on('data', (miniObject) => {
+    mutationObjects.push(miniObject)
   });
 
   mutationObjectsStream.on('error', (error) => {
     console.log(`${error}`);
+    reject(err);
   });
 
   mutationObjectsStream.on('close', () => {

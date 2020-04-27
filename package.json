@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start:local": "cross-env APP_PORT=4000 MONGODB_URL=mongodb://foobar:foobarPassword@localhost:27017/simple_db MINIO_END_POINT=localhost node server.js",
+    "start:local": "cross-env APP_PORT=4000 MONGODB_URL=mongodb://foobar:foobarPassword@localhost:27017/simple_db MINIO_END_POINT=localhost nodemon server.js",
     "test": "jest",
     "migrate-mongo": "migrate-mongo up",
     "migrate-mongo:local": "migrate-mongo up -f migrate-mongo-config.local.js",
@@ -21,6 +21,7 @@
     "awilix": "^4.2.5",
     "awilix-express": "^3.0.0",
     "bcrypt": "^4.0.0",
+    "bluebird": "^3.7.2",
     "cors": "^2.8.5",
     "dataloader": "^2.0.0",
     "express": "^4.17.1",
