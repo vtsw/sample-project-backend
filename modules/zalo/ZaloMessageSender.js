@@ -5,6 +5,7 @@ class ZaloMessageSender {
   }
 
   async send(message, recipient, sender) {
+    const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
     const { accessToken } = sender.zaloOA;
     const body = {
       recipient: {
@@ -14,7 +15,7 @@ class ZaloMessageSender {
         text: message,
       },
     };
-    const response = await this.http(`https://openapi.zalo.me/v2.0/oa/message?access_token=${accessToken}`, {
+    const response = await this.http(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
       method: 'post',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },

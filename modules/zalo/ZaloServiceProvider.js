@@ -16,6 +16,7 @@ class ZaloServiceProvider extends ServiceProvider {
       http: fetch,
       zaloInterestedUserProvider: injectedContainer.resolve('zaloInterestedUserProvider'),
       userProvider: injectedContainer.resolve('userProvider'),
+      config: injectedContainer.resolve('config'),
     }))
       .singleton());
     this.container.register('zaloMessageHandlerProvider', asClass(ZaloMessageHandlerProvider)
