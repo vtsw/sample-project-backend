@@ -34,7 +34,7 @@ class OASendTextEventHandler {
       from: {
         id: loggedUser.id,
         displayName: loggedUser.name,
-        avatar: loggedUser.avatar,
+        avatar: loggedUser.image.link,
       },
     };
     await this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: emitData });

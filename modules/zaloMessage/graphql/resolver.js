@@ -90,7 +90,7 @@ module.exports = {
       createdMessage.from = {
         id: loggedUser.id,
         displayName: loggedUser.name,
-        avatar: loggedUser.avatar,
+        avatar: loggedUser.image.link,
       };
       return createdMessage;
     },
