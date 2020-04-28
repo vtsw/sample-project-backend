@@ -19,8 +19,26 @@ class OASendTextEventHandler {
       to: data.to.id,
       metaData: data,
     });
-    await this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() });
-    await this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() });
+    const jsonData = createdMessage.toJson();
+    const {
+      loggedUser,
+      interestedUser,
+    } = data;
+    const emitData = {
+      ...jsonData,
+      to: {
+        id: interestedUser.id,
+        displayName: interestedUser.displayName,
+        avatar: interestedUser.avatar,
+      },
+      from: {
+        id: loggedUser.id,
+        displayName: loggedUser.name,
+        avatar: loggedUser.avatar,
+      },
+    };
+    await this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: emitData });
+    await this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: emitData });
     return createdMessage;
   }
 
@@ -28,17 +46,19 @@ class OASendTextEventHandler {
     return 'oa_send_text';
   }
 
-  async mapDataFromZalo(data, loggedUser = null, intUser = null) {
-    const user = loggedUser || await this.userProvider.findByZaloId(data.sender.id);
+  async mapDataFromZalo(data, user = null, intUser = null) {
+    const loggedUser = user || await this.userProvider.findByZaloId(data.sender.id);
     const interestedUser = intUser || await this.zaloInterestedUserProvider.findByZaloId(data.recipient.id);
     return {
       ...data,
       from: {
-        id: user.id,
+        id: loggedUser.id,
       },
       to: {
         id: interestedUser.id,
       },
+      loggedUser,
+      interestedUser,
     };
   }
 }

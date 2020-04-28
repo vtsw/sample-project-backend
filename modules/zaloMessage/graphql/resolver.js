@@ -102,9 +102,9 @@ module.exports = {
         ({ onZaloMessageCreated }, { filter }, { subContext }) => {
           const { loggedUser } = subContext;
           if (filter && filter.to) {
-            return onZaloMessageCreated.from === loggedUser.id && filter.to === onZaloMessageCreated.to;
+            return onZaloMessageCreated.from.id === loggedUser.id && filter.to === onZaloMessageCreated.to.id;
           }
-          return onZaloMessageCreated.from === loggedUser.id;
+          return onZaloMessageCreated.from.id === loggedUser.id;
         },
       ),
     },
@@ -113,7 +113,7 @@ module.exports = {
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_RECEIVED),
         ({ onZaloMessageReceived }, args, { subContext }) => {
           const { loggedUser } = subContext;
-          return onZaloMessageReceived.to === loggedUser.id;
+          return onZaloMessageReceived.to.id === loggedUser.id;
         },
       ),
     },
@@ -122,7 +122,7 @@ module.exports = {
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_CREATED),
         ({ onZaloMessageCreated }, { filter }, { subContext }) => {
           const participants = [subContext.loggedUser.id, filter.interestedUserId];
-          return (participants.includes(onZaloMessageCreated.from) && participants.includes(onZaloMessageCreated.to));
+          return (participants.includes(onZaloMessageCreated.from.id) && participants.includes(onZaloMessageCreated.to.id));
         },
       ),
     },
