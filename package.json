@@ -41,6 +41,7 @@
     "moment": "^2.24.0",
     "mongodb": "^3.5.4",
     "open": "^7.0.3",
+    "subscriptions-transport-ws": "^0.9.16",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.4.2",
     "winston-transport": "^4.3.0"

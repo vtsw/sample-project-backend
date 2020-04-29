@@ -8,21 +8,23 @@ const cluster = require('cluster');
 const os = require('os');
 const fs = require('fs');
 const https = require('https');
+
+const websocker = require('./websocket');
 const createApp = require('./app');
 const config = require('./config');
 const bootstrapper = require('./bootstrapper');
 
 async function runApp() {
   const container = await bootstrapper();
-  const { graphQlServer, app } = createApp(container);
+  const app = createApp(container);
   const privateKey = fs.readFileSync('./sslcert/server.key', 'utf8');
   const certificate = fs.readFileSync('./sslcert/server.crt', 'utf8');
   const credentials = { key: privateKey, cert: certificate };
   const httpsServer = https.createServer(credentials, app);
-  graphQlServer.installSubscriptionHandlers(httpsServer);
+  websocker(httpsServer, container);
   httpsServer.listen(config.app.port, () => {
     console.log(`Running a GraphQL API server at ${config.app.host}:${config.app.port}/graphql`);
-    console.log(`Subscriptions ready at ws://${config.app.host}:${config.app.port}${graphQlServer.subscriptionsPath}`);
+    console.log(`Subscriptions ready at ws://${config.app.host}:${config.app.port}/graphql`);
   });
 }
 

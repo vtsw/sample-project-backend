@@ -109,17 +109,15 @@ module.exports = {
       ),
     },
     onZaloMessageReceived: {
-      subscribe: withFilter(
-        (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_RECEIVED),
-        ({ onZaloMessageReceived }, args, { subContext }) => {
-          const { loggedUser } = subContext;
-          return onZaloMessageReceived.to.id === loggedUser.id;
-        },
-      ),
+      subscribe: () => {
+        console.log('xxxxxxxxxxx');
+      },
     },
     onZaloMessageCreated: {
       subscribe: withFilter(
-        (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_CREATED),
+        (_, __, context) => {
+          console.log('xxx');
+        },
         ({ onZaloMessageCreated }, { filter }, { subContext }) => {
           const participants = [subContext.loggedUser.id, filter.interestedUserId];
           return (participants.includes(onZaloMessageCreated.from.id) && participants.includes(onZaloMessageCreated.to.id));
