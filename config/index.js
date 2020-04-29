@@ -43,10 +43,18 @@ module.exports = {
     require('../services/ThirdPartyServiceProvider'),
     require('../modules/zalo/ZaloServiceProvider'),
     require('../modules/zaloMessage/ZaloMessageServiceProvider'),
-    require('../modules/user/UserServiceProvider')
+    require('../modules/user/UserServiceProvider'),
+    require('../modules/message/MessageServiceProvider')
   ],
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
     port: process.env.REDIS_PORT ||  '32768',
+  },
+  zaloApi: {
+    social: {},
+    officialAccount: {
+      getInterestedUserProfile: "https://openapi.zalo.me/v2.0/oa/getprofile",
+      sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message"
+    }
   }
 };

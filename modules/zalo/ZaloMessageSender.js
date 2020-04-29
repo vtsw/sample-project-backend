@@ -1,13 +1,12 @@
-class ZaloMessageBroker {
+class ZaloMessageSender {
   constructor(http, config) {
     this.http = http;
     this.config = config;
   }
 
   async send(message, recipient, sender) {
+    const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
     const { accessToken } = sender.zaloOA;
-    console.log(accessToken);
-    console.log(recipient);
     const body = {
       recipient: {
         user_id: recipient.zaloId,
@@ -16,7 +15,7 @@ class ZaloMessageBroker {
         text: message,
       },
     };
-    const response = await this.http(`https://openapi.zalo.me/v2.0/oa/message?access_token=${accessToken}`, {
+    const response = await this.http(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
       method: 'post',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
@@ -25,4 +24,4 @@ class ZaloMessageBroker {
   }
 }
 
-module.exports = ZaloMessageBroker;
+module.exports = ZaloMessageSender;

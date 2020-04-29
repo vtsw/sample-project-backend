@@ -1,17 +1,19 @@
 class UserFollowOAEventHandler {
-  constructor(zaloInterestedUserProvider, http, userProvider) {
+  constructor(zaloInterestedUserProvider, http, userProvider, config) {
     this.zaloInterestedUserProvider = zaloInterestedUserProvider;
     this.http = http;
     this.userProvider = userProvider;
+    this.config = config;
   }
 
   async handle(data) {
+    const { zaloApi: { officialAccount: { getInterestedUserProfile } } } = this.config;
     const interestedUser = await this.zaloInterestedUserProvider.findByZaloId(data.follower.id);
     if (interestedUser) {
       return interestedUser;
     }
     const user = await this.userProvider.findByZaloId(data.oa_id);
-    const userInfo = await this.http(`https://openapi.zalo.me/v2.0/oa/getprofile?access_token=${user.zaloOA.accessToken}&data={"user_id":"${data.follower.id}"}`, {
+    const userInfo = await this.http(`${getInterestedUserProfile}?access_token=${user.zaloOA.accessToken}&data={"user_id":"${data.follower.id}"}`, {
       method: 'GET',
     }).then((response) => response.json());
     return this.zaloInterestedUserProvider.create({

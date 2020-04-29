@@ -1,5 +1,4 @@
 const { ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
-const { ResourceNotFoundError } = require('../../errors');
 
 class UserSendTextEventHandler {
   constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
@@ -11,6 +10,10 @@ class UserSendTextEventHandler {
   }
 
   async handle(data) {
+    const {
+      loggedUser,
+      interestedUser,
+    } = data;
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: data.from.id,
@@ -18,8 +21,23 @@ class UserSendTextEventHandler {
       to: data.to.id,
       metaData: data,
     });
-    await this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() });
-    await this.pubsub.publish(ZALO_MESSAGE_RECEIVED, { onZaloMessageReceived: createdMessage.toJson() });
+    const jsonData = createdMessage.toJson();
+    const emitData = {
+      ...jsonData,
+      to: {
+        id: loggedUser.id,
+        displayName: loggedUser.name,
+        avatar: loggedUser.image.link,
+      },
+      from: {
+        id: interestedUser.id,
+        displayName: interestedUser.displayName,
+        avatar: interestedUser.avatar,
+
+      },
+    };
+    await this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: emitData });
+    await this.pubsub.publish(ZALO_MESSAGE_RECEIVED, { onZaloMessageReceived: emitData });
     return createdMessage;
   }
 
@@ -27,17 +45,19 @@ class UserSendTextEventHandler {
     return 'user_send_text';
   }
 
-  async mapDataFromZalo(data, loggedUser = null, intUser = null) {
-    const user = loggedUser || await this.userProvider.findByZaloId(data.recipient.id);
+  async mapDataFromZalo(data, user = null, intUser = null) {
+    const loggedUser = user || await this.userProvider.findByZaloId(data.recipient.id);
     const interestedUser = intUser || await this.zaloInterestedUserProvider.findByZaloId(data.sender.id);
     return {
       ...data,
       to: {
-        id: user.id,
+        id: loggedUser.id,
       },
       from: {
         id: interestedUser.id,
       },
+      loggedUser,
+      interestedUser,
     };
   }
 }

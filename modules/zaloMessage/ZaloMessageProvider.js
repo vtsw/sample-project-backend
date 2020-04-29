@@ -1,4 +1,4 @@
-const { ObjectId } = require('mongodb');
+const { ObjectId, Long } = require('mongodb');
 const ZaloMessage = require('./ZaloMessage');
 
 class ZaloMessageProvider {
@@ -30,7 +30,7 @@ class ZaloMessageProvider {
       content: message.content,
       from: message.from,
       to: message.to,
-      timestamp: message.timestamp,
+      timestamp: Long.fromNumber(parseInt(message.timestamp, 10)),
     });
     return ZaloMessageProvider.factory(inserted.ops[0]);
   }
