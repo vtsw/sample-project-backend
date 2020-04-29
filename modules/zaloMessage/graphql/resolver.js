@@ -12,7 +12,6 @@ module.exports = {
     zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findById(id),
     zaloMessageList: async (_, args, { container, req }) => {
       const { user } = req;
-      const loggedUser = await container.resolve('userProvider').findById(user.id);
       const messageProvider = container.resolve('zaloMessageProvider');
       const {
         query: {
@@ -21,46 +20,10 @@ module.exports = {
       } = args;
       const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(interestedUserId);
       if (!interestedUser) {
-        throw new UserInputError('InterestedUserId is invalid');
+        throw new UserInputError('InterestedUserId is invalid!');
       }
-      const result = await messageProvider
-        .find({ query: { from: [loggedUser.id, interestedUserId], to: [loggedUser.id, interestedUserId] }, page: { limit, skip } });
-      const { items } = result;
-      result.items = items.map((message) => message.toJson()).map((message) => {
-        if (message.from === loggedUser.id) {
-          const from = {
-            id: loggedUser.id,
-            avatar: loggedUser.image.link,
-            displayName: loggedUser.name,
-          };
-          const to = {
-            id: interestedUser.id,
-            displayName: interestedUser.displayName,
-            avatar: interestedUser.avatar,
-          };
-          return {
-            ...message,
-            from,
-            to,
-          };
-        }
-        const to = {
-          id: loggedUser.id,
-          avatar: loggedUser.image.link,
-          displayName: loggedUser.name,
-        };
-        const from = {
-          id: interestedUserId,
-          displayName: interestedUser.displayName,
-          avatar: interestedUser.avatar,
-        };
-        return {
-          ...message,
-          from,
-          to,
-        };
-      });
-      return result;
+      return messageProvider
+        .find({ query: { from: [user.id, interestedUserId], to: [user.id, interestedUserId] }, page: { limit, skip } });
     },
   },
   Mutation: {
@@ -75,24 +38,14 @@ module.exports = {
       }
       const zaloInterestedUserProvider = container.resolve('zaloMessageHandlerProvider');
       const handler = zaloInterestedUserProvider.provide(OASendTextEventHandler.getEvent());
-      const createdMessage = await handler.handle(await handler.mapDataFromZalo({
+      return handler.handle(await handler.mapDataFromZalo({
         event_name: OASendTextEventHandler.getEvent(),
         message: {
           text: message.content,
+          msg_id: response.data.message_id,
         },
         timestamp,
       }, loggedUser, interestedUser));
-      createdMessage.to = {
-        id: interestedUser.id,
-        displayName: interestedUser.displayName,
-        avatar: interestedUser.avatar,
-      };
-      createdMessage.from = {
-        id: loggedUser.id,
-        displayName: loggedUser.name,
-        avatar: loggedUser.image.link,
-      };
-      return createdMessage;
     },
   },
   Subscription: {
