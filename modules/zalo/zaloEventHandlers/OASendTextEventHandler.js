@@ -43,8 +43,8 @@ class OASendTextEventHandler {
       };
     }
     const [loggedUser, interestedUser] = await Promise.all([
-      user ? Promise.resolve(user) : this.userProvider.findByZaloId(data.recipient.id),
-      intUser ? Promise.resolve(intUser) : this.zaloInterestedUserProvider.findByZaloId(data.sender.id),
+      user ? Promise.resolve(user) : this.userProvider.findByZaloId(data.sender.id),
+      intUser ? Promise.resolve(intUser) : this.zaloInterestedUserProvider.findByZaloId(data.recipient.id),
     ]);
     return {
       ...data,

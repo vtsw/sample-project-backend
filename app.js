@@ -11,7 +11,7 @@ const router = require('./http/router');
 /**
  *
  * @param container
- * @returns {{app: (*|Express), graphQlServer: ApolloServer}}
+ * @returns {*|Express}
  */
 module.exports = (container) => {
   const config = container.resolve('config');
