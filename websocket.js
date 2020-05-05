@@ -17,11 +17,10 @@ module.exports = (server, container) => SubscriptionServer.create(
       const loggedUser = authService.verify(token);
       return {
         loggedUser,
+        container,
       };
     },
-    onDisconnect: () => {
-    },
-    onOperation: (message, connection) => ({ ...connection }),
+    onOperation: (message, connection) => ({ ...connection, message }),
   },
   {
     server,
