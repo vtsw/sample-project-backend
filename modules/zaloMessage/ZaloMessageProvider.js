@@ -22,6 +22,16 @@ class ZaloMessageProvider {
 
   /**
    *
+   * @param id
+   * @returns {Promise<void> | * | PromiseLike<any> | Promise<any>}
+   */
+  findByZaloMessageId(id) {
+    return this.messages.findOne({ zaloMessageId: id })
+      .then(ZaloMessageProvider.factory);
+  }
+
+  /**
+   *
    * @param {Object} message
    * @returns {Promise<null|ZaloMessage>}
    */
@@ -31,6 +41,7 @@ class ZaloMessageProvider {
       from: message.from,
       to: message.to,
       timestamp: Long.fromNumber(parseInt(message.timestamp, 10)),
+      zaloMessageId: message.zaloMessageId,
     });
     return ZaloMessageProvider.factory(inserted.ops[0]);
   }
@@ -42,7 +53,7 @@ class ZaloMessageProvider {
    */
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
     let { query } = condition;
-    query = { from: { $in: query.from }, to: { $in: query.to } };
+    query = { 'from.id': { $in: query.from }, 'to.id': { $in: query.to } };
     const messages = await this.messages
       .find(query)
       .limit(condition.page.limit + 1)

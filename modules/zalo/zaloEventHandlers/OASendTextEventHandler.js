@@ -12,33 +12,21 @@ class OASendTextEventHandler {
 
 
   async handle(data) {
+    if (data.isExist) {
+      return data.message;
+    }
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
-      from: data.from.id,
+      from: data.from,
       content: data.message.text,
-      to: data.to.id,
-      metaData: data,
+      to: data.to,
+      zaloMessageId: data.message.msg_id,
     });
     const jsonData = createdMessage.toJson();
-    const {
-      loggedUser,
-      interestedUser,
-    } = data;
-    const emitData = {
-      ...jsonData,
-      to: {
-        id: interestedUser.id,
-        displayName: interestedUser.displayName,
-        avatar: interestedUser.avatar,
-      },
-      from: {
-        id: loggedUser.id,
-        displayName: loggedUser.name,
-        avatar: loggedUser.image.link,
-      },
-    };
-    await this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: emitData });
-    await this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: emitData });
+    await Promise.all([
+      this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: jsonData }),
+      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: jsonData }),
+    ]);
     return createdMessage;
   }
 
@@ -46,19 +34,30 @@ class OASendTextEventHandler {
     return 'oa_send_text';
   }
 
-  async mapDataFromZalo(data, user = null, intUser = null) {
-    const loggedUser = user || await this.userProvider.findByZaloId(data.sender.id);
-    const interestedUser = intUser || await this.zaloInterestedUserProvider.findByZaloId(data.recipient.id);
+  async mapDataFromZalo(data, user, intUser) {
+    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
+    if (message) {
+      return {
+        isExist: true,
+        message,
+      };
+    }
+    const [loggedUser, interestedUser] = await Promise.all([
+      user ? Promise.resolve(user) : this.userProvider.findByZaloId(data.recipient.id),
+      intUser ? Promise.resolve(intUser) : this.zaloInterestedUserProvider.findByZaloId(data.sender.id),
+    ]);
     return {
       ...data,
       from: {
         id: loggedUser.id,
+        displayName: loggedUser.name,
+        avatar: loggedUser.image.link,
       },
       to: {
         id: interestedUser.id,
+        displayName: interestedUser.displayName,
+        avatar: interestedUser.avatar,
       },
-      loggedUser,
-      interestedUser,
     };
   }
 }

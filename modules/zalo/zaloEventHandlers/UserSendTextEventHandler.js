@@ -10,20 +10,33 @@ class UserSendTextEventHandler {
   }
 
   async handle(data) {
-    const {
-      loggedUser,
-      interestedUser,
-    } = data;
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
-      from: data.from.id,
+      from: data.from,
       content: data.message.text,
-      to: data.to.id,
-      metaData: data,
+      to: data.to,
+      zaloMessageId: data.message.msg_id,
     });
     const jsonData = createdMessage.toJson();
-    const emitData = {
-      ...jsonData,
+    await Promise.all([
+      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: jsonData }),
+      this.pubsub.publish(ZALO_MESSAGE_RECEIVED, { onZaloMessageReceived: jsonData }),
+    ]);
+    return createdMessage;
+  }
+
+  static getEvent() {
+    return 'user_send_text';
+  }
+
+  async mapDataFromZalo(data, user = null, intUser = null) {
+    const [loggedUser, interestedUser] = await Promise.all([
+      user ? Promise.resolve(user) : this.userProvider.findByZaloId(data.recipient.id),
+      intUser ? Promise.resolve(intUser) : this.zaloInterestedUserProvider.findByZaloId(data.sender.id),
+    ]);
+
+    return {
+      ...data,
       to: {
         id: loggedUser.id,
         displayName: loggedUser.name,
@@ -33,28 +46,6 @@ class UserSendTextEventHandler {
         id: interestedUser.id,
         displayName: interestedUser.displayName,
         avatar: interestedUser.avatar,
-
-      },
-    };
-    await this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: emitData });
-    await this.pubsub.publish(ZALO_MESSAGE_RECEIVED, { onZaloMessageReceived: emitData });
-    return createdMessage;
-  }
-
-  static getEvent() {
-    return 'user_send_text';
-  }
-
-  async mapDataFromZalo(data, user = null, intUser = null) {
-    const loggedUser = user || await this.userProvider.findByZaloId(data.recipient.id);
-    const interestedUser = intUser || await this.zaloInterestedUserProvider.findByZaloId(data.sender.id);
-    return {
-      ...data,
-      to: {
-        id: loggedUser.id,
-      },
-      from: {
-        id: interestedUser.id,
       },
       loggedUser,
       interestedUser,
