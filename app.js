@@ -26,6 +26,6 @@ module.exports = (container) => {
     graphiql: config.app.env === 'development',
     context: { container: req.container, req }, // bind http request context to graphQl context
   })));
-  app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
+  app.get('/playground', expressPlayground({ endpoint: `${config.app.host}:${config.app.port}/graphql` }));
   return app;
 };
