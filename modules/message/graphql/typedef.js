@@ -4,8 +4,8 @@ module.exports = gql`
 	type Message {
 	  id: ID!
 	  content: String!
-    lastModified: Date
-		userId: ID
+      lastModified: Date
+      userId: ID
 	}
 	
 	input CreateMessageInput {
@@ -26,7 +26,7 @@ module.exports = gql`
   input MessageListInput {
     skip: Int = 0,
     limit: Int = 10,
-	  searchText: String
+    searchText: String
     userId: ID
   }
 	

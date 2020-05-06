@@ -27,6 +27,14 @@ services:
     networks:
       - localnetwork
 
+  redis:
+    image: "redis:alpine"
+    container_name: redisInfra
+    ports:
+      - "6379:6379"
+    networks:
+      - localnetwork
+
 volumes:
   mongodb_data:
     driver: local

@@ -21,5 +21,17 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
   stream.pipe(res);
 });
 
+router.post('/zalo/webhook', async (req, res) => {
+  const { container } = req;
+  if (req.body.event_name) {
+    const handler = container.resolve('zaloMessageHandlerProvider')
+      .provide(req.body.event_name);
+    const data = await handler.mapDataFromZalo(req.body);
+    handler.handle(data);
+  }
+  res.status(200);
+  res.send('ok');
+});
+
 
 module.exports = router;

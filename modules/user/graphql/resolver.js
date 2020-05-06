@@ -50,5 +50,14 @@ module.exports = {
       return messageProvider
         .find({ query: pickBy({ userId: user.id, content }, identity), page: { limit, skip } });
     },
+    followers: (user, args, { container }) => {
+      const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
+      if (isEmpty(args)) {
+        return zaloInterestedUserProvider
+          .find({ query: { following: user.id }, page: { limit: 10, skip: 0 } });
+      }
+      const { query: { limit, skip } } = args;
+      return zaloInterestedUserProvider.find({ query: { following: user.id }, page: { limit, skip } });
+    },
   },
 };

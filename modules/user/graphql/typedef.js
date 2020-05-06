@@ -1,6 +1,16 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
+  input ZaloOAInput {
+    accessToken: String!
+    oaId: String!
+    secretKey: String!
+  }
+
+  type ZaloOA {
+    oaId: String!
+  }
+  
   type User {
     id: ID!
     name: String
@@ -8,6 +18,8 @@ module.exports = gql`
     lastModified: Date
     messages(query: MessageListInput): MessageList
     image: File
+    zaloOA: ZaloOA
+    followers(query: ZaloInterestedUserListInput): ZaloInterestedUserList
   }
 
   type UserList implements Paginatable {
@@ -25,6 +37,7 @@ module.exports = gql`
     password: String!
     name: String!
     email: String!
+    zaloOA: ZaloOAInput
   }
   
   input UpdateUserInput {
@@ -32,6 +45,7 @@ module.exports = gql`
     name: String
     email: String
     password: String
+    zaloOA: ZaloOAInput
   }
 
   input UserListInput {
