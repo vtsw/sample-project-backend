@@ -12,7 +12,7 @@ class UserFollowOAEventHandler {
     const interestedUser = await this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app);
     if (interestedUser) {
       return this.zaloInterestedUserProvider.update(interestedUser.id, {
-        followings: interestedUser.followings.push({ id: user.id, zaloId: data.oa_id, oaFollowerId: data.follower.id }),
+        followings: interestedUser.followings.push({ id: user.id, zaloId: data.oa_id, OAFollowerId: data.follower.id }),
       });
     }
     const userInfo = await this.http(`${getInterestedUserProfile}?access_token=${user.zaloOA.accessToken}&data={"user_id":"${data.follower.id}"}`, {
@@ -26,7 +26,7 @@ class UserFollowOAEventHandler {
       avatar: userInfo.data.avatar,
       avatars: userInfo.data.avatars,
       timestamp: data.timestamp,
-      followings: [{ id: user.id, zaloId: data.oa_id, oaFollowerId: data.follower.id }],
+      followings: [{ id: user.id, zaloId: data.oa_id, OAFollowerId: data.follower.id }],
       info: userInfo.data.shared_info,
     });
   }
