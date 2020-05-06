@@ -4,6 +4,7 @@ const cors = require('cors');
 const { scopePerRequest } = require('awilix-express');
 const graphqlHTTP = require('express-graphql');
 const { graphqlUploadExpress } = require('graphql-upload');
+const expressPlayground = require('graphql-playground-middleware-express').default;
 
 const schema = require('./modules');
 const router = require('./http/router');
@@ -25,5 +26,6 @@ module.exports = (container) => {
     graphiql: config.app.env === 'development',
     context: { container: req.container, req }, // bind http request context to graphQl context
   })));
+  app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
   return app;
 };
