@@ -32,7 +32,7 @@ class UserSendTextEventHandler {
   async mapDataFromZalo(data, user = null, intUser = null) {
     const [loggedUser, interestedUser] = await Promise.all([
       user ? Promise.resolve(user) : this.userProvider.findByZaloId(data.recipient.id),
-      intUser ? Promise.resolve(intUser) : this.zaloInterestedUserProvider.findByZaloId(data.sender.id),
+      intUser ? Promise.resolve(intUser) : this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
     ]);
 
     return {
