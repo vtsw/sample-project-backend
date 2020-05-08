@@ -4,7 +4,6 @@ const {
 } = require('apollo-server-express');
 
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../events');
-const OASendTextEventHandler = require('../../zalo/zaloEventHandlers/OASendTextEventHandler');
 
 
 module.exports = {
@@ -29,23 +28,32 @@ module.exports = {
   Mutation: {
     createZaloMessage: async (_, { message }, { container, req }) => {
       const { user } = req;
+      const pubsub = container.resolve('pubsub');
       const loggedUser = await container.resolve('userProvider').findById(user.id);
       const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
-      const timestamp = new Date().getTime();
-      const response = await container.resolve('zaloMessageSender').send(message.content, interestedUser, loggedUser);
-      if (response.error) {
-        throw new Error(response.message);
-      }
-      const zaloInterestedUserProvider = container.resolve('zaloMessageHandlerProvider');
-      const handler = zaloInterestedUserProvider.provide(OASendTextEventHandler.getEvent());
-      return handler.handle(await handler.mapDataFromZalo({
-        event_name: OASendTextEventHandler.getEvent(),
-        message: {
-          text: message.content,
-          msg_id: response.data.message_id,
+      const response = await container.resolve('zaloMessageSender').send({
+        text: message.content,
+      }, interestedUser, loggedUser);
+      const createdMessage = await container.resolve('zaloMessageProvider').create({
+        timestamp: new Date().getTime(),
+        from: {
+          id: loggedUser.id,
+          displayName: loggedUser.name,
+          avatar: loggedUser.image.link,
         },
-        timestamp,
-      }, loggedUser, interestedUser));
+        content: message.content,
+        to: {
+          id: interestedUser.id,
+          displayName: interestedUser.displayName,
+          avatar: interestedUser.avatar,
+        },
+        zaloMessageId: response.data.message_id,
+      });
+      await Promise.all([
+        pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),
+        pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),
+      ]);
+      return createdMessage;
     },
   },
   Subscription: {

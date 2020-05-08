@@ -1,4 +1,11 @@
 class UserFollowOAEventHandler {
+  /**
+   *
+   * @param zaloInterestedUserProvider
+   * @param http
+   * @param userProvider
+   * @param config
+   */
   constructor(zaloInterestedUserProvider, http, userProvider, config) {
     this.zaloInterestedUserProvider = zaloInterestedUserProvider;
     this.http = http;
@@ -6,6 +13,11 @@ class UserFollowOAEventHandler {
     this.config = config;
   }
 
+  /**
+   *
+   * @param data
+   * @returns {Promise<*>}
+   */
   async handle(data) {
     const user = await this.userProvider.findByZaloId(data.oa_id);
     const { zaloApi: { officialAccount: { getInterestedUserProfile } } } = this.config;
@@ -33,11 +45,6 @@ class UserFollowOAEventHandler {
 
   static getEvent() {
     return 'follow';
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  async mapDataFromZalo(data) {
-    return data;
   }
 }
 

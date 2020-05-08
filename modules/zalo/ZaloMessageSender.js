@@ -11,9 +11,7 @@ class ZaloMessageSender {
       recipient: {
         user_id: recipient.zaloId,
       },
-      message: {
-        text: message,
-      },
+      message,
     };
     const response = await this.http(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
       method: 'post',
