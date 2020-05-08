@@ -1,4 +1,5 @@
 const { asClass } = require('awilix');
+const request = require('request');
 const fetch = require('node-fetch');
 const ServiceProvider = require('../../ServiceProvider');
 const ZaloMessageHandlerProvider = require('../zalo/ZaloEventHandlerProvider');
@@ -7,6 +8,7 @@ const OASendTextEventHandler = require('../zalo/zaloEventHandlers/OASendTextEven
 const UserFollowOAEventHandler = require('../zalo/zaloEventHandlers/UserFollowOAEventHandler');
 const ZaloMessageSender = require('./ZaloMessageSender');
 const ZaloInterestedUserProvider = require('../zalo/ZaloInterestedUserProvider');
+const ZaloUploader = require('../zalo/ZaloUploader');
 
 class ZaloServiceProvider extends ServiceProvider {
   register() {
@@ -24,10 +26,14 @@ class ZaloServiceProvider extends ServiceProvider {
     this.container.register('zaloMessageSender', asClass(ZaloMessageSender).inject((injectedContainer) => ({
       http: fetch,
       config: injectedContainer.resolve('config'),
-    })));
+    })).singleton());
     this.container.register('zaloInterestedUserProvider', asClass(ZaloInterestedUserProvider)
       .inject((injectedContainer) => ({ zaloInterestedUsers: injectedContainer.resolve('db').collection('zaloInterestedUsers') }))
       .singleton());
+    this.container.register('zaloUploader', asClass(ZaloUploader).inject((injectedContainer) => ({
+      request,
+      config: injectedContainer.resolve('config'),
+    })).singleton());
   }
 
   async boot() {

@@ -45,6 +45,14 @@ class ZaloMessage {
     this.data.timestamp = value;
   }
 
+  set attachment(value) {
+    this.data.attachment = value;
+  }
+
+  get attachment() {
+    return this.data.attachment;
+  }
+
   toJson() {
     return this.data;
   }

@@ -54,7 +54,10 @@ module.exports = {
     social: {},
     officialAccount: {
       getInterestedUserProfile: "https://openapi.zalo.me/v2.0/oa/getprofile",
-      sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message"
+      sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message",
+      upload: {
+        uploadImage: "https://openapi.zalo.me/v2.0/oa/upload/image",
+      }
     }
   }
 };

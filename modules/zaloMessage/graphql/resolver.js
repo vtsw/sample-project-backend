@@ -1,4 +1,5 @@
 const { withFilter } = require('apollo-server-express');
+const lodash = require('lodash');
 const {
   UserInputError,
 } = require('apollo-server-express');
@@ -54,6 +55,66 @@ module.exports = {
         pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),
       ]);
       return createdMessage;
+    },
+    createZaloMessageAttachment: async (_, { message }, { container, req }) => {
+      const { attachmentFile, content } = message;
+      const { user } = req;
+      const loggedUser = await container.resolve('userProvider').findById(user.id);
+      const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
+      const {
+        filename, mimetype, encoding,
+        createReadStream,
+      } = await attachmentFile;
+      const readable = createReadStream();
+      const data = await new Promise((resolve, reject) => {
+        const bufs = [];
+        readable.on('error', (err) => {
+          reject(err);
+        });
+        readable.on('data', (d) => { bufs.push(d); });
+        readable.on('end', () => {
+          resolve(Buffer.concat(bufs));
+        });
+      });
+      const uploadResult = await container.resolve('zaloUploader').uploadImage({
+        readableSteam: data,
+        mimetype,
+        filename,
+        encoding,
+      }, loggedUser);
+      const response = await container.resolve('zaloMessageSender').send({
+        text: content,
+        attachment: {
+          type: 'template',
+          payload: {
+            template_type: 'media',
+            elements: [{
+              media_type: 'image',
+              attachment_id: uploadResult.data.attachment_id,
+            }],
+          },
+        },
+      }, interestedUser, loggedUser);
+
+      return container.resolve('zaloMessageProvider').create(lodash.pickBy({
+        timestamp: new Date().getTime(),
+        from: {
+          id: loggedUser.id,
+          displayName: loggedUser.name,
+          avatar: loggedUser.image.link,
+        },
+        content,
+        attachment: {
+          attachmentId: uploadResult.data.attachment_id,
+          mediaType: 'image',
+        },
+        to: {
+          id: interestedUser.id,
+          displayName: interestedUser.displayName,
+          avatar: interestedUser.avatar,
+        },
+        zaloMessageId: response.data.message_id,
+      }, lodash.identity));
     },
   },
   Subscription: {

@@ -38,6 +38,7 @@ class ZaloMessageProvider {
   async create(message) {
     const inserted = await this.messages.insertOne({
       content: message.content,
+      attachment: message.attachment,
       from: message.from,
       to: message.to,
       timestamp: Long.fromNumber(parseInt(message.timestamp, 10)),
@@ -95,6 +96,7 @@ class ZaloMessageProvider {
     message.from = data.from;
     message.to = data.to;
     message.timestamp = data.timestamp;
+    message.attachment = data.attachment;
     return message;
   }
 }
