@@ -25,14 +25,12 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
 
 router.post('/zalo/webhook', async (req, res) => {
   const { container } = req;
-  // console.log(req.body);
-  // console.log(req.body);
-  // if (req.body.event_name) {
-  //   const handler = container.resolve('zaloMessageHandlerProvider')
-  //     .provide(req.body.event_name);
-  //   const data = await handler.mapDataFromZalo(req.body);
-  //   handler.handle(data);
-  // }
+  if (req.body.event_name) {
+    const handler = container.resolve('zaloMessageHandlerProvider')
+      .provide(req.body.event_name);
+    const data = await handler.mapDataFromZalo(req.body);
+    handler.handle(data);
+  }
   res.status(200);
   res.send('ok');
 });
@@ -40,7 +38,7 @@ router.post('/zalo/webhook', async (req, res) => {
 router.get('/zalo/handlerClick', async (req, res) => {
   const { container } = req;
 
-  const handler = container.resolve('zaloReservationProvider');
+  const handler = container.resolve('reservationProvider');
 
   const raw = req.query;
 
@@ -49,9 +47,8 @@ router.get('/zalo/handlerClick', async (req, res) => {
     content: {
       userId: raw.userId,
       doctorId: raw.doctorId,
-      choose: raw.choose === 'true' ? true : false,
-      timeUnix: raw.time,
-      timeString: moment.unix(raw.time).format("YYYY-MM-DD HH:mm:ss")
+      timeUnix: moment(raw.time, "YYYY-MM-DD HH:mm").unix(),
+      timeString: raw.time
     }
   }
 
