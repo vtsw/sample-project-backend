@@ -1,4 +1,4 @@
-class ZaloReservation {
+class Reservation {
   constructor(id) {
     this.data = {
       id,
@@ -36,4 +36,4 @@ class ZaloReservation {
   }
 }
 
-module.exports = ZaloReservation;
+module.exports = Reservation;

@@ -1,28 +1,18 @@
 const { ObjectId } = require('mongodb');
 const moment = require('moment');
-const ZaloReservation = require('./ZaloReservation');
+const ZaloReservation = require('./Reservation');
 
-class ZaloReservationProvider {
+class ReservationTemplateProvider {
   /**
    *
-   * @param {Collection} ZaloReservation
+   * @param {Collection} reservationTemplate
    */
-  constructor(zaloReservation) {
-    this.zaloReservation = zaloReservation;
+  constructor(reservationTemplate) {
+    this.reservationTemplate = reservationTemplate;
   }
-  /**
-   *
-   * @param {Object} zaloReservation
-   * @returns {Promise<ZaloInterestedUser>}
-   */
-  async create(zaloReservation) {
-    console.log('hello world', zaloReservation);
-    // const inserted = await this.zaloReservation.insertOne({
-    //   type: zaloReservation.type,
-    //   content: zaloReservation.content,
-    // });
 
-    // return ZaloReservationProvider.factory(inserted.ops[0]);
+  findByType(type) {
+    return this.reservationTemplate.findOne({type: type})
   }
 
   /**
@@ -51,4 +41,4 @@ class ZaloReservationProvider {
   }
 }
 
-module.exports = ZaloReservationProvider;
+module.exports = ReservationTemplateProvider;

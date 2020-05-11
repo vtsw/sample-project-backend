@@ -7,8 +7,8 @@ const OASendTextEventHandler = require('../zalo/zaloEventHandlers/OASendTextEven
 const UserFollowOAEventHandler = require('../zalo/zaloEventHandlers/UserFollowOAEventHandler');
 const ZaloMessageSender = require('./ZaloMessageSender');
 const ZaloInterestedUserProvider = require('../zalo/ZaloInterestedUserProvider');
-const ZaloReservationProvider = require('../zaloReservation/ZaloReservationProvider');
-
+const ReservationProvider = require('../reservation/ZaloReservationProvider');
+const ReservationTemplateProvider  = require('../reservation/ReservationTemplateProvider');
 class ZaloServiceProvider extends ServiceProvider {
   register() {
     this.container.register('userSendTextEventHandler', asClass(UserSendTextEventHandler).singleton());
@@ -29,8 +29,11 @@ class ZaloServiceProvider extends ServiceProvider {
     this.container.register('zaloInterestedUserProvider', asClass(ZaloInterestedUserProvider)
       .inject((injectedContainer) => ({ zaloInterestedUsers: injectedContainer.resolve('db').collection('zaloInterestedUsers') }))
       .singleton());
-    this.container.register('zaloReservationProvider', asClass(ZaloReservationProvider)
-      .inject((injectedContainer) => ({ zaloReservation: injectedContainer.resolve('db').collection('zaloReservation') }))
+    this.container.register('reservationProvider', asClass(ReservationProvider)
+      .inject((injectedContainer) => ({ reservation: injectedContainer.resolve('db').collection('reservation') }))
+      .singleton());
+    this.container.register('reservationTemplateProvider', asClass(ReservationTemplateProvider)
+      .inject((injectedContainer) => ({ reservationTemplate: injectedContainer.resolve('db').collection('reservationTemplate') }))
       .singleton());
   }
 

@@ -5,7 +5,7 @@ const UserTypeDefs = require('./user/graphql/typedef');
 const MessageTypeDefs = require('./message/graphql/typedef');
 const ZaloMessageTypeDefs = require('./zaloMessage/graphql/typedef');
 const ZaloTypeDefs = require('./zalo/graphql/typedef');
-const ZaloReservationTypeDefs = require('./zaloReservation/graphql/typedef');
+const ZaloReservationTypeDefs = require('./reservation/graphql/typedef');
 
 const baseTypeDefs = gql`
 

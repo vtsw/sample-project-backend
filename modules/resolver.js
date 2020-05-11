@@ -6,7 +6,7 @@ const userResolver = require('./user/graphql/resolver');
 const messageResolver = require('./message/graphql/resolver');
 const zaloMessageResolver = require('./zaloMessage/graphql/resolver');
 const zaloResolver = require('./zalo/graphql/resolver');
-const zaloReservationResolver = require('./zaloReservation/graphql/resolver');
+const zaloReservationResolver = require('./reservation/graphql/resolver');
 
 const baseResolver = {
   Upload: GraphQLUpload,
