@@ -36,7 +36,7 @@ class ZaloMessageProvider {
    *
    * @param id
    * @param messageUpdate
-   * @returns {Promise<null|Message>}
+   * @returns {Promise<null|ZaloMessage>}
    */
   async update(id, messageUpdate) {
     const message = await this.findById(id);

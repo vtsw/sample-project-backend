@@ -1,4 +1,6 @@
 const { withFilter } = require('apollo-server-express');
+const sizeOf = require('buffer-image-size');
+const sharp = require('sharp');
 const lodash = require('lodash');
 const {
   UserInputError,
@@ -82,6 +84,9 @@ module.exports = {
         filename,
         encoding,
       }, loggedUser);
+      if (uploadResult.error) {
+        throw new Error(uploadResult.message);
+      }
       const response = await container.resolve('zaloMessageSender').send({
         text: content,
         attachment: {
