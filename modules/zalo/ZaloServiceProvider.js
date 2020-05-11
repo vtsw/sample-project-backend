@@ -6,6 +6,7 @@ const ZaloMessageHandlerProvider = require('../zalo/ZaloEventHandlerProvider');
 const UserSendTextEventHandler = require('../zalo/zaloEventHandlers/UserSendTextEventHandler');
 const OASendTextEventHandler = require('../zalo/zaloEventHandlers/OASendTextEventHandler');
 const UserFollowOAEventHandler = require('../zalo/zaloEventHandlers/UserFollowOAEventHandler');
+const OASendImageEventHandler = require('../zalo/zaloEventHandlers/OASendImageEventHandler');
 const ZaloMessageSender = require('./ZaloMessageSender');
 const ZaloInterestedUserProvider = require('../zalo/ZaloInterestedUserProvider');
 const ZaloUploader = require('../zalo/ZaloUploader');
@@ -14,6 +15,7 @@ class ZaloServiceProvider extends ServiceProvider {
   register() {
     this.container.register('userSendTextEventHandler', asClass(UserSendTextEventHandler).singleton());
     this.container.register('oASendTextEventHandler', asClass(OASendTextEventHandler).singleton());
+    this.container.register('oASendImageEventHandler', asClass(OASendImageEventHandler).singleton());
     this.container.register('userFollowOAEventHandler', asClass(UserFollowOAEventHandler).inject((injectedContainer) => ({
       http: fetch,
       zaloInterestedUserProvider: injectedContainer.resolve('zaloInterestedUserProvider'),
@@ -41,6 +43,7 @@ class ZaloServiceProvider extends ServiceProvider {
     zaloMessageHandlerProvider.register(UserSendTextEventHandler.getEvent(), this.container.resolve('userSendTextEventHandler'));
     zaloMessageHandlerProvider.register(OASendTextEventHandler.getEvent(), this.container.resolve('oASendTextEventHandler'));
     zaloMessageHandlerProvider.register(UserFollowOAEventHandler.getEvent(), this.container.resolve('userFollowOAEventHandler'));
+    zaloMessageHandlerProvider.register(OASendImageEventHandler.getEvent(), this.container.resolve('oASendImageEventHandler'));
   }
 }
 

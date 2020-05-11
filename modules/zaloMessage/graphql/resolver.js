@@ -104,10 +104,7 @@ module.exports = {
           avatar: loggedUser.image.link,
         },
         content,
-        attachment: {
-          attachmentId: uploadResult.data.attachment_id,
-          mediaType: 'image',
-        },
+        attachments: [],
         to: {
           id: interestedUser.id,
           displayName: interestedUser.displayName,

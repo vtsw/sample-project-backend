@@ -1,10 +1,16 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
+  
+  type ZaloAttachmentFilePayload {
+    thumbnail: String
+    description: String
+    url: String
+  }
+  
   type ZaloAttachmentFile {
-    attachmentId: ID
-    mediaType: String
-    token: String
+    payload: ZaloAttachmentFilePayload
+    type: String
   }
   
   type ZaloMessage {
@@ -12,7 +18,7 @@ module.exports = gql`
     from: ZaloMessageParticipant!
     to: ZaloMessageParticipant!
     content: String
-    attachment: ZaloAttachmentFile
+    attachments: [ZaloAttachmentFile]
     timestamp: Date
   }
   

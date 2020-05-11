@@ -1,5 +1,7 @@
 const { ObjectId, Long } = require('mongodb');
+const moment = require('moment');
 const ZaloMessage = require('./ZaloMessage');
+const { ResourceNotFoundError } = require('../errors');
 
 class ZaloMessageProvider {
   /**
@@ -32,17 +34,36 @@ class ZaloMessageProvider {
 
   /**
    *
+   * @param id
+   * @param messageUpdate
+   * @returns {Promise<null|Message>}
+   */
+  async update(id, messageUpdate) {
+    const message = await this.findById(id);
+    if (!message) {
+      throw new ResourceNotFoundError('message', `id: ${id}`);
+    }
+    const lastModified = moment().format();
+    await this.messages
+      .updateOne({ _id: ObjectId(id) }, { $set: { ...messageUpdate, lastModified } });
+    return ZaloMessageProvider.factory(Object.assign(message.toJson(), messageUpdate, { lastModified }));
+  }
+
+
+  /**
+   *
    * @param {Object} message
    * @returns {Promise<null|ZaloMessage>}
    */
   async create(message) {
     const inserted = await this.messages.insertOne({
       content: message.content,
-      attachment: message.attachment,
+      attachments: message.attachments,
       from: message.from,
       to: message.to,
       timestamp: Long.fromNumber(parseInt(message.timestamp, 10)),
       zaloMessageId: message.zaloMessageId,
+      lastModified: moment().format(),
     });
     return ZaloMessageProvider.factory(inserted.ops[0]);
   }
@@ -96,7 +117,7 @@ class ZaloMessageProvider {
     message.from = data.from;
     message.to = data.to;
     message.timestamp = data.timestamp;
-    message.attachment = data.attachment;
+    message.attachments = data.attachments;
     return message;
   }
 }
