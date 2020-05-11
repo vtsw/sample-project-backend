@@ -7,6 +7,7 @@ const OASendTextEventHandler = require('../zalo/zaloEventHandlers/OASendTextEven
 const UserFollowOAEventHandler = require('../zalo/zaloEventHandlers/UserFollowOAEventHandler');
 const ZaloMessageSender = require('./ZaloMessageSender');
 const ZaloInterestedUserProvider = require('../zalo/ZaloInterestedUserProvider');
+const ZaloReservationProvider = require('../zalo/ZaloReservationProvider');
 
 class ZaloServiceProvider extends ServiceProvider {
   register() {
@@ -27,6 +28,9 @@ class ZaloServiceProvider extends ServiceProvider {
     })));
     this.container.register('zaloInterestedUserProvider', asClass(ZaloInterestedUserProvider)
       .inject((injectedContainer) => ({ zaloInterestedUsers: injectedContainer.resolve('db').collection('zaloInterestedUsers') }))
+      .singleton());
+    this.container.register('zaloReservationProvider', asClass(ZaloReservationProvider)
+      .inject((injectedContainer) => ({ zaloReservation: injectedContainer.resolve('db').collection('zaloReservation') }))
       .singleton());
   }
 

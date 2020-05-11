@@ -1,5 +1,7 @@
 const { Router } = require('express');
 const { isAuthenticated } = require('./middleware');
+const { pick } = require('lodash');
+const moment = require('moment');
 
 const router = Router();
 
@@ -23,20 +25,39 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
 
 router.post('/zalo/webhook', async (req, res) => {
   const { container } = req;
-  console.log(req.body);
-  if (req.body.event_name) {
-    const handler = container.resolve('zaloMessageHandlerProvider')
-      .provide(req.body.event_name);
-    const data = await handler.mapDataFromZalo(req.body);
-    handler.handle(data);
-  }
+  // console.log(req.body);
+  // console.log(req.body);
+  // if (req.body.event_name) {
+  //   const handler = container.resolve('zaloMessageHandlerProvider')
+  //     .provide(req.body.event_name);
+  //   const data = await handler.mapDataFromZalo(req.body);
+  //   handler.handle(data);
+  // }
   res.status(200);
   res.send('ok');
 });
 
-router.get('/zalo/handlerClick', (req, res) => {
-  console.log(req.query);
-  res.send('1111')
+router.get('/zalo/handlerClick', async (req, res) => {
+  const { container } = req;
+
+  const handler = container.resolve('zaloReservationProvider');
+
+  const raw = req.query;
+
+  let reservation = {
+    type: raw.type,
+    content: {
+      userId: raw.userId,
+      doctorId: raw.doctorId,
+      choose: raw.choose === 'true' ? true : false,
+      timeUnix: raw.time,
+      timeString: moment.unix(raw.time).format("YYYY-MM-DD HH:mm:ss")
+    }
+  }
+
+  const result = await handler.create(reservation);
+
+  res.send(result)
 })
 
 
