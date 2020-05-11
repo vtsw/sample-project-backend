@@ -1,11 +1,9 @@
-const { isEmpty } = require('lodash');
-const { ResourceNotFoundError } = require('../../errors');
 
 
 module.exports = {
   Query: {
     reservation: async (_, { }, { container }) => {
-      return '1312312321';
+      return 'reservation';
     },
   
   },
@@ -13,6 +11,8 @@ module.exports = {
   Mutation : {
     sendExamimationReservationMessage: (_, {reservation}, { container, req }) => {
       console.log('12312312', reservation.patient);
+
+      const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
       return '12313';
     },
   }
