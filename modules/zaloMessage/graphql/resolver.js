@@ -68,7 +68,7 @@ module.exports = {
         createReadStream,
       } = await attachmentFile;
       const readable = createReadStream();
-      const data = await new Promise((resolve, reject) => {
+      let data = await new Promise((resolve, reject) => {
         const bufs = [];
         readable.on('error', (err) => {
           reject(err);
@@ -78,6 +78,19 @@ module.exports = {
           resolve(Buffer.concat(bufs));
         });
       });
+      if (data.length > 1000000) {
+        const { height, width } = sizeOf(data);
+        const ratio = width / height;
+        const sizePerPixel = data.length / (height * width);
+        const residePixel = 1000000 / sizePerPixel;
+        const resideHeight = Math.sqrt(residePixel / ratio);
+        const resideWeight = residePixel / resideHeight;
+        data = await sharp(data)
+          .resize({
+            width: Math.round(resideWeight),
+            height: Math.round(resideHeight),
+          }).toBuffer();
+      }
       const uploadResult = await container.resolve('zaloUploader').uploadImage({
         readableSteam: data,
         mimetype,

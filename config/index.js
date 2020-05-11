@@ -38,7 +38,7 @@ module.exports = {
     frequency: process.env.LOG_FREQUENCY || null,
     utc: process.env.LOG_UTC === 'true',
   },
-  graphqlUploadExpress: { maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 10000000, maxFiles: parseInt(process.env.MAX_FILES, 10) || 10 },
+  graphqlUploadExpress: { maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 100000000, maxFiles: parseInt(process.env.MAX_FILES, 10) || 10 },
   serviceProviders: [
     require('../services/ThirdPartyServiceProvider'),
     require('../modules/zalo/ZaloServiceProvider'),
