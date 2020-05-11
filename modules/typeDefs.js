@@ -5,6 +5,7 @@ const UserTypeDefs = require('./user/graphql/typedef');
 const MessageTypeDefs = require('./message/graphql/typedef');
 const ZaloMessageTypeDefs = require('./zaloMessage/graphql/typedef');
 const ZaloTypeDefs = require('./zalo/graphql/typedef');
+const ZaloReservationTypeDefs = require('./zaloReservation/graphql/typedef');
 
 const baseTypeDefs = gql`
 
@@ -44,5 +45,5 @@ const baseTypeDefs = gql`
   }
 `;
 
-const typeDefs = [baseTypeDefs, UserTypeDefs, MessageTypeDefs, ZaloMessageTypeDefs, ZaloTypeDefs];
+const typeDefs = [baseTypeDefs, UserTypeDefs, MessageTypeDefs, ZaloMessageTypeDefs, ZaloTypeDefs, ZaloReservationTypeDefs];
 module.exports = mergeTypes(typeDefs, { all: true });
