@@ -31,7 +31,7 @@ class UserFollowOAEventHandler {
       method: 'GET',
     }).then((response) => response.json());
     return this.zaloInterestedUserProvider.create({
-      zaloId: data.interestedUser,
+      zaloId: data.user_id_by_app,
       displayName: userInfo.data.display_name,
       dob: userInfo.data.birth_date,
       gender: userInfo.data.user_gender === 1 ? 'male' : 'female',
