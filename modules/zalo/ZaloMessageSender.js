@@ -22,6 +22,24 @@ class ZaloMessageSender {
     });
     return response.json();
   }
+
+  async sendMessage(message, recipient, sender) {
+    const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
+    const { accessToken } = sender ? sender.zaloOA : this.config.zaloApi ;
+    const body = {
+      recipient: {
+        user_id: recipient.zaloId,
+      },
+      message: message
+    };
+
+    const response = await this.http(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
+      method: 'post',
+      body: JSON.stringify(body),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    return response.json();
+  }
 }
 
 module.exports = ZaloMessageSender;

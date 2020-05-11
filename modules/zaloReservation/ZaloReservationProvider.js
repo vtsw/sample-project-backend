@@ -16,12 +16,13 @@ class ZaloReservationProvider {
    * @returns {Promise<ZaloInterestedUser>}
    */
   async create(zaloReservation) {
-    const inserted = await this.zaloReservation.insertOne({
-      type: zaloReservation.type,
-      content: zaloReservation.content,
-    });
+    console.log('hello world', zaloReservation);
+    // const inserted = await this.zaloReservation.insertOne({
+    //   type: zaloReservation.type,
+    //   content: zaloReservation.content,
+    // });
 
-    return ZaloReservationProvider.factory(inserted.ops[0]);
+    // return ZaloReservationProvider.factory(inserted.ops[0]);
   }
 
   /**
