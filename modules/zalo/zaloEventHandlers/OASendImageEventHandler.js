@@ -14,20 +14,6 @@ class OASendImageEventHandler {
    * @returns {Promise<void>}
    */
   async handle(data) {
-    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
-    if (message) {
-      const updatedMessage = await this.zaloMessageProvider.update(message.id, {
-        attachments: data.message.attachments,
-      });
-
-      await Promise.all([
-        this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: updatedMessage.toJson() }),
-        this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: updatedMessage.toJson() }),
-      ]);
-
-      return updatedMessage;
-    }
-
     const [OAUser, interestedUser] = await Promise.all([
       this.userProvider.findByZaloId(data.sender.id),
       this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),

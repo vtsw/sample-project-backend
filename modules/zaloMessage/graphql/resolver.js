@@ -1,7 +1,6 @@
 const { withFilter } = require('apollo-server-express');
 const sizeOf = require('buffer-image-size');
 const sharp = require('sharp');
-const lodash = require('lodash');
 const {
   UserInputError,
 } = require('apollo-server-express');
@@ -11,7 +10,7 @@ const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = requi
 
 module.exports = {
   Query: {
-    zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findById(id),
+    zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findByZaloMessageId(id),
     zaloMessageList: async (_, args, { container, req }) => {
       const { user } = req;
       const messageProvider = container.resolve('zaloMessageProvider');
@@ -31,13 +30,12 @@ module.exports = {
   Mutation: {
     createZaloMessage: async (_, { message }, { container, req }) => {
       const { user } = req;
-      const pubsub = container.resolve('pubsub');
       const loggedUser = await container.resolve('userProvider').findById(user.id);
       const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
       const response = await container.resolve('zaloMessageSender').send({
         text: message.content,
       }, interestedUser, loggedUser);
-      const createdMessage = await container.resolve('zaloMessageProvider').create({
+      return {
         timestamp: new Date().getTime(),
         from: {
           id: loggedUser.id,
@@ -51,12 +49,7 @@ module.exports = {
           avatar: interestedUser.avatar,
         },
         zaloMessageId: response.data.message_id,
-      });
-      await Promise.all([
-        pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),
-        pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),
-      ]);
-      return createdMessage;
+      };
     },
     createZaloMessageAttachment: async (_, { message }, { container, req }) => {
       const { attachmentFile, content } = message;
@@ -113,8 +106,8 @@ module.exports = {
           },
         },
       }, interestedUser, loggedUser);
-
-      return container.resolve('zaloMessageProvider').create(lodash.pickBy({
+      console.log(response.data.message_id, 'send');
+      return {
         timestamp: new Date().getTime(),
         from: {
           id: loggedUser.id,
@@ -129,7 +122,7 @@ module.exports = {
           avatar: interestedUser.avatar,
         },
         zaloMessageId: response.data.message_id,
-      }, lodash.identity));
+      };
     },
   },
   Subscription: {
@@ -159,5 +152,8 @@ module.exports = {
         },
       ),
     },
+  },
+  ZaloMessage: {
+    id: (message) => message.zaloMessageId,
   },
 };

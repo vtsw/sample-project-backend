@@ -118,6 +118,7 @@ class ZaloMessageProvider {
     message.to = data.to;
     message.timestamp = data.timestamp;
     message.attachments = data.attachments;
+    message.zaloMessageId = data.zaloMessageId;
     return message;
   }
 }
