@@ -1,4 +1,4 @@
-const { EXAMINATION } = require('../type');
+const { EXAMINATION } = require('../types');
 const moment = require('moment');
 
 module.exports = {
