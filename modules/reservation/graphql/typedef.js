@@ -35,6 +35,6 @@ module.exports = gql`
     }
 
     type Mutation {
-      sendExamimationReservationMessage(reservation: ReservationInput!): ReservationRequest
+      sendExamimationReservationMessage(reservation: ReservationInput!): ReservationRequest  @isAuthenticated
     }
 `;
