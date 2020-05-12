@@ -7,7 +7,7 @@ const OASendTextEventHandler = require('../zalo/zaloEventHandlers/OASendTextEven
 const UserFollowOAEventHandler = require('../zalo/zaloEventHandlers/UserFollowOAEventHandler');
 const ZaloMessageSender = require('./ZaloMessageSender');
 const ZaloInterestedUserProvider = require('../zalo/ZaloInterestedUserProvider');
-const ReservationProvider = require('../reservation/ZaloReservationProvider');
+const ReservationProvider = require('../reservation/ReservationProvider');
 const ReservationTemplateProvider  = require('../reservation/ReservationTemplateProvider');
 class ZaloServiceProvider extends ServiceProvider {
   register() {
