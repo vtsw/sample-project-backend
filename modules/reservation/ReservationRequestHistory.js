@@ -2,9 +2,10 @@ class ReservationRequestHistory {
   constructor(id) {
     this.data = {
       id,
-      source : "",
-      recipientId: "",
-      senderId: "",
+      source : null,
+      recipientId: null,
+      senderId: null,
+      timestamp: null,
       payload: {}
     }
   }
@@ -39,6 +40,14 @@ class ReservationRequestHistory {
 
   set senderId(value) {
     this.data.senderId = value;
+  }
+
+  get timestamp() {
+    return this.data.senderId;
+  }
+
+  set timestamp(value) {
+    this.data.timestamp = value;
   }
 
   get payload() {

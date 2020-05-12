@@ -1,18 +1,28 @@
 const { ObjectId } = require('mongodb');
 const moment = require('moment');
-const ZaloReservation = require('./Reservation');
+const ReservationRequestHistory = require('./ReservationRequestHistory');
 
 class ReservationRequestHistoryProvider {
   /**
    *
-   * @param {Collection} reservationTemplate
+   * @param {Collection} reservationRequestHistory
    */
-  constructor(reservationTemplate) {
-    this.reservationTemplate = reservationTemplate;
+  constructor(reservationRequestHistory) {
+    this.reservationRequestHistory = reservationRequestHistory;
   }
 
-  findByType(type) {
-    return this.reservationTemplate.findOne({type: type})
+  findOne() {
+    return this.reservationRequestHistory.findOne()
+  }
+
+  /**
+ *
+ * @param {Object} reservationRequestHistory
+ * @returns {Promise<reservationRequestHistory>}
+ */
+  async create(reservationHistory) {
+    const inserted = await this.reservationRequestHistory.insertOne(reservationHistory);
+    return ReservationRequestHistoryProvider.factory(inserted.ops[0]);
   }
 
   /**
@@ -34,10 +44,14 @@ class ReservationRequestHistoryProvider {
         data[key] = rawData[key];
       }
     });
-    const zaloReservation = new ZaloReservation(data._id || data.id);
-    zaloReservation.type = data.type;
-    zaloReservation.content = data.content;
-    return zaloReservation;
+    const reservationRequestHistory = new ReservationRequestHistory(data._id || data.id);
+    reservationRequestHistory.source = data.source;
+    reservationRequestHistory.recipientId = data.recipientId;
+    reservationRequestHistory.senderId = data.senderId;
+    reservationRequestHistory.payload = data.payload;
+    reservationRequestHistory.timestamp = data.timestamp;
+
+    return reservationRequestHistory;
   }
 }
 

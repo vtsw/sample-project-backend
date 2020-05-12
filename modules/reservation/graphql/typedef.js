@@ -2,7 +2,7 @@ const gql = require('graphql-tag');
 
 module.exports = gql`
     input bookingOptionsInput {
-      doctor: String!,
+      doctor: ID!,
       time: String!,
     }
 
@@ -10,12 +10,31 @@ module.exports = gql`
       patient: String,
       bookingOptions: [bookingOptionsInput!]!
     }
+
+    type bookingOptions {
+      doctor: ID!,
+      time: String!,
+    }
+
+    type ReservationRequestPayLoad {
+      patient: ID,
+      bookingOptions: [bookingOptions!]!
+    }
+
+    type ReservationRequest {
+      id: ID!,
+      recipientId: ID,
+      senderId: String,
+      source: String,
+      timestamp: String,
+      payload: ReservationRequestPayLoad
+    }
     
     type Query {
       reservation: String
     }
 
     type Mutation {
-      sendExamimationReservationMessage(reservation: ReservationInput!): String
+      sendExamimationReservationMessage(reservation: ReservationInput!): ReservationRequest
     }
 `;

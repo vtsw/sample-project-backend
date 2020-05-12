@@ -10,12 +10,15 @@ module.exports = {
 
   Mutation : {
     sendExamimationReservationMessage: async (_, {reservation}, { container, req }) => {
-      const zaloMessageSender = container.resolve('zaloMessageSender');
-      const zaloReservationTemplateProvider = container.resolve('reservationTemplateProvider');
-
-      const {bookingOptions} = reservation;
+      const [zaloMessageSender, reservationTemplateProvider, reservationRequestHistoryProvider] = [
+        container.resolve('zaloMessageSender'), 
+        container.resolve('reservationTemplateProvider'),
+        container.resolve('reservationRequestHistoryProvider')
+      ];
+    
+      const {bookingOptions, patient} = reservation;
       const examinationDate = moment(bookingOptions[0].time, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD');
-      let examinationTemplate = await zaloReservationTemplateProvider.findByType(EXAMINATION);
+      let examinationTemplate = await reservationTemplateProvider.findByType(EXAMINATION);
 
       const elementList = bookingOptions.map(o => {
         const examTime = moment(o.time, 'YYYY-MM-DD HH:mm').format('HH:mm');
@@ -38,10 +41,26 @@ module.exports = {
       let message = examinationTemplate.message;
       message.attachment.payload.elements = elements;
 
-      const response = await zaloMessageSender.sendMessage(message, {zaloId: "5953238198052633581"});
-      console.log(response);
+      const zaLoResponse = await zaloMessageSender.sendMessage(message, {zaloId: patient});
 
-      return '12313';
+      if(zaLoResponse.error) {
+        console.log('Sender message fail');
+        return 'send zalo message fail'
+      }
+
+      const reservationHistory = {
+        recipientId: patient,
+        senderId: "4368496045530866759",
+        source : "zalo",
+        timestamp: moment().valueOf(),
+        payload: reservation, 
+      }
+
+      const result = await reservationRequestHistoryProvider.create(reservationHistory);
+
+      console.log(result);
+
+      return result;
     },
   }
 };
