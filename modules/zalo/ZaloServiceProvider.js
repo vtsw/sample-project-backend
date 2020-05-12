@@ -29,12 +29,12 @@ class ZaloServiceProvider extends ServiceProvider {
     this.container.register('zaloInterestedUserProvider', asClass(ZaloInterestedUserProvider)
       .inject((injectedContainer) => ({ zaloInterestedUsers: injectedContainer.resolve('db').collection('zaloInterestedUsers') }))
       .singleton());
-    this.container.register('reservationProvider', asClass(ReservationProvider)
-      .inject((injectedContainer) => ({ reservation: injectedContainer.resolve('db').collection('reservation') }))
-      .singleton());
-    this.container.register('reservationTemplateProvider', asClass(ReservationTemplateProvider)
-      .inject((injectedContainer) => ({ reservationTemplate: injectedContainer.resolve('db').collection('reservationTemplate') }))
-      .singleton());
+    // this.container.register('reservationProvider', asClass(ReservationProvider)
+    //   .inject((injectedContainer) => ({ reservation: injectedContainer.resolve('db').collection('reservation') }))
+    //   .singleton());
+    // this.container.register('reservationTemplateProvider', asClass(ReservationTemplateProvider)
+    //   .inject((injectedContainer) => ({ reservationTemplate: injectedContainer.resolve('db').collection('reservationTemplate') }))
+    //   .singleton());
   }
 
   async boot() {
