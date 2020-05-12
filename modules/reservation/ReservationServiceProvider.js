@@ -3,7 +3,6 @@ const fetch = require('node-fetch');
 const ServiceProvider = require('../../ServiceProvider');
 const ReservationProvider = require('../reservation/ReservationProvider');
 const ReservationTemplateProvider  = require('../reservation/ReservationTemplateProvider');
-const ReservationEventHandlerProvider = require('../reservation/ReservationEventHandlerProvider');
 class ReservationServiceProvider extends ServiceProvider {
   register() {
     this.container.register('reservationProvider', asClass(ReservationProvider)

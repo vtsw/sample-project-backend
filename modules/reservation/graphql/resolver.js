@@ -38,9 +38,7 @@ module.exports = {
       let message = examinationTemplate.message;
       message.attachment.payload.elements = elements;
 
-      const response = await zaloMessageSender.sendMessage(message, {zaloId: "5953238198052633581"});
-
-      console.log(response);
+      // const response = await zaloMessageSender.sendMessage(message, {zaloId: "5953238198052633581"});
 
       return '12313';
     },
