@@ -54,8 +54,6 @@ router.get('/zalo/handlerClick', async (req, res) => {
     }
   }
 
-  console.log(reservation);
-
   const result = await handler.create(reservation);
 
   res.send(result)

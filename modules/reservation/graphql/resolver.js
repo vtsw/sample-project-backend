@@ -50,7 +50,7 @@ module.exports = {
         return 'send zalo message fail'
       }
 
-      const reservationHistory = {
+      const reservationRequest = {
         source : "zalo",
         zaloMessageId: zaloMessageId,
         zaloRecipientId: patient,
@@ -60,7 +60,7 @@ module.exports = {
         timestamp: moment().valueOf(),
       }
 
-      const result = await reservationRequestProvider.create(reservationHistory);
+      const result = await reservationRequestProvider.create(reservationRequest);
 
       return result;
     },
