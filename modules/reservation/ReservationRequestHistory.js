@@ -1,10 +1,13 @@
+const { ObjectId } = require('mongodb');
+
 class ReservationRequestHistory {
   constructor(id) {
     this.data = {
       id,
       source : null,
-      recipientId: null,
-      senderId: null,
+      cleverSenderId: null,
+      zaloRecipientId: null,
+      zaloSenderId: null,
       timestamp: null,
       payload: {}
     }
@@ -26,20 +29,29 @@ class ReservationRequestHistory {
     this.data.source = value;
   }
 
-  get recipientId() {
-    return this.data.recipientId;
+  get zaloRecipientId() {
+    return this.data.zaloRecipientId;
   }
 
-  set recipientId(value) {
-    this.data.recipientId = value;
+  set zaloRecipientId(value) {
+    this.data.zaloRecipientId = value;
   }
 
-  get senderId() {
-    return this.data.senderId;
+  get zaloSenderId() {
+    return this.data.zaloSenderId;
   }
 
-  set senderId(value) {
-    this.data.senderId = value;
+  set zaloSenderId(value) {
+    console.log('asdasdasdasdas', value);
+    this.data.zaloSenderId = value;
+  }
+
+  get cleverSenderId() {
+    return this.data.cleverSenderId;
+  }
+
+  set cleverSenderId(value) {
+    this.data.cleverSenderId = value;
   }
 
   get timestamp() {

@@ -23,8 +23,8 @@ module.exports = gql`
 
     type ReservationRequest {
       id: ID!,
-      recipientId: ID,
-      senderId: String,
+      zaloRecipientId: ID,
+      zaloSenderId: String,
       source: String,
       timestamp: String,
       payload: ReservationRequestPayLoad

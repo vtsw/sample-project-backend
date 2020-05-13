@@ -1,5 +1,6 @@
 const { EXAMINATION } = require('../types');
 const moment = require('moment');
+const { ObjectId } = require('mongodb');
 
 module.exports = {
   Query: {
@@ -15,7 +16,7 @@ module.exports = {
         container.resolve('reservationTemplateProvider'),
         container.resolve('reservationRequestHistoryProvider')
       ];
-    
+
       const {bookingOptions, patient} = reservation;
       const examinationDate = moment(bookingOptions[0].time, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD');
       let examinationTemplate = await reservationTemplateProvider.findByType(EXAMINATION);
@@ -49,16 +50,15 @@ module.exports = {
       }
 
       const reservationHistory = {
-        recipientId: patient,
-        senderId: "4368496045530866759",
+        cleverSenderId: ObjectId(req.user.id),
+        zaloRecipientId: patient,
+        zaloSenderId: "4368496045530866759",
         source : "zalo",
         timestamp: moment().valueOf(),
         payload: reservation, 
       }
 
       const result = await reservationRequestHistoryProvider.create(reservationHistory);
-
-      console.log(result);
 
       return result;
     },
