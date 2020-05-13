@@ -9,6 +9,7 @@ class ReservationRequest {
       zaloRecipientId: null,
       zaloMessageId: null,
       zaloSenderId: null,
+      corId: null,
       timestamp: null,
       payload: {}
     }
@@ -64,6 +65,14 @@ class ReservationRequest {
 
   get zaloMessageId() {
     return this.data.zaloMessageId;
+  }
+
+  set corId(value) {
+    this.data.corId = value;
+  }
+
+  get corId() {
+    return this.data.corId;
   }
 
   set timestamp(value) {

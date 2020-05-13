@@ -26,6 +26,7 @@ module.exports = gql`
       zaloRecipientId: ID,
       zaloSenderId: String,
       source: String,
+      corID: ID,
       timestamp: String,
       zaloMessageId: ID,
       payload: ReservationRequestPayLoad

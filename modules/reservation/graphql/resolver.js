@@ -21,6 +21,7 @@ module.exports = {
       const examinationDate = moment(bookingOptions[0].time, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD');
       let examinationTemplate = await reservationTemplateProvider.findByType(EXAMINATION);
 
+      const corId = ObjectId();
       const elementList = bookingOptions.map(o => {
         const examTime = moment(o.time, 'YYYY-MM-DD HH:mm').format('HH:mm');
         return {
@@ -28,7 +29,7 @@ module.exports = {
           image_url: examinationTemplate.element.image_url,
           default_action: {
             type: examinationTemplate.element.default_action.type,
-            url: `https://b3e2e570.ngrok.io/api/zalo/handlerClick?type=examination&zaloPatientId=${patient}&zaloDoctorId=${o.doctor}&time=${o.time}`
+            url: `https://b3e2e570.ngrok.io/api/zalo/handlerClick?type=examination&zaloPatientId=${patient}&zaloDoctorId=${o.doctor}&time=${o.time}&corID=${corId}`
           }
         }
       });
@@ -55,6 +56,7 @@ module.exports = {
         zaloMessageId: zaloMessageId,
         zaloRecipientId: patient,
         zaloSenderId: "4368496045530866759",
+        corId: corId,
         cleverSenderId: ObjectId(req.user.id),
         payload: reservation, 
         timestamp: moment().valueOf(),

@@ -47,8 +47,8 @@ router.get('/zalo/handlerClick', async (req, res) => {
     type: raw.type,
     timestamp: moment().valueOf(),
     content: {
-      zaloPatientId: raw.patient,
-      doctorId: raw.doctorId,
+      zaloPatientId: raw.zaloPatientId,
+      zaloDoctorId: raw.zaloDoctorId,
       timeUnix: moment(raw.time, "YYYY-MM-DD HH:mm").unix(),
       timeString: raw.time
     }

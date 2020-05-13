@@ -16,11 +16,7 @@ class ReservationProvider {
    * @returns {Promise<ZaloInterestedUser>}
    */
   async create(reservation) {
-    const inserted = await this.reservation.insertOne({
-      type: reservation.type,
-      content: reservation.content,
-    });
-
+    const inserted = await this.reservation.insertOne(reservation);
     return ReservationProvider.factory(inserted.ops[0]);
   }
 
