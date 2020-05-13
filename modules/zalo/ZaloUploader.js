@@ -1,4 +1,4 @@
-const util = require('util');
+const FormData = require('form-data');
 
 class ZaloUploader {
   constructor(request, config) {
@@ -9,19 +9,16 @@ class ZaloUploader {
   async uploadImage(imageFile, owner) {
     const { accessToken } = owner.zaloOA;
     const { zaloApi: { officialAccount: { upload: { uploadImage } } } } = this.config;
+    const formdata = new FormData();
+    formdata.append('file', imageFile.readableSteam, {
+      name: 'file',
+      filename: imageFile.filename,
+    });
     const options = {
       method: 'POST',
-      url: `${uploadImage}?access_token=${accessToken}`,
-      formData: {
-        file: {
-          value: imageFile.readableSteam,
-          options: {
-            filename: imageFile.filename,
-          },
-        },
-      },
+      body: formdata,
     };
-    return util.promisify(this.request)(options).then((res) => JSON.parse(res.body));
+    return this.request(`${uploadImage}?access_token=${accessToken}`, options).then((res) => res.json());
   }
 }
 

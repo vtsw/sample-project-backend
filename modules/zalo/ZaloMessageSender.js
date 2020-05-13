@@ -1,6 +1,6 @@
 class ZaloMessageSender {
-  constructor(http, config) {
-    this.http = http;
+  constructor(request, config) {
+    this.request = request;
     this.config = config;
   }
 
@@ -13,7 +13,7 @@ class ZaloMessageSender {
       },
       message,
     };
-    const response = await this.http(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
+    const response = await this.request(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
       method: 'post',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },

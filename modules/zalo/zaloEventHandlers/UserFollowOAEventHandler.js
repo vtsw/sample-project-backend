@@ -2,13 +2,13 @@ class UserFollowOAEventHandler {
   /**
    *
    * @param zaloInterestedUserProvider
-   * @param http
+   * @param request
    * @param userProvider
    * @param config
    */
-  constructor(zaloInterestedUserProvider, http, userProvider, config) {
+  constructor(zaloInterestedUserProvider, request, userProvider, config) {
     this.zaloInterestedUserProvider = zaloInterestedUserProvider;
-    this.http = http;
+    this.request = request;
     this.userProvider = userProvider;
     this.config = config;
   }
@@ -27,9 +27,10 @@ class UserFollowOAEventHandler {
         followings: interestedUser.followings.push({ id: user.id, zaloId: data.oa_id, OAFollowerId: data.follower.id }),
       });
     }
-    const userInfo = await this.http(`${getInterestedUserProfile}?access_token=${user.zaloOA.accessToken}&data={"user_id":"${data.follower.id}"}`, {
-      method: 'GET',
-    }).then((response) => response.json());
+    const userInfo = await this.request(`${getInterestedUserProfile}?access_token=${user.zaloOA.accessToken}&data={"user_id":"${data.follower.id}"}`,
+      {
+        method: 'GET',
+      }).then((response) => response.json());
     return this.zaloInterestedUserProvider.create({
       zaloId: data.user_id_by_app,
       displayName: userInfo.data.display_name,

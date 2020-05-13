@@ -1,5 +1,4 @@
 const { asClass } = require('awilix');
-const request = require('request');
 const fetch = require('node-fetch');
 const ServiceProvider = require('../../ServiceProvider');
 const ZaloMessageHandlerProvider = require('../zalo/ZaloEventHandlerProvider');
@@ -19,7 +18,7 @@ class ZaloServiceProvider extends ServiceProvider {
     this.container.register('oASendTextEventHandler', asClass(OASendTextEventHandler).singleton());
     this.container.register('oASendImageEventHandler', asClass(OASendImageEventHandler).singleton());
     this.container.register('userFollowOAEventHandler', asClass(UserFollowOAEventHandler).inject((injectedContainer) => ({
-      http: fetch,
+      request: fetch,
       zaloInterestedUserProvider: injectedContainer.resolve('zaloInterestedUserProvider'),
       userProvider: injectedContainer.resolve('userProvider'),
       config: injectedContainer.resolve('config'),
@@ -28,14 +27,14 @@ class ZaloServiceProvider extends ServiceProvider {
     this.container.register('zaloMessageHandlerProvider', asClass(ZaloMessageHandlerProvider)
       .singleton());
     this.container.register('zaloMessageSender', asClass(ZaloMessageSender).inject((injectedContainer) => ({
-      http: fetch,
+      request: fetch,
       config: injectedContainer.resolve('config'),
     })).singleton());
     this.container.register('zaloInterestedUserProvider', asClass(ZaloInterestedUserProvider)
       .inject((injectedContainer) => ({ zaloInterestedUsers: injectedContainer.resolve('db').collection('zaloInterestedUsers') }))
       .singleton());
     this.container.register('zaloUploader', asClass(ZaloUploader).inject((injectedContainer) => ({
-      request,
+      request: fetch,
       config: injectedContainer.resolve('config'),
     })).singleton());
   }
