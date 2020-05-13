@@ -53,9 +53,6 @@ module.exports = {
     },
     createZaloMessageAttachment: async (_, { message }, { container, req }) => {
       const { attachmentFile, content, fileType } = message;
-      const isImage = fileType === 'image';
-      const isFile = fileType === 'file';
-      const isGif = fileType === 'gif';
       const { user } = req;
       const loggedUser = await container.resolve('userProvider').findById(user.id);
       const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
@@ -76,7 +73,7 @@ module.exports = {
         });
       });
       let sendMessageRespond;
-      if (isImage) {
+      if (fileType === 'Image') {
         if (data.length > 1000000) {
           const { height, width } = sizeOf(data);
           const ratio = width / height;
@@ -96,13 +93,13 @@ module.exports = {
           },
           content,
         }, interestedUser, loggedUser);
-      } else if (isFile) {
+      } else if (fileType === 'File') {
         sendMessageRespond = await zaloMessageSender.sendFile({
           file: {
             filename, mimetype, encoding, data,
           },
         }, interestedUser, loggedUser);
-      } else if (isGif) {
+      } else if (fileType === 'Gif') {
         sendMessageRespond = await zaloMessageSender.sendGif({
           file: {
             filename, mimetype, encoding, data,

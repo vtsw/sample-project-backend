@@ -1,6 +1,11 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
+  enum ZaloFileType {
+    Image
+    File
+    Gif
+  }
   
   type ZaloAttachmentFilePayload {
     thumbnail: String
@@ -64,7 +69,7 @@ module.exports = gql`
     to: ID!
     content: String
     attachmentFile: Upload!
-    fileType: String!
+    fileType: ZaloFileType
   }
 
   extend type Mutation {
