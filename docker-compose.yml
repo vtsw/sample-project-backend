@@ -23,9 +23,9 @@ services:
       BCRYPT_SALT_ROUND: 10
       NODE_ENV: "development"
       APP_PORT: "4000"
-      APP_HOST: "4000"
       REDIS_HOST: "redisInfra"
       REDIS_PORT: "6379"
+      APP_HOST: "https://172.76.10.161"
     networks:
       - localnetwork
 

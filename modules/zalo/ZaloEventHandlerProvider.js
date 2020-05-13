@@ -20,7 +20,7 @@ class ZaloEventHandlerProvider {
 
   provide(event) {
     if (!this.hasEvent(event)) {
-      throw new Error(`this event ${event} does'nt exist.`);
+      throw new Error(`this event ${event} doesn't exist.`);
     }
     return this.eventHandlers[event];
   }

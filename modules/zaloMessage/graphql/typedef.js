@@ -1,11 +1,24 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
+  
+  type ZaloAttachmentFilePayload {
+    thumbnail: String
+    description: String
+    url: String
+  }
+  
+  type ZaloAttachmentFile {
+    payload: ZaloAttachmentFilePayload
+    type: String
+  }
+  
   type ZaloMessage {
     id: ID!
     from: ZaloMessageParticipant!
     to: ZaloMessageParticipant!
-    content: String!
+    content: String
+    attachments: [ZaloAttachmentFile]
     timestamp: Date
   }
   
@@ -43,9 +56,16 @@ module.exports = gql`
   input OnZaloMessageReceivedInput {
     from: String
   }
+  
+  input CreateZaloMessageAttachmentInput {
+    to: ID!
+    content: String
+    attachmentFile: Upload!
+  }
 
   extend type Mutation {
     createZaloMessage(message: CreateZaloMessageInput!): ZaloMessage @isAuthenticated
+    createZaloMessageAttachment(message: CreateZaloMessageAttachmentInput!): ZaloMessage @isAuthenticated
   }
 
   extend type Query {
