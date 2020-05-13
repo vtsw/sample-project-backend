@@ -13,12 +13,11 @@ class ZaloMessageSender {
       },
       message,
     };
-    const response = await this.request(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
+    return this.request(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
       method: 'post',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
-    });
-    return response.json();
+    }).then((res) => res.json());
   }
 }
 
