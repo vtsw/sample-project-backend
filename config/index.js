@@ -63,6 +63,6 @@ module.exports = {
     }
   },
   zaloWebhook: {
-    ignoringEvents: []
+    ignoreEvents: []
   }
 };
