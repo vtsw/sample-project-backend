@@ -11,10 +11,10 @@ module.exports = {
 
   Mutation : {
     createReservationRequest: async (_, {reservation}, { container, req }) => {
-      const [zaloMessageSender, reservationTemplateProvider, reservationRequestHistoryProvider] = [
+      const [zaloMessageSender, reservationTemplateProvider, reservationRequestProvider] = [
         container.resolve('zaloMessageSender'), 
         container.resolve('reservationTemplateProvider'),
-        container.resolve('reservationRequestHistoryProvider')
+        container.resolve('reservationRequestProvider')
       ];
 
       const {bookingOptions, patient} = reservation;
@@ -50,20 +50,17 @@ module.exports = {
         return 'send zalo message fail'
       }
 
-      console.log('123123123', zaloMessageId);
       const reservationHistory = {
-        cleverSenderId: ObjectId(req.user.id),
+        source : "zalo",
+        zaloMessageId: zaloMessageId,
         zaloRecipientId: patient,
         zaloSenderId: "4368496045530866759",
-        zaloMessageId: zaloMessageId,
-        source : "zalo",
-        timestamp: moment().valueOf(),
+        cleverSenderId: ObjectId(req.user.id),
         payload: reservation, 
+        timestamp: moment().valueOf(),
       }
 
-      const result = await reservationRequestHistoryProvider.create(reservationHistory);
-
-      console.log(result);
+      const result = await reservationRequestProvider.create(reservationHistory);
 
       return result;
     },

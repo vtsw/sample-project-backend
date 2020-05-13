@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
 
-class ReservationRequestHistory {
+class ReservationRequest {
   constructor(id) {
     this.data = {
       id,
@@ -83,4 +83,4 @@ class ReservationRequestHistory {
   }
 }
 
-module.exports = ReservationRequestHistory;
+module.exports = ReservationRequest;
