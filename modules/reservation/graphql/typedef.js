@@ -3,7 +3,7 @@ const gql = require('graphql-tag');
 module.exports = gql`
     input bookingOptionsInput {
       doctor: ID!,
-      time: String!,
+      time: Float!,
     }
 
     input ReservationInput {
@@ -13,7 +13,7 @@ module.exports = gql`
 
     type bookingOptions {
       doctor: ID!,
-      time: String!,
+      time: Float!,
     }
 
     type ReservationRequestPayLoad {
