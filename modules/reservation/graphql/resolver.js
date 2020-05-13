@@ -10,7 +10,7 @@ module.exports = {
   },
 
   Mutation : {
-    sendExamimationReservationMessage: async (_, {reservation}, { container, req }) => {
+    createReservationRequest: async (_, {reservation}, { container, req }) => {
       const [zaloMessageSender, reservationTemplateProvider, reservationRequestHistoryProvider] = [
         container.resolve('zaloMessageSender'), 
         container.resolve('reservationTemplateProvider'),
@@ -28,7 +28,7 @@ module.exports = {
           image_url: examinationTemplate.element.image_url,
           default_action: {
             type: examinationTemplate.element.default_action.type,
-            url: `https://b3e2e570.ngrok.io/api/zalo/handlerClick?type=examination&patientId=${patient}&doctorId=${o.doctor}&time=${o.time}`
+            url: `https://b3e2e570.ngrok.io/api/zalo/handlerClick?type=examination&zaloPatientId=${patient}&zaloDoctorId=${o.doctor}&time=${o.time}`
           }
         }
       });
@@ -43,22 +43,27 @@ module.exports = {
       message.attachment.payload.elements = elements;
 
       const zaLoResponse = await zaloMessageSender.sendMessage(message, {zaloId: patient});
+      const zaloMessageId = zaLoResponse.data.message_id;
 
       if(zaLoResponse.error) {
         console.log('Sender message fail');
         return 'send zalo message fail'
       }
 
+      console.log('123123123', zaloMessageId);
       const reservationHistory = {
         cleverSenderId: ObjectId(req.user.id),
         zaloRecipientId: patient,
         zaloSenderId: "4368496045530866759",
+        zaloMessageId: zaloMessageId,
         source : "zalo",
         timestamp: moment().valueOf(),
         payload: reservation, 
       }
 
       const result = await reservationRequestHistoryProvider.create(reservationHistory);
+
+      console.log(result);
 
       return result;
     },

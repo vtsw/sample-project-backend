@@ -1,6 +1,5 @@
 const { Router } = require('express');
 const { isAuthenticated } = require('./middleware');
-const { pick } = require('lodash');
 const moment = require('moment');
 
 const router = Router();
@@ -42,15 +41,20 @@ router.get('/zalo/handlerClick', async (req, res) => {
 
   const raw = req.query;
 
+  console.log(raw);
+
   let reservation = {
     type: raw.type,
+    timestamp: moment().valueOf(),
     content: {
-      userId: raw.userId,
+      zaloPatientId: raw.patient,
       doctorId: raw.doctorId,
       timeUnix: moment(raw.time, "YYYY-MM-DD HH:mm").unix(),
       timeString: raw.time
     }
   }
+
+  console.log(reservation);
 
   const result = await handler.create(reservation);
 

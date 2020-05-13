@@ -27,6 +27,7 @@ module.exports = gql`
       zaloSenderId: String,
       source: String,
       timestamp: String,
+      zaloMessageId: ID,
       payload: ReservationRequestPayLoad
     }
     
@@ -35,6 +36,6 @@ module.exports = gql`
     }
 
     type Mutation {
-      sendExamimationReservationMessage(reservation: ReservationInput!): ReservationRequest  @isAuthenticated
+      createReservationRequest(reservation: ReservationInput!): ReservationRequest  @isAuthenticated
     }
 `;

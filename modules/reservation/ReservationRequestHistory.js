@@ -7,6 +7,7 @@ class ReservationRequestHistory {
       source : null,
       cleverSenderId: null,
       zaloRecipientId: null,
+      zaloMessageId: null,
       zaloSenderId: null,
       timestamp: null,
       payload: {}
@@ -42,7 +43,6 @@ class ReservationRequestHistory {
   }
 
   set zaloSenderId(value) {
-    console.log('asdasdasdasdas', value);
     this.data.zaloSenderId = value;
   }
 
@@ -56,6 +56,14 @@ class ReservationRequestHistory {
 
   get timestamp() {
     return this.data.senderId;
+  }
+
+  set zaloMessageId(value) {
+    this.data.zaloMessageId = value;
+  }
+
+  get zaloMessageId() {
+    return this.data.zaloMessageId;
   }
 
   set timestamp(value) {

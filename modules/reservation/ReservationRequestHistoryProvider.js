@@ -46,10 +46,11 @@ class ReservationRequestHistoryProvider {
     });
     const reservationRequestHistory = new ReservationRequestHistory(data._id || data.id);
     reservationRequestHistory.source = data.source;
-    reservationRequestHistory.recipientId = data.recipientId;
-    reservationRequestHistory.senderId = data.senderId;
+    reservationRequestHistory.zaloRecipientId = data.zaloRecipientId;
+    reservationRequestHistory.zaloSenderId = data.zaloSenderId;
     reservationRequestHistory.payload = data.payload;
     reservationRequestHistory.timestamp = data.timestamp;
+    reservationRequestHistory.zaloMessageId = reservationRequestHistory.zaloMessageId;
 
     return reservationRequestHistory;
   }
