@@ -106,7 +106,6 @@ module.exports = {
           },
         },
       }, interestedUser, loggedUser);
-      console.log(response.data.message_id, 'send');
       return {
         timestamp: new Date().getTime(),
         from: {
