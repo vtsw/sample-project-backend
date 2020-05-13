@@ -18,12 +18,12 @@ module.exports = {
       ];
 
       const {bookingOptions, patient} = reservation;
-      const examinationDate = moment(bookingOptions[0].time, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD');
+      const examinationDate = moment(bookingOptions[0].time).format('YYYY-MM-DD');
       let examinationTemplate = await reservationTemplateProvider.findByType(EXAMINATION);
 
       const corId = ObjectId();
       const elementList = bookingOptions.map(o => {
-        const examTime = moment(o.time, 'YYYY-MM-DD HH:mm').format('HH:mm');
+        const examTime = moment(o.time).format('HH:mm');
         return {
           title: `${examinationTemplate.element.title} ${o.doctor} ${examinationTemplate.element.time} ${examTime}`,
           image_url: examinationTemplate.element.image_url,
