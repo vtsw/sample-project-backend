@@ -28,7 +28,7 @@ module.exports = {
           image_url: examinationTemplate.element.image_url,
           default_action: {
             type: examinationTemplate.element.default_action.type,
-            url: `https://96e9f924.ngrok.io/api/zalo/handlerClick?type=examination&userId=5953238198052633581&doctorId=${o.doctor}&time=${o.time}`
+            url: `https://96e9f924.ngrok.io/api/zalo/handlerClick?type=examination&patientId=${patient}&doctorId=${o.doctor}&time=${o.time}`
           }
         }
       });
