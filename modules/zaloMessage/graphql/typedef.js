@@ -6,6 +6,9 @@ module.exports = gql`
     thumbnail: String
     description: String
     url: String
+    size: String
+    name: String
+    type: String
   }
   
   type ZaloAttachmentFile {
@@ -41,7 +44,7 @@ module.exports = gql`
 
   input ZaloMessageListInput {
     interestedUserId: ID!
-    skip: Int = 0,
+    skip: Int = 0
     limit: Int = 10
   }
   
@@ -61,6 +64,7 @@ module.exports = gql`
     to: ID!
     content: String
     attachmentFile: Upload!
+    fileType: String!
   }
 
   extend type Mutation {

@@ -32,7 +32,7 @@ module.exports = {
       const { user } = req;
       const loggedUser = await container.resolve('userProvider').findById(user.id);
       const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
-      const response = await container.resolve('zaloMessageSender').send({
+      const response = await container.resolve('zaloMessageSender').sendText({
         text: message.content,
       }, interestedUser, loggedUser);
       return {
@@ -52,10 +52,14 @@ module.exports = {
       };
     },
     createZaloMessageAttachment: async (_, { message }, { container, req }) => {
-      const { attachmentFile, content } = message;
+      const { attachmentFile, content, fileType } = message;
+      const isImage = fileType === 'image';
+      const isFile = fileType === 'file';
+      const isGif = fileType === 'gif';
       const { user } = req;
       const loggedUser = await container.resolve('userProvider').findById(user.id);
       const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
+      const zaloMessageSender = container.resolve('zaloMessageSender');
       const {
         filename, mimetype, encoding,
         createReadStream,
@@ -71,41 +75,40 @@ module.exports = {
           resolve(Buffer.concat(bufs));
         });
       });
-      if (data.length > 1000000) {
-        const { height, width } = sizeOf(data);
-        const ratio = width / height;
-        const sizePerPixel = data.length / (height * width);
-        const residePixel = 1000000 / sizePerPixel;
-        const resideHeight = Math.sqrt(residePixel / ratio);
-        const resideWeight = residePixel / resideHeight;
-        data = await sharp(data)
-          .resize({
-            width: Math.round(resideWeight),
-            height: Math.round(resideHeight),
-          }).toBuffer();
-      }
-      const uploadResult = await container.resolve('zaloUploader').uploadImage({
-        readableSteam: data,
-        mimetype,
-        filename,
-        encoding,
-      }, loggedUser);
-      if (uploadResult.error) {
-        throw new Error(uploadResult.message);
-      }
-      const response = await container.resolve('zaloMessageSender').send({
-        text: content,
-        attachment: {
-          type: 'template',
-          payload: {
-            template_type: 'media',
-            elements: [{
-              media_type: 'image',
-              attachment_id: uploadResult.data.attachment_id,
-            }],
+      let sendMessageRespond;
+      if (isImage) {
+        if (data.length > 1000000) {
+          const { height, width } = sizeOf(data);
+          const ratio = width / height;
+          const sizePerPixel = data.length / (height * width);
+          const residePixel = 1000000 / sizePerPixel;
+          const resideHeight = Math.sqrt(residePixel / ratio);
+          const resideWeight = residePixel / resideHeight;
+          data = await sharp(data)
+            .resize({
+              width: Math.round(resideWeight),
+              height: Math.round(resideHeight),
+            }).toBuffer();
+        }
+        sendMessageRespond = await zaloMessageSender.sendImage({
+          file: {
+            filename, mimetype, encoding, data,
           },
-        },
-      }, interestedUser, loggedUser);
+          content,
+        }, interestedUser, loggedUser);
+      } else if (isFile) {
+        sendMessageRespond = await zaloMessageSender.sendFile({
+          file: {
+            filename, mimetype, encoding, data,
+          },
+        }, interestedUser, loggedUser);
+      } else if (isGif) {
+        sendMessageRespond = await zaloMessageSender.sendGif({
+          file: {
+            filename, mimetype, encoding, data,
+          },
+        }, interestedUser, loggedUser);
+      }
       return {
         timestamp: new Date().getTime(),
         from: {
@@ -120,7 +123,7 @@ module.exports = {
           displayName: interestedUser.displayName,
           avatar: interestedUser.avatar,
         },
-        zaloMessageId: response.data.message_id,
+        zaloMessageId: sendMessageRespond.data.message_id,
       };
     },
   },
