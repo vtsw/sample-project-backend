@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { isAuthenticated } = require('./middleware');
 const moment = require('moment');
+const { ObjectId } = require('mongodb');
 
 const router = Router();
 
@@ -45,12 +46,12 @@ router.get('/zalo/handlerClick', async (req, res) => {
 
   let reservation = {
     type: raw.type,
-    timestamp: moment().valueOf(),
+    timestamp: moment().unix(),
+    corId: ObjectId(raw.corId),
     content: {
       zaloPatientId: raw.zaloPatientId,
       zaloDoctorId: raw.zaloDoctorId,
-      timeUnix: moment(raw.time, "YYYY-MM-DD HH:mm").unix(),
-      timeString: raw.time
+      reservationTime: raw.time,
     }
   }
 
