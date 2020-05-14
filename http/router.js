@@ -26,7 +26,7 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
 
 router.post('/zalo/webhook', (req, res) => {
   const { container } = req;
-  if (req.body.event_name) {
+  if (req.body.event_name && req.body.event_name !== 'user_seen_message') {
     const handler = container.resolve('zaloMessageHandlerProvider')
       .provide(req.body.event_name);
     handler.handle(req.body);

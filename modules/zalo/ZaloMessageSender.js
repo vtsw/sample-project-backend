@@ -122,7 +122,7 @@ class ZaloMessageSender {
       message: message
     };
 
-    const response = await this.http(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
+    const response = await this.request(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
       method: 'post',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },

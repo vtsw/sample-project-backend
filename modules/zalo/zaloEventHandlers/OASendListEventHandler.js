@@ -10,10 +10,12 @@ class OASendListEventHandler {
   }
 
   async handle(data) {
+
+    // console.log(data.message.attachments);
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: data.from,
-      content: data.message.text,
+      content: data.message,
       to: data.to,
       zaloMessageId: data.message.msg_id,
     });
