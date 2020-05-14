@@ -63,7 +63,7 @@ module.exports = {
     onZaloMessageReceived: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_RECEIVED),
-        ({ onZaloMessageReceived }, args, { loggedUser }) => onZaloMessageReceived.to.id === loggedUser.id,
+        ({ onZaloMessageReceived }, args, { loggedUser }) => true,
       ),
     },
     onZaloMessageCreated: {
