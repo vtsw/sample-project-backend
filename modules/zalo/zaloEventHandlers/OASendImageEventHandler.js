@@ -14,7 +14,7 @@ class OASendImageEventHandler {
    * @returns {Promise<void>}
    */
   async handle(data) {
-    const message = await this.zaloMessageProvider.findByZaloId(data.message.msg_id);
+    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
     if (message) {
       return message;
     }
@@ -38,6 +38,7 @@ class OASendImageEventHandler {
         avatar: interestedUser.avatar,
       },
       zaloMessageId: data.message.msg_id,
+      type: data.event_name === OASendImageEventHandler.getEvent() ? 'Image' : 'Gif',
     });
 
     await Promise.all([

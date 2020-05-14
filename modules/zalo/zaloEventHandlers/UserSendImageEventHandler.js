@@ -10,7 +10,7 @@ class UserSendImageEventHandler {
   }
 
   async handle(data) {
-    const message = await this.zaloMessageProvider.findByZaloId(data.message.msg_id);
+    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
     if (message) {
       return message;
     }
@@ -33,6 +33,7 @@ class UserSendImageEventHandler {
       content: data.message.text,
       attachments: data.message.attachments,
       zaloMessageId: data.message.msg_id,
+      type: data.event_name === UserSendImageEventHandler.getEvent() ? 'Image' : 'Gif',
     });
     await Promise.all([
       this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),

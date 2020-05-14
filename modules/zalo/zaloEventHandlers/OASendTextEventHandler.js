@@ -11,7 +11,7 @@ class OASendTextEventHandler {
 
 
   async handle(data) {
-    const message = await this.zaloMessageProvider.findByZaloId(data.message.msg_id);
+    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
     if (message) {
       return message;
     }
@@ -33,6 +33,7 @@ class OASendTextEventHandler {
         avatar: interestedUser.avatar,
       },
       zaloMessageId: data.message.msg_id,
+      type: 'Text',
     });
     await Promise.all([
       this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),
