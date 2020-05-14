@@ -1,8 +1,8 @@
 const { ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
 
-class UserSendTextEventHandler {
+class UserSendFileEventHandler {
   constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
-    this.name = UserSendTextEventHandler.getEvent();
+    this.name = UserSendFileEventHandler.getEvent();
     this.zaloMessageProvider = zaloMessageProvider;
     this.userProvider = userProvider;
     this.zaloInterestedUserProvider = zaloInterestedUserProvider;
@@ -27,6 +27,7 @@ class UserSendTextEventHandler {
         avatar: interestedUser.avatar,
       },
       content: data.message.text,
+      attachments: data.message.attachments,
       zaloMessageId: data.message.msg_id,
     });
     await Promise.all([
@@ -37,8 +38,8 @@ class UserSendTextEventHandler {
   }
 
   static getEvent() {
-    return 'user_send_text';
+    return 'user_send_file';
   }
 }
 
-module.exports = UserSendTextEventHandler;
+module.exports = UserSendFileEventHandler;

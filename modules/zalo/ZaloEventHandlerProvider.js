@@ -1,6 +1,7 @@
 class ZaloEventHandlerProvider {
-  constructor() {
+  constructor(config) {
     this.eventHandlers = {};
+    this.config = config;
   }
 
   register(event, handler) {
@@ -20,7 +21,10 @@ class ZaloEventHandlerProvider {
 
   provide(event) {
     if (!this.hasEvent(event)) {
-      throw new Error(`this event ${event} does'nt exist.`);
+      throw new Error(`this event ${event} doesn't exist.`);
+    }
+    if (this.config.zaloWebhook.ignoreEvents && this.config.zaloWebhook.ignoreEvents.includes(event)) {
+      return () => {};
     }
     return this.eventHandlers[event];
   }
