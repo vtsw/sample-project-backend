@@ -2,7 +2,7 @@ const { ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../../zaloMessa
 
 class OASendListEventHandler {
   constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
-    this.name = UserSendTextEventHandler.getEvent();
+    this.name = OASendListEventHandler.getEvent();
     this.zaloMessageProvider = zaloMessageProvider;
     this.userProvider = userProvider;
     this.zaloInterestedUserProvider = zaloInterestedUserProvider;
@@ -26,7 +26,7 @@ class OASendListEventHandler {
   }
 
   static getEvent() {
-    return 'user_send_text';
+    return 'oa_send_list';
   }
 
   async mapDataFromZalo(data, user = null, intUser = null) {

@@ -50,7 +50,6 @@ module.exports = {
         console.log('Sender message fail');
         return 'send zalo message fail'
       }
-
       
       const reservationRequest = {
         source : "zalo",
@@ -64,9 +63,6 @@ module.exports = {
       }
 
       const result = await reservationRequestProvider.create(reservationRequest);
-
-      
-
       return result;
     },
   }

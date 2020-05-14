@@ -12,6 +12,7 @@ class ZaloServiceProvider extends ServiceProvider {
   register() {
     this.container.register('userSendTextEventHandler', asClass(UserSendTextEventHandler).singleton());
     this.container.register('oASendTextEventHandler', asClass(OASendTextEventHandler).singleton());
+    this.container.register('oASendListEventHandler', asClass(OASendListEventHandler).singleton());
     this.container.register('userFollowOAEventHandler', asClass(UserFollowOAEventHandler).inject((injectedContainer) => ({
       http: fetch,
       zaloInterestedUserProvider: injectedContainer.resolve('zaloInterestedUserProvider'),
@@ -35,6 +36,7 @@ class ZaloServiceProvider extends ServiceProvider {
     zaloMessageHandlerProvider.register(UserSendTextEventHandler.getEvent(), this.container.resolve('userSendTextEventHandler'));
     zaloMessageHandlerProvider.register(OASendTextEventHandler.getEvent(), this.container.resolve('oASendTextEventHandler'));
     zaloMessageHandlerProvider.register(UserFollowOAEventHandler.getEvent(), this.container.resolve('userFollowOAEventHandler'));
+    zaloMessageHandlerProvider.register(OASendListEventHandler.getEvent(), this.container.resolve('oASendListEventHandler'));
   }
 }
 
