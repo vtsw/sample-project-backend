@@ -1,14 +1,12 @@
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
 
-class OASendTextEventHandler {
-  constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
-    this.name = OASendTextEventHandler.getEvent();
+class OASendFileEventHandler {
+  constructor(zaloInterestedUserProvider, userProvider, zaloMessageProvider, pubsub) {
+    this.zaloInterestedUserProvider = zaloInterestedUserProvider;
+    this.userProvider = userProvider;
     this.zaloMessageProvider = zaloMessageProvider;
     this.pubsub = pubsub;
-    this.userProvider = userProvider;
-    this.zaloInterestedUserProvider = zaloInterestedUserProvider;
   }
-
 
   async handle(data) {
     const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
@@ -19,6 +17,7 @@ class OASendTextEventHandler {
       this.userProvider.findByZaloId(data.sender.id),
       this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
     ]);
+
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: {
@@ -27,24 +26,27 @@ class OASendTextEventHandler {
         avatar: OAUser.image.link,
       },
       content: data.message.text,
+      attachments: data.message.attachments,
       to: {
         id: interestedUser.id,
         displayName: interestedUser.displayName,
         avatar: interestedUser.avatar,
       },
       zaloMessageId: data.message.msg_id,
-      type: 'Text',
+      type: 'File',
     });
+
     await Promise.all([
       this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),
       this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),
     ]);
+
     return createdMessage;
   }
 
   static getEvent() {
-    return 'oa_send_text';
+    return 'oa_send_file';
   }
 }
 
-module.exports = OASendTextEventHandler;
+module.exports = OASendFileEventHandler;

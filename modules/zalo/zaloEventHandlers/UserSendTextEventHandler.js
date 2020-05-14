@@ -10,46 +10,39 @@ class UserSendTextEventHandler {
   }
 
   async handle(data) {
+    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
+    if (message) {
+      return message;
+    }
+    const [oaUser, interestedUser] = await Promise.all([
+      this.userProvider.findByZaloId(data.recipient.id),
+      this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
+    ]);
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
-      from: data.from,
-      content: data.message.text,
-      to: data.to,
-      zaloMessageId: data.message.msg_id,
-    });
-    const jsonData = createdMessage.toJson();
-    await Promise.all([
-      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: jsonData }),
-      this.pubsub.publish(ZALO_MESSAGE_RECEIVED, { onZaloMessageReceived: jsonData }),
-    ]);
-    return createdMessage;
-  }
-
-  static getEvent() {
-    return 'user_send_text';
-  }
-
-  async mapDataFromZalo(data, user = null, intUser = null) {
-    const [loggedUser, interestedUser] = await Promise.all([
-      user ? Promise.resolve(user) : this.userProvider.findByZaloId(data.recipient.id),
-      intUser ? Promise.resolve(intUser) : this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
-    ]);
-
-    return {
-      ...data,
       to: {
-        id: loggedUser.id,
-        displayName: loggedUser.name,
-        avatar: loggedUser.image.link,
+        id: oaUser.id,
+        displayName: oaUser.name,
+        avatar: oaUser.image.link,
       },
       from: {
         id: interestedUser.id,
         displayName: interestedUser.displayName,
         avatar: interestedUser.avatar,
       },
-      loggedUser,
-      interestedUser,
-    };
+      content: data.message.text,
+      zaloMessageId: data.message.msg_id,
+      type: 'Text',
+    });
+    await Promise.all([
+      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),
+      this.pubsub.publish(ZALO_MESSAGE_RECEIVED, { onZaloMessageReceived: createdMessage.toJson() }),
+    ]);
+    return createdMessage;
+  }
+
+  static getEvent() {
+    return 'user_send_text';
   }
 }
 

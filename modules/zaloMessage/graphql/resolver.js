@@ -1,15 +1,16 @@
 const { withFilter } = require('apollo-server-express');
+const sizeOf = require('buffer-image-size');
+const sharp = require('sharp');
 const {
   UserInputError,
 } = require('apollo-server-express');
 
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../events');
-const OASendTextEventHandler = require('../../zalo/zaloEventHandlers/OASendTextEventHandler');
 
 
 module.exports = {
   Query: {
-    zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findById(id),
+    zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findByZaloMessageId(id),
     zaloMessageList: async (_, args, { container, req }) => {
       const { user } = req;
       const messageProvider = container.resolve('zaloMessageProvider');
@@ -31,21 +32,101 @@ module.exports = {
       const { user } = req;
       const loggedUser = await container.resolve('userProvider').findById(user.id);
       const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
-      const timestamp = new Date().getTime();
-      const response = await container.resolve('zaloMessageSender').send(message.content, interestedUser, loggedUser);
-      if (response.error) {
-        throw new Error(response.message);
-      }
-      const zaloInterestedUserProvider = container.resolve('zaloMessageHandlerProvider');
-      const handler = zaloInterestedUserProvider.provide(OASendTextEventHandler.getEvent());
-      return handler.handle(await handler.mapDataFromZalo({
-        event_name: OASendTextEventHandler.getEvent(),
-        message: {
-          text: message.content,
-          msg_id: response.data.message_id,
+      const response = await container.resolve('zaloMessageSender').sendText({
+        text: message.content,
+      }, interestedUser, loggedUser);
+      return {
+        timestamp: new Date().getTime(),
+        from: {
+          id: loggedUser.id,
+          displayName: loggedUser.name,
+          avatar: loggedUser.image.link,
         },
-        timestamp,
-      }, loggedUser, interestedUser));
+        content: message.content,
+        to: {
+          id: interestedUser.id,
+          displayName: interestedUser.displayName,
+          avatar: interestedUser.avatar,
+        },
+        type: 'text',
+        zaloMessageId: response.data.message_id,
+      };
+    },
+    createZaloMessageAttachment: async (_, { message }, { container, req }) => {
+      const { attachmentFile, content, fileType } = message;
+      const { user } = req;
+      const loggedUser = await container.resolve('userProvider').findById(user.id);
+      const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
+      const zaloMessageSender = container.resolve('zaloMessageSender');
+      const {
+        filename, mimetype, encoding,
+        createReadStream,
+      } = await attachmentFile;
+      const readable = createReadStream();
+      let data = await new Promise((resolve, reject) => {
+        const bufs = [];
+        readable.on('error', (err) => {
+          reject(err);
+        });
+        readable.on('data', (d) => { bufs.push(d); });
+        readable.on('end', () => {
+          resolve(Buffer.concat(bufs));
+        });
+      });
+      let sendMessageRespond;
+      if (fileType === 'Image') {
+        if (data.length > 1000000) {
+          const { height, width } = sizeOf(data);
+          const ratio = width / height;
+          const sizePerPixel = data.length / (height * width);
+          const residePixel = 1000000 / sizePerPixel;
+          const resideHeight = Math.sqrt(residePixel / ratio);
+          const resideWeight = residePixel / resideHeight;
+          data = await sharp(data)
+            .resize({
+              width: Math.round(resideWeight),
+              height: Math.round(resideHeight),
+            }).toBuffer();
+        }
+        sendMessageRespond = await zaloMessageSender.sendImage({
+          file: {
+            filename, mimetype, encoding, data,
+          },
+          content,
+        }, interestedUser, loggedUser);
+      } else if (fileType === 'File') {
+        sendMessageRespond = await zaloMessageSender.sendFile({
+          file: {
+            filename, mimetype, encoding, data,
+          },
+        }, interestedUser, loggedUser);
+      } else if (fileType === 'Gif') {
+        sendMessageRespond = await zaloMessageSender.sendGif({
+          file: {
+            filename, mimetype, encoding, data,
+          },
+        }, interestedUser, loggedUser);
+      }
+      if (sendMessageRespond.error) {
+        throw new Error(sendMessageRespond.message);
+      }
+      return {
+        timestamp: new Date().getTime(),
+        from: {
+          id: loggedUser.id,
+          displayName: loggedUser.name,
+          avatar: loggedUser.image.link,
+        },
+        content,
+        attachments: [],
+        to: {
+          id: interestedUser.id,
+          displayName: interestedUser.displayName,
+          avatar: interestedUser.avatar,
+        },
+        type: fileType === 'File' ? fileType : 'Image',
+        zaloMessageId: sendMessageRespond.data.message_id,
+      };
     },
   },
   Subscription: {
@@ -75,5 +156,8 @@ module.exports = {
         },
       ),
     },
+  },
+  ZaloMessage: {
+    id: (message) => message.zaloMessageId,
   },
 };

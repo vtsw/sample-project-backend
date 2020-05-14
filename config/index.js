@@ -38,7 +38,7 @@ module.exports = {
     frequency: process.env.LOG_FREQUENCY || null,
     utc: process.env.LOG_UTC === 'true',
   },
-  graphqlUploadExpress: { maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 10000000, maxFiles: parseInt(process.env.MAX_FILES, 10) || 10 },
+  graphqlUploadExpress: { maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 100000000, maxFiles: parseInt(process.env.MAX_FILES, 10) || 10 },
   serviceProviders: [
     require('../services/ThirdPartyServiceProvider'),
     require('../modules/zalo/ZaloServiceProvider'),
@@ -57,6 +57,15 @@ module.exports = {
       getInterestedUserProfile: "https://openapi.zalo.me/v2.0/oa/getprofile",
       sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message"
     },
-    accessToken: "TA_EUuIUJZbsgSL_Xvz5EtAlptoR_p5YDP7h8uAaRMSZxAzHb99tPW3Qis-MaZX5VFs-M8g9E5a8zFuS_ASLC5RoaY-eWsCf5i6KQkRmU7fOhv92pS151KQscZJmz4HgViMWVU6qHKbVyA1B_QDvMrVDYnZOl7ycMi-b1wslJoKacwqoa_5E0WMKkGUafJq-39hw0A7-S48yjv10o_PW7dg7fnpwwqCyV8-o7S_4Dnqbyin3WvWN01sdpHtib4PSKlQ47zV8NWTJkO0YqzTg1Mh71xDpW8PAFW"
+    accessToken: "TA_EUuIUJZbsgSL_Xvz5EtAlptoR_p5YDP7h8uAaRMSZxAzHb99tPW3Qis-MaZX5VFs-M8g9E5a8zFuS_ASLC5RoaY-eWsCf5i6KQkRmU7fOhv92pS151KQscZJmz4HgViMWVU6qHKbVyA1B_QDvMrVDYnZOl7ycMi-b1wslJoKacwqoa_5E0WMKkGUafJq-39hw0A7-S48yjv10o_PW7dg7fnpwwqCyV8-o7S_4Dnqbyin3WvWN01sdpHtib4PSKlQ47zV8NWTJkO0YqzTg1Mh71xDpW8PAFW",
+      sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message",
+      upload: {
+        uploadImage: "https://openapi.zalo.me/v2.0/oa/upload/image",
+        uploadFile: "https://openapi.zalo.me/v2.0/oa/upload/file",
+        uploadGif: "https://openapi.zalo.me/v2.0/oa/upload/gif",
+      }
+    },
+  zaloWebhook: {
+    ignoreEvents: []
   }
 };

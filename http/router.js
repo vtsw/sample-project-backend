@@ -3,6 +3,7 @@ const { isAuthenticated } = require('./middleware');
 const moment = require('moment');
 const { ObjectId } = require('mongodb');
 
+
 const router = Router();
 
 router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
@@ -23,15 +24,12 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
   stream.pipe(res);
 });
 
-router.post('/zalo/webhook', async (req, res) => {
+router.post('/zalo/webhook', (req, res) => {
   const { container } = req;
-
-  if (req.body.event_name && req.body.event_name !== 'user_received_message') {
+  if (req.body.event_name) {
     const handler = container.resolve('zaloMessageHandlerProvider')
       .provide(req.body.event_name);
-    const data = await handler.mapDataFromZalo(req.body);
-
-    handler.handle(data);
+    handler.handle(req.body);
   }
   res.status(200);
   res.send('ok');
