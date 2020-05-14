@@ -106,6 +106,9 @@ module.exports = {
           },
         }, interestedUser, loggedUser);
       }
+      if (sendMessageRespond.error) {
+        throw new Error(sendMessageRespond.message);
+      }
       return {
         timestamp: new Date().getTime(),
         from: {
