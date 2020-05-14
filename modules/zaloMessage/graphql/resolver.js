@@ -48,6 +48,7 @@ module.exports = {
           displayName: interestedUser.displayName,
           avatar: interestedUser.avatar,
         },
+        type: 'text',
         zaloMessageId: response.data.message_id,
       };
     },
@@ -106,6 +107,9 @@ module.exports = {
           },
         }, interestedUser, loggedUser);
       }
+      if (sendMessageRespond.error) {
+        throw new Error(sendMessageRespond.message);
+      }
       return {
         timestamp: new Date().getTime(),
         from: {
@@ -120,6 +124,7 @@ module.exports = {
           displayName: interestedUser.displayName,
           avatar: interestedUser.avatar,
         },
+        type: fileType === 'File' ? fileType : 'Image',
         zaloMessageId: sendMessageRespond.data.message_id,
       };
     },

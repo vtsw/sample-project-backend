@@ -63,6 +63,14 @@ class ZaloMessage {
     this.data.zaloMessageId = id;
   }
 
+  get type() {
+    return this.data.type;
+  }
+
+  set type(type) {
+    this.data.type = type;
+  }
+
   toJson() {
     return this.data;
   }

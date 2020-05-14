@@ -9,6 +9,10 @@ class OASendFileEventHandler {
   }
 
   async handle(data) {
+    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
+    if (message) {
+      return message;
+    }
     const [OAUser, interestedUser] = await Promise.all([
       this.userProvider.findByZaloId(data.sender.id),
       this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
@@ -29,6 +33,7 @@ class OASendFileEventHandler {
         avatar: interestedUser.avatar,
       },
       zaloMessageId: data.message.msg_id,
+      type: 'File',
     });
 
     await Promise.all([

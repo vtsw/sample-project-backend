@@ -11,8 +11,10 @@ class OASendTextEventHandler {
 
 
   async handle(data) {
-    console.log(data);
-    console.log(data.message.msg_id, 'webhook');
+    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
+    if (message) {
+      return message;
+    }
     const [OAUser, interestedUser] = await Promise.all([
       this.userProvider.findByZaloId(data.sender.id),
       this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
@@ -31,6 +33,7 @@ class OASendTextEventHandler {
         avatar: interestedUser.avatar,
       },
       zaloMessageId: data.message.msg_id,
+      type: 'Text',
     });
     await Promise.all([
       this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),

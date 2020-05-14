@@ -28,6 +28,7 @@ module.exports = gql`
     content: String
     attachments: [ZaloAttachmentFile]
     timestamp: Date
+    type: String
   }
   
   type ZaloMessageParticipant {

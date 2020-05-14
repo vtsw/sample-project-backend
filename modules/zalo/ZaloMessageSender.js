@@ -71,7 +71,7 @@ class ZaloMessageSender {
           payload: {
             template_type: 'media',
             elements: [{
-              media_type: 'image',
+              media_type: 'gif',
               attachment_id: uploadResult.data.attachment_id,
             }],
           },
@@ -109,7 +109,7 @@ class ZaloMessageSender {
       method: 'post',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
-    }).then((res) => res.json());
+    }).then((response) => response.json());
   }
 }
 
