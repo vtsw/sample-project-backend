@@ -38,8 +38,6 @@ router.post('/zalo/webhook', (req, res) => {
 
 router.get('/zalo/reservation/confirmation', async (req, res) => {
   const { container } = req;
-
-  console.log('11111111111111111111111111111');
   const handler = container.resolve('reservationProvider');
   const zaloMessageSender = container.resolve('zaloMessageSender');
   const pubsub = container.resolve('pubsub');
@@ -58,8 +56,10 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
   }
 
   const message = `Bạn đã hẹn bác sỹ ${zaloDoctorId} vào ngày ${moment.unix(time / 1000).format("YYYY-MM-DD")} lúc ${moment.unix(time / 1000).format("HH:mm")}`;
-  const result = await handler.create(reservation);
-  const zaLoResponse = await zaloMessageSender.sendText({text: message}, {zaloId: zaloPatientId});
+  await Promise.all([
+    handler.create(reservation),
+    zaloMessageSender.sendText({text: message}, {zaloId: zaloPatientId})
+  ])
 
   res.send(message)
 })

@@ -1,5 +1,3 @@
-const { ObjectId } = require('mongodb');
-
 class ReservationRequest {
   constructor(id) {
     this.data = {

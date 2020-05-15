@@ -1,5 +1,4 @@
 const { ObjectId } = require('mongodb');
-const moment = require('moment');
 const ZaloReservation = require('./Reservation');
 
 class ReservationTemplateProvider {
