@@ -51,7 +51,6 @@ class OASendListEventHandler {
       intUser ? Promise.resolve(intUser) : this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
     ]);
 
-    console.log('map data from zalo', data);
     return {
       ...data,
       to: {
