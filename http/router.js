@@ -29,6 +29,7 @@ router.post('/zalo/webhook', (req, res) => {
   if (req.body.event_name && req.body.event_name !== 'user_seen_message') {
     const handler = container.resolve('zaloMessageHandlerProvider')
       .provide(req.body.event_name)
+
     handler.handle(req.body);
   }
   res.status(200);
@@ -55,7 +56,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
 
   const message = `Bạn đã hẹn bác sỹ ${zaloDoctorId} vào ngày ${moment.unix(time / 1000).format("YYYY-MM-DD")} lúc ${moment.unix(time / 1000).format("HH:mm")}`;
   const result = await handler.create(reservation);
-  const zaLoResponse = await zaloMessageSender.sendMessage({text: message}, {zaloId: zaloPatientId});
+  const zaLoResponse = await zaloMessageSender.sendText(message, {zaloId: zaloPatientId});
 
   res.send(message)
 })

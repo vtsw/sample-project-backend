@@ -22,7 +22,7 @@ class OASendListEventHandler {
         displayName: OAUser.name,
         avatar: OAUser.image.link,
       },
-      content: data.message.text,
+      content: null,
       attachments: data.message.attachments,
       to: {
         id: interestedUser.id,

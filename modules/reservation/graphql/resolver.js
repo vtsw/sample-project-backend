@@ -29,7 +29,7 @@ module.exports = {
           image_url: examinationTemplate.element.image_url,
           default_action: {
             type: examinationTemplate.element.default_action.type,
-            url: `https://1b399140.ngrok.io/api/zalo/reservation/confirmation?type=examination&zaloPatientId=${patient}&zaloDoctorId=${o.doctor}&time=${o.time}&corId=${corId}`
+            url: `https://99f0a93a.ngrok.io/api/zalo/reservation/confirmation?type=examination&zaloPatientId=${patient}&zaloDoctorId=${o.doctor}&time=${o.time}&corId=${corId}`
           }
         }
       });
@@ -43,7 +43,7 @@ module.exports = {
       let message = examinationTemplate.message;
       message.attachment.payload.elements = elements;
 
-      const zaLoResponse = await zaloMessageSender.sendMessage(message, {zaloId: patient});
+      const zaLoResponse = await zaloMessageSender.sendListElement(message, {zaloId: patient});
       const zaloMessageId = zaLoResponse.data.message_id;
 
       if(zaLoResponse.error) {
