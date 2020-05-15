@@ -10,20 +10,34 @@ class OASendListEventHandler {
   }
 
   async handle(data) {
+    const [OAUser, interestedUser] = await Promise.all([
+      this.userProvider.findByZaloId(data.sender.id),
+      this.zaloInterestedUserProvider.finByOAFollowerId(data.recipient.id),
+    ]);
 
-    // console.log(data.message.attachments);
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
-      from: data.from,
-      content: data.message,
-      to: data.to,
+      from: {
+        id: OAUser.id,
+        displayName: OAUser.name,
+        avatar: OAUser.image.link,
+      },
+      content: data.message.text,
+      attachments: data.message.attachments,
+      to: {
+        id: interestedUser.id,
+        displayName: interestedUser.displayName,
+        avatar: interestedUser.avatar,
+      },
       zaloMessageId: data.message.msg_id,
+      type: 'Reservation',
     });
-    const jsonData = createdMessage.toJson();
+
     await Promise.all([
-      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: jsonData }),
-      this.pubsub.publish(ZALO_MESSAGE_RECEIVED, { onZaloMessageReceived: jsonData }),
+      this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),
+      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),
     ]);
+
     return createdMessage;
   }
 
@@ -37,6 +51,7 @@ class OASendListEventHandler {
       intUser ? Promise.resolve(intUser) : this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
     ]);
 
+    console.log('map data from zalo', data);
     return {
       ...data,
       to: {

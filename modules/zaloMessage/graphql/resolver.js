@@ -151,8 +151,10 @@ module.exports = {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_CREATED),
         ({ onZaloMessageCreated }, { filter }, { loggedUser }) => {
-          const participants = [loggedUser.id, filter.interestedUserId];
-          return (participants.includes(onZaloMessageCreated.from.id) && participants.includes(onZaloMessageCreated.to.id));
+
+          console.log('onZalo message created', onZaloMessageCreated);
+          // const participants = [loggedUser.id, filter.interestedUserId];
+          // return (participants.includes(onZaloMessageCreated.from.id) && participants.includes(onZaloMessageCreated.to.id));
         },
       ),
     },

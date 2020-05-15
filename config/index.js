@@ -49,7 +49,7 @@ module.exports = {
   ],
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT ||  '32768',
+    port: process.env.REDIS_PORT || '32768',
   },
   zaloApi: {
     social: {},
@@ -57,14 +57,15 @@ module.exports = {
       getInterestedUserProfile: "https://openapi.zalo.me/v2.0/oa/getprofile",
       sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message"
     },
-    accessToken: "TA_EUuIUJZbsgSL_Xvz5EtAlptoR_p5YDP7h8uAaRMSZxAzHb99tPW3Qis-MaZX5VFs-M8g9E5a8zFuS_ASLC5RoaY-eWsCf5i6KQkRmU7fOhv92pS151KQscZJmz4HgViMWVU6qHKbVyA1B_QDvMrVDYnZOl7ycMi-b1wslJoKacwqoa_5E0WMKkGUafJq-39hw0A7-S48yjv10o_PW7dg7fnpwwqCyV8-o7S_4Dnqbyin3WvWN01sdpHtib4PSKlQ47zV8NWTJkO0YqzTg1Mh71xDpW8PAFW",
-      sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message",
-      upload: {
-        uploadImage: "https://openapi.zalo.me/v2.0/oa/upload/image",
-        uploadFile: "https://openapi.zalo.me/v2.0/oa/upload/file",
-        uploadGif: "https://openapi.zalo.me/v2.0/oa/upload/gif",
-      }
-    },
+    // accessToken: "TA_EUuIUJZbsgSL_Xvz5EtAlptoR_p5YDP7h8uAaRMSZxAzHb99tPW3Qis-MaZX5VFs-M8g9E5a8zFuS_ASLC5RoaY-eWsCf5i6KQkRmU7fOhv92pS151KQscZJmz4HgViMWVU6qHKbVyA1B_QDvMrVDYnZOl7ycMi-b1wslJoKacwqoa_5E0WMKkGUafJq-39hw0A7-S48yjv10o_PW7dg7fnpwwqCyV8-o7S_4Dnqbyin3WvWN01sdpHtib4PSKlQ47zV8NWTJkO0YqzTg1Mh71xDpW8PAFW",\
+    accessToken: "hhz-RQ0boJAikNLfeoJ2CAY_Vsg_NgzMwefSQunvwNJRfY8fYMZhQjM66rAxJ-Loqzi6Kwn7hsYdZ6vDs7gcLegaHr_cKOb5dgjQQiXqkM2vwNatrXEk8QZdUZdh9BKru-vYDBKOaWNEuKyoeIU4ACd8J0wx9ufPnj9fMSumZdF5zsbwc3p0NSNYT5gPBwbvxz9hEkydmY23sd1x-1oVVgRJSY3zIfSXz8fI0enHcZlyjtWOzMgl1PhpM5ldFBjyikHJOwPniqJeh0PxfKReLbWvh8Hkf3tDDG",
+    sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message",
+    upload: {
+      uploadImage: "https://openapi.zalo.me/v2.0/oa/upload/image",
+      uploadFile: "https://openapi.zalo.me/v2.0/oa/upload/file",
+      uploadGif: "https://openapi.zalo.me/v2.0/oa/upload/gif",
+    }
+  },
   zaloWebhook: {
     ignoreEvents: []
   }
