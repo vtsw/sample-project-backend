@@ -26,7 +26,7 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
 
 router.post('/zalo/webhook', (req, res) => {
   const { container } = req;
-  if (req.body.event_name && req.body.event_name !== 'user_seen_message') {
+  if (req.body.event_name && req.body.event_name !== 'user_seen_message' && req.body.event_name !== 'user_received_message') { //fake
     const handler = container.resolve('zaloMessageHandlerProvider')
       .provide(req.body.event_name)
 
@@ -40,7 +40,9 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
   const { container } = req;
   const handler = container.resolve('reservationProvider');
   const zaloMessageSender = container.resolve('zaloMessageSender');
-  const pubsub = container.resolve('pubsub');
+  const userProvider = container.resolve('userProvider');
+  const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
+  const messageProvider = container.resolve('zaloMessageProvider');
 
   const {zaloPatientId, zaloDoctorId, time, corId, type} = req.query; 
 
@@ -53,14 +55,36 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
       zaloDoctorId: zaloDoctorId,
       reservationTime: time,
     }
-  }
+  };
+
+  const [OAUser, interestedUser] = await Promise.all([
+    userProvider.findByZaloId(zaloDoctorId),
+    zaloInterestedUserProvider.finByOAFollowerId(zaloPatientId),
+  ]);
 
   const message = `Bạn đã hẹn bác sỹ ${zaloDoctorId} vào ngày ${moment.unix(time / 1000).format("YYYY-MM-DD")} lúc ${moment.unix(time / 1000).format("HH:mm")}`;
-  await Promise.all([
-    handler.create(reservation),
-    zaloMessageSender.sendText({text: message}, {zaloId: zaloPatientId})
-  ])
+  const result = await handler.create(reservation);
+  const zaloResponse = await zaloMessageSender.sendText({text: message}, {zaloId: zaloPatientId});
 
+  const messageLog = {
+    timestamp: moment().valueOf(),
+    from: {
+      id: "5e68995fb6d0bc05829b6e79",
+      displayName: "steve",
+      avatar: "https://172.76.10.161:4000/api/download/images/abb90930-95c5-4579-b4d6-8408261dbe5cbc0056e87208a3681730965748c887fc.jpg",
+    },
+    content: message,
+    attachments: null,
+    to: {
+      id: interestedUser.id,
+      displayName: interestedUser.displayName,
+      avatar: interestedUser.avatar,
+    },
+    zaloMessageId: zaloResponse.data.message_id,
+    type: 'Text',
+  };
+
+  await messageProvider.create(messageLog);
   res.send(message)
 })
 

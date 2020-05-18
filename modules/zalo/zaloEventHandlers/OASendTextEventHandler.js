@@ -46,6 +46,7 @@ class OASendTextEventHandler {
       zaloMessageId: data.message.msg_id,
       type: 'Text',
     });
+    
     await Promise.all([
       this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),
       this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),

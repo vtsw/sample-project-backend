@@ -7,7 +7,6 @@ class ZaloMessageSender {
 
 
   async sendText(message, recipient, sender) {
-    console.log('2222222222222222', message);
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
     const { accessToken } = sender ? sender.zaloOA : this.config.zaloApi ;
     const body = {
