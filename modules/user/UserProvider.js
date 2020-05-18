@@ -22,6 +22,11 @@ class UserProvider {
       .then(UserProvider.factory);
   }
 
+  findByZaloId(id) {
+    return this.users.findOne({ 'zaloOA.oaId': id, deleted: false })
+      .then(UserProvider.factory);
+  }
+
   /**
    *
    * @param {String} email
@@ -45,6 +50,7 @@ class UserProvider {
       password: user.password,
       deleted: false,
       lastModified: moment().format(),
+      zaloOA: user.zaloOA,
     });
     return UserProvider.factory(inserted.ops[0]);
   }
@@ -121,6 +127,7 @@ class UserProvider {
     user.name = data.name;
     user.lastModified = data.lastModified;
     user.image = data.image;
+    user.zaloOA = data.zaloOA;
     return user;
   }
 }

@@ -1,4 +1,6 @@
-const config = {
+/* eslint-disable */
+
+module.exports = {
   app: {
     port: parseInt(process.env.APP_PORT, 10) || 4000,
     env: process.env.NODE_ENV || 'development',
@@ -46,7 +48,32 @@ const config = {
     frequency: process.env.LOG_FREQUENCY || null,
     utc: process.env.LOG_UTC === 'true',
   },
-  graphqlUploadExpress: { maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 10000000, maxFiles: parseInt(process.env.MAX_FILES, 10) || 10 },
-  middlewares: ['validation', 'mutationRecording', 'logging'],
+  graphqlUploadExpress: { maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 100000000, maxFiles: parseInt(process.env.MAX_FILES, 10) || 10 },
+  serviceProviders: [
+    require('../services/ThirdPartyServiceProvider'),
+    require('../modules/zalo/ZaloServiceProvider'),
+    require('../modules/zaloMessage/ZaloMessageServiceProvider'),
+    require('../modules/user/UserServiceProvider'),
+    require('../modules/message/MessageServiceProvider')
+  ],
+  redis: {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: process.env.REDIS_PORT ||  '32768',
+  },
+  zaloApi: {
+    social: {},
+    officialAccount: {
+      getInterestedUserProfile: "https://openapi.zalo.me/v2.0/oa/getprofile",
+      sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message",
+      upload: {
+        uploadImage: "https://openapi.zalo.me/v2.0/oa/upload/image",
+        uploadFile: "https://openapi.zalo.me/v2.0/oa/upload/file",
+        uploadGif: "https://openapi.zalo.me/v2.0/oa/upload/gif",
+      }
+    }
+  },
+  zaloWebhook: {
+    ignoreEvents: []
+  }
 };
 module.exports = config;

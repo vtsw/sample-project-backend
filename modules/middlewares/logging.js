@@ -1,12 +1,3 @@
-/**
- * This middleware is applied for all resolvers
- * @param resolve
- * @param parent
- * @param args
- * @param context
- * @param info
- * @returns {Promise<*>}
- */
 module.exports = {
   Query: async (resolve, parent, args, context, info) => {
     const { container } = context;
@@ -22,7 +13,7 @@ module.exports = {
         level: 'error',
         message: e,
       });
-      return e;
+      throw e;
     }
   },
   Mutation: async (resolve, parent, args, context, info) => {
@@ -39,7 +30,7 @@ module.exports = {
         level: 'error',
         message: e,
       });
-      return e;
+      throw e;
     }
   },
 };

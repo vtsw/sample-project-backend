@@ -22,8 +22,10 @@ services:
       JWT_EXPIRES_IN: "1d"
       BCRYPT_SALT_ROUND: 10
       NODE_ENV: "development"
-      APP_PORT: ${APP_PORT}
-      APP_HOST: ${APP_HOST}
+      APP_PORT: "4000"
+      REDIS_HOST: "redisInfra"
+      REDIS_PORT: "6379"
+      APP_HOST: "https://172.76.10.161"
     networks:
       - localnetwork
 

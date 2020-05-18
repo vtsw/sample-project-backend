@@ -3,6 +3,9 @@ const { mergeTypes } = require('merge-graphql-schemas');
 
 const UserTypeDefs = require('./user/graphql/typedef');
 const MessageTypeDefs = require('./message/graphql/typedef');
+const ZaloMessageTypeDefs = require('./zaloMessage/graphql/typedef');
+const ZaloTypeDefs = require('./zalo/graphql/typedef');
+const ZaloReservationTypeDefs = require('./zaloReservation/graphql/typedef');
 
 const baseTypeDefs = gql`
 
@@ -36,7 +39,11 @@ const baseTypeDefs = gql`
     hello(name: String): String
     uploadImage (file: Upload!): File! @isAuthenticated
   }
+
+  type Subscription {
+      onHello: String
+  }
 `;
 
-const typeDefs = [baseTypeDefs, UserTypeDefs, MessageTypeDefs];
+const typeDefs = [baseTypeDefs, UserTypeDefs, MessageTypeDefs, ZaloMessageTypeDefs, ZaloTypeDefs, ZaloReservationTypeDefs];
 module.exports = mergeTypes(typeDefs, { all: true });

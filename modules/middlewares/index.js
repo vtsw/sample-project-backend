@@ -1,8 +1,9 @@
 const validation = require('./validation');
 const logging = require('./logging');
-const mutationRecording = require('./mutationRecording');
+const errorHandler = require('./errorHandler');
 
 module.exports = {
+  errorHandler,
   validation,
   logging,
   mutationRecording,

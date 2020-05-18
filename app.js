@@ -1,19 +1,23 @@
 const express = require('express');
-const graphqlHTTP = require('express-graphql');
-const { graphqlUploadExpress } = require('graphql-upload');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const { scopePerRequest } = require('awilix-express');
-const config = require('./config');
+const graphqlHTTP = require('express-graphql');
+const { graphqlUploadExpress } = require('graphql-upload');
+const expressPlayground = require('graphql-playground-middleware-express').default;
+
 const schema = require('./modules');
 const router = require('./http/router');
 
 /**
  *
  * @param container
- * @returns {app}
+ * @returns {*|Express}
  */
 module.exports = (container) => {
+  const config = container.resolve('config');
   const app = express();
+  app.use(bodyParser.json());
   app.use(scopePerRequest(container));
   app.use(cors());
   app.use('/api', router);
@@ -22,6 +26,6 @@ module.exports = (container) => {
     graphiql: config.app.env === 'development',
     context: { container: req.container, req }, // bind http request context to graphQl context
   })));
-
+  app.get('/playground', expressPlayground({ endpoint: `${config.app.host}:${config.app.port}/graphql` }));
   return app;
 };
