@@ -15,13 +15,9 @@ module.exports = {
         },
       } = args;
 
+      const reservationProvider = container.resolve('reservationProvider');
 
-      return {
-        items: [
-          {id: 1}
-        ]
-      }
-
+      return await reservationProvider.find({ query: { }, page: { limit, skip } });
     }
   },
 

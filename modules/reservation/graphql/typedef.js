@@ -31,9 +31,19 @@ module.exports = gql`
       zaloMessageId: ID,
       payload: ReservationRequestPayLoad
     }
+
+    type ReservationContent {
+      zaloPatientId: ID,
+      zaloDoctorId: ID,
+      reservationTime: String
+    }
     
     type Reservation {
-      id: ID!
+      id: ID!,
+      type: String,
+      timestamp: String,
+      corId: ID,
+      content: ReservationContent
     }
 
     input ReservationListInput {

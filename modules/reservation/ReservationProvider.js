@@ -13,12 +13,39 @@ class ReservationProvider {
   /**
    *
    * @param {Object} reservation
-   * @returns {Promise<ZaloInterestedUser>}
+   * @returns {Promise<Reservation>}
    */
   async create(reservation) {
     const inserted = await this.reservation.insertOne(reservation);
     return ReservationProvider.factory(inserted.ops[0]);
   }
+
+  /**
+ *
+ * @param {Object} condition
+ * @returns {Promise<*>}
+ */
+  async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
+    let { query } = condition;
+    const items = await this.reservation
+      .find(query)
+      .limit(condition.page.limit + 1)
+      .skip(condition.page.skip).sort({ timestamp: -1 })
+      .toArray();
+
+    const hasNext = (items.length === condition.page.limit + 1);
+
+     if (hasNext) {
+      items.pop();
+    }
+
+    return {
+      hasNext,
+      items: items.map(ReservationProvider.factory),
+      total: items.length,
+    };
+  }
+
 
   /**
    *
@@ -41,6 +68,8 @@ class ReservationProvider {
     });
     const reservation = new Reservation(data._id || data.id);
     reservation.type = data.type;
+    reservation.timestamp = data.timestamp;
+    reservation.corId = data.corId;
     reservation.content = data.content;
     return reservation;
   }
