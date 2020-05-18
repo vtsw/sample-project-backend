@@ -68,11 +68,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
 
   const messageLog = {
     timestamp: moment().valueOf(),
-    from: {
-      id: "5e68995fb6d0bc05829b6e79",
-      displayName: "steve",
-      avatar: "https://172.76.10.161:4000/api/download/images/abb90930-95c5-4579-b4d6-8408261dbe5cbc0056e87208a3681730965748c887fc.jpg",
-    },
+    from: { ...defaultConfirmationSender },
     content: message,
     attachments: null,
     to: {
@@ -88,5 +84,10 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
   res.send(message)
 })
 
+const defaultConfirmationSender = {
+  id: "5e68995fb6d0bc05829b6e79",
+  displayName: "steve",
+  avatar: "https://172.76.10.161:4000/api/download/images/abb90930-95c5-4579-b4d6-8408261dbe5cbc0056e87208a3681730965748c887fc.jpg",
+}
 
 module.exports = router;
