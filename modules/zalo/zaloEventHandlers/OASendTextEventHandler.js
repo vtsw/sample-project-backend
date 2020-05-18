@@ -9,16 +9,27 @@ class OASendTextEventHandler {
     this.zaloInterestedUserProvider = zaloInterestedUserProvider;
   }
 
-
   async handle(data) {
     const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
     if (message) {
       return message;
     }
-    const [OAUser, interestedUser] = await Promise.all([
-      this.userProvider.findByZaloId(data.sender.id),
-      this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
-    ]);
+
+    let OAUser, interestedUser;
+    if(data.user_id_by_app) {
+      [OAUser, interestedUser] = await Promise.all([
+        this.userProvider.findByZaloId(data.sender.id),
+        this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
+      ]);
+    }
+
+    if(! data.user_id_by_app) {
+      [OAUser, interestedUser] = await Promise.all([
+        this.userProvider.findByZaloId(data.sender.id),
+        this.zaloInterestedUserProvider.finByOAFollowerId(data.recipient.id),
+      ]);
+    }
+
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: {
