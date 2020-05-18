@@ -107,6 +107,4 @@ dist
 .vscode-test
 
 .idea/
-.idea
-.env
 .env.example
