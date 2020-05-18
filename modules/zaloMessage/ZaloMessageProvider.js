@@ -64,6 +64,7 @@ class ZaloMessageProvider {
       timestamp: Long.fromNumber(parseInt(message.timestamp, 10)),
       zaloMessageId: message.zaloMessageId,
       lastModified: moment().format(),
+      type: message.type,
     });
     return ZaloMessageProvider.factory(inserted.ops[0]);
   }
@@ -119,6 +120,7 @@ class ZaloMessageProvider {
     message.timestamp = data.timestamp;
     message.attachments = data.attachments;
     message.zaloMessageId = data.zaloMessageId;
+    message.type = data.type;
     return message;
   }
 }

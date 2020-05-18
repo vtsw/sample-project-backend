@@ -57,7 +57,12 @@ module.exports = {
       sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message",
       upload: {
         uploadImage: "https://openapi.zalo.me/v2.0/oa/upload/image",
+        uploadFile: "https://openapi.zalo.me/v2.0/oa/upload/file",
+        uploadGif: "https://openapi.zalo.me/v2.0/oa/upload/gif",
       }
     }
+  },
+  zaloWebhook: {
+    ignoreEvents: []
   }
 };

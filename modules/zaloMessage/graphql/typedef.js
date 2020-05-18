@@ -1,11 +1,19 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
+  enum ZaloFileType {
+    Image
+    File
+    Gif
+  }
   
   type ZaloAttachmentFilePayload {
     thumbnail: String
     description: String
     url: String
+    size: String
+    name: String
+    type: String
   }
   
   type ZaloAttachmentFile {
@@ -20,6 +28,7 @@ module.exports = gql`
     content: String
     attachments: [ZaloAttachmentFile]
     timestamp: Date
+    type: String
   }
   
   type ZaloMessageParticipant {
@@ -41,7 +50,7 @@ module.exports = gql`
 
   input ZaloMessageListInput {
     interestedUserId: ID!
-    skip: Int = 0,
+    skip: Int = 0
     limit: Int = 10
   }
   
@@ -61,6 +70,7 @@ module.exports = gql`
     to: ID!
     content: String
     attachmentFile: Upload!
+    fileType: ZaloFileType
   }
 
   extend type Mutation {

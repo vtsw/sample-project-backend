@@ -1,6 +1,6 @@
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
 
-class OASendImageEventHandler {
+class OASendFileEventHandler {
   constructor(zaloInterestedUserProvider, userProvider, zaloMessageProvider, pubsub) {
     this.zaloInterestedUserProvider = zaloInterestedUserProvider;
     this.userProvider = userProvider;
@@ -8,11 +8,6 @@ class OASendImageEventHandler {
     this.pubsub = pubsub;
   }
 
-  /**
-   *
-   * @param data
-   * @returns {Promise<void>}
-   */
   async handle(data) {
     const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
     if (message) {
@@ -38,7 +33,7 @@ class OASendImageEventHandler {
         avatar: interestedUser.avatar,
       },
       zaloMessageId: data.message.msg_id,
-      type: data.event_name === OASendImageEventHandler.getEvent() ? 'Image' : 'Gif',
+      type: 'File',
     });
 
     await Promise.all([
@@ -50,8 +45,8 @@ class OASendImageEventHandler {
   }
 
   static getEvent() {
-    return 'oa_send_image';
+    return 'oa_send_file';
   }
 }
 
-module.exports = OASendImageEventHandler;
+module.exports = OASendFileEventHandler;

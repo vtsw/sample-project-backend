@@ -7,6 +7,8 @@ const UserSendImageEventHandler = require('../zalo/zaloEventHandlers/UserSendIma
 const OASendTextEventHandler = require('../zalo/zaloEventHandlers/OASendTextEventHandler');
 const UserFollowOAEventHandler = require('../zalo/zaloEventHandlers/UserFollowOAEventHandler');
 const OASendImageEventHandler = require('../zalo/zaloEventHandlers/OASendImageEventHandler');
+const OASendFileEventHandler = require('../zalo/zaloEventHandlers/OASendFileEventHandler');
+const UserSendFileEventHandler = require('../zalo/zaloEventHandlers/UserSendFileEventHandler');
 const ZaloMessageSender = require('./ZaloMessageSender');
 const ZaloInterestedUserProvider = require('../zalo/ZaloInterestedUserProvider');
 const ZaloUploader = require('../zalo/ZaloUploader');
@@ -17,6 +19,8 @@ class ZaloServiceProvider extends ServiceProvider {
     this.container.register('userSendImageEventHandler', asClass(UserSendImageEventHandler).singleton());
     this.container.register('oASendTextEventHandler', asClass(OASendTextEventHandler).singleton());
     this.container.register('oASendImageEventHandler', asClass(OASendImageEventHandler).singleton());
+    this.container.register('oASendFileEventHandler', asClass(OASendFileEventHandler).singleton());
+    this.container.register('userSendFileEventHandler', asClass(UserSendFileEventHandler).singleton());
     this.container.register('userFollowOAEventHandler', asClass(UserFollowOAEventHandler).inject((injectedContainer) => ({
       request: fetch,
       zaloInterestedUserProvider: injectedContainer.resolve('zaloInterestedUserProvider'),
@@ -44,8 +48,10 @@ class ZaloServiceProvider extends ServiceProvider {
     zaloMessageHandlerProvider.register(UserSendTextEventHandler.getEvent(), this.container.resolve('userSendTextEventHandler'));
     zaloMessageHandlerProvider.register(OASendTextEventHandler.getEvent(), this.container.resolve('oASendTextEventHandler'));
     zaloMessageHandlerProvider.register(UserFollowOAEventHandler.getEvent(), this.container.resolve('userFollowOAEventHandler'));
-    zaloMessageHandlerProvider.register(OASendImageEventHandler.getEvent(), this.container.resolve('oASendImageEventHandler'));
-    zaloMessageHandlerProvider.register(UserSendImageEventHandler.getEvent(), this.container.resolve('userSendImageEventHandler'));
+    zaloMessageHandlerProvider.register(UserSendFileEventHandler.getEvent(), this.container.resolve('userSendFileEventHandler'));
+    zaloMessageHandlerProvider.register(OASendFileEventHandler.getEvent(), this.container.resolve('oASendFileEventHandler'));
+    zaloMessageHandlerProvider.apply([OASendImageEventHandler.getEvent(), 'oa_send_gif'], this.container.resolve('oASendImageEventHandler'));
+    zaloMessageHandlerProvider.apply([UserSendImageEventHandler.getEvent(), 'user_send_gif'], this.container.resolve('userSendImageEventHandler'));
   }
 }
 
