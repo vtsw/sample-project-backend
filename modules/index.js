@@ -5,16 +5,10 @@ const resolvers = require('./resolver');
 const directiveResolvers = require('./directiveResolvers');
 const { validation, logging, errorHandler } = require('./middlewares');
 
-const schema = makeExecutableSchema({
+
+module.exports = applyMiddleware(makeExecutableSchema({
   typeDefs,
   resolvers,
   directiveResolvers,
 }),
 errorHandler, logging, validation);
-
-
-const middlewaresToApply = config.middlewares.map((mwName) => middlewares[mwName])
-
-const applyMiddlewareToApp = applyMiddleware(schema,
-  ...middlewaresToApply);
-module.exports = applyMiddlewareToApp;
