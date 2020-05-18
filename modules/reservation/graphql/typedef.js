@@ -32,8 +32,25 @@ module.exports = gql`
       payload: ReservationRequestPayLoad
     }
     
+    type Reservation {
+      id: ID!
+    }
+
+    input reservationListInput {
+      interestedUserId: ID!
+      skip: Int = 0
+      limit: Int = 10
+    }
+
+    type ReservationList implements Paginatable {
+      items: [Reservation]!
+      hasNext: Boolean,
+      total: Int,
+    }
+    
     type Query {
-      reservation: String
+      reservation: String,
+      reservationList(query: reservationListInput): ReservationList
     }
 
     type Mutation {
