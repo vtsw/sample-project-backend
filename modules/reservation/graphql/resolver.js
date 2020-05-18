@@ -9,15 +9,15 @@ module.exports = {
     },
   },
 
-  Mutation : {
-    createReservationRequest: async (_, {reservation}, { container, req }) => {
+  Mutation: {
+    createReservationRequest: async (_, { reservation }, { container, req }) => {
       const [zaloMessageSender, reservationTemplateProvider, reservationRequestProvider] = [
-        container.resolve('zaloMessageSender'), 
+        container.resolve('zaloMessageSender'),
         container.resolve('reservationTemplateProvider'),
         container.resolve('reservationRequestProvider')
       ];
 
-      const {bookingOptions, patient} = reservation;
+      const { bookingOptions, patient } = reservation;
       const examinationDate = moment(bookingOptions[0].time).format('YYYY-MM-DD');
       let examinationTemplate = await reservationTemplateProvider.findByType(EXAMINATION);
 
@@ -38,27 +38,28 @@ module.exports = {
         title: `${examinationTemplate.header.title} ${examinationDate}`,
         subtitle: examinationTemplate.header.subtitle,
         image_url: examinationTemplate.header.image_url
-      }, ... elementList];
+      }, ...elementList];
 
       let message = examinationTemplate.message;
       message.attachment.payload.elements = elements;
 
-      const zaLoResponse = await zaloMessageSender.sendListElement(message, {zaloId: patient});
+      const zaLoResponse = await zaloMessageSender.sendListElement(message, { zaloId: patient });
+
+      if (zaLoResponse.error) {
+        console.log('Sender message fail');
+        throw new Error(`Zalo Response: ${zaLoResponse.message}`);
+      }
+
       const zaloMessageId = zaLoResponse.data.message_id;
 
-      if(zaLoResponse.error) {
-        console.log('Sender message fail');
-        return 'send zalo message fail'
-      }
-      
       const reservationRequest = {
-        source : "zalo",
+        source: "zalo",
         zaloMessageId: zaloMessageId,
         zaloRecipientId: patient,
         zaloSenderId: "4368496045530866759",
         corId: corId,
         cleverSenderId: ObjectId(req.user.id),
-        payload: reservation, 
+        payload: reservation,
         timestamp: moment().valueOf(),
       }
 

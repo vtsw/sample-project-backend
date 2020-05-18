@@ -15,10 +15,18 @@ class OASendListEventHandler {
       this.zaloInterestedUserProvider.finByOAFollowerId(data.recipient.id),
     ]);
 
+    if(! OAUser) {
+      throw new Error("OAUser not found !")
+    }
+
+    if(! interestedUser) {
+      throw new Error("interestedUser not found !")
+    }
+    
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: {
-        id: OAUser.id,
+        id: OAUser.id ,
         displayName: OAUser.name,
         avatar: OAUser.image.link,
       },
