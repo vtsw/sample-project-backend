@@ -7,6 +7,22 @@ module.exports = {
     reservation: async (_, { }, { container }) => {
       return 'reservation';
     },
+
+    reservationList:  async (_, args, { container, req }) => {
+      const {
+        query: {
+          limit, skip,
+        },
+      } = args;
+
+
+      return {
+        items: [
+          {id: 1}
+        ]
+      }
+
+    }
   },
 
   Mutation: {

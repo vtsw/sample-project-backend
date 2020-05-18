@@ -36,8 +36,7 @@ module.exports = gql`
       id: ID!
     }
 
-    input reservationListInput {
-      interestedUserId: ID!
+    input ReservationListInput {
       skip: Int = 0
       limit: Int = 10
     }
@@ -50,7 +49,7 @@ module.exports = gql`
     
     type Query {
       reservation: String,
-      reservationList(query: reservationListInput): ReservationList
+      reservationList(query: ReservationListInput): ReservationList
     }
 
     type Mutation {
