@@ -59,7 +59,7 @@ module.exports = gql`
     
     type Query {
       reservation: String,
-      reservationList(query: ReservationListInput): ReservationList
+      reservationList(query: ReservationListInput): ReservationList  @isAuthenticated
     }
 
     type Mutation {
