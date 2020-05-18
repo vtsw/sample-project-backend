@@ -76,4 +76,3 @@ module.exports = {
     ignoreEvents: []
   }
 };
-module.exports = config;
