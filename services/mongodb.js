@@ -6,10 +6,21 @@ module.exports = (config) => new Promise((resolve, reject) => {
     {
       native_parser: true,
       useUnifiedTopology: true,
+      auth: {
+        user: 'foobar',
+        password: 'foobarPassword',
+      },
+      readPreference: 'secondaryPreferred',
+      replicaSet: 'mongo-replica-set',
     },
     (err, client) => {
-      if (err) reject(err);
-      resolve(client);
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        client.db('simple_db');
+        resolve(client);
+      }
     },
   );
 });
