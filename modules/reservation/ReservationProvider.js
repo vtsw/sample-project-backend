@@ -27,7 +27,6 @@ class ReservationProvider {
  */
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
     let { query } = condition;
-    console.log(query);
     const items = await this.reservation
       .find(query)
       .limit(condition.page.limit + 1)
