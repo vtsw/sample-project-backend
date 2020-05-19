@@ -21,17 +21,6 @@ class ReservationRequestProvider {
  * @returns {Promise<reservationRequest>}
  */
   async create(reservationRequest) {
-    // const reservationRequestInsert            = new ReservationRequest();
-    // reservationRequestInsert.source           = reservationRequest.source;
-    // reservationRequestInsert.cleverSenderId   = reservationRequest.cleverSenderId;
-    // reservationRequestInsert.zaloRecipientId  = reservationRequest.zaloRecipientId;
-    // reservationRequestInsert.zaloMessageId    = reservationRequest.zaloMessageId;
-    // reservationRequestInsert.zaloSenderId     = reservationRequest.zaloSenderId;
-    // reservationRequestInsert.corId            = reservationRequest.corId;
-    // reservationRequestInsert.timestamp        = moment().valueOf();
-    // reservationRequestInsert.payload          = reservationRequest.payload;
-
-    const inserted = await this.reservationRequest.insertOne(reservationRequest);
     return ReservationRequestProvider.factory(inserted.ops[0]);
   }
   /**
