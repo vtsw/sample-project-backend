@@ -45,28 +45,28 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
   const messageProvider            = container.resolve('zaloMessageProvider');
 
   const {
-    zaloPatientId, zaloDoctorId, 
+    zaloPatientId, userId, 
     time, corId, type
   } = req.query; 
 
   const [OAUser, interestedUser] = await Promise.all([
-    userProvider.findByZaloId(zaloDoctorId),
+    userProvider.findById(userId),
     zaloInterestedUserProvider.finByOAFollowerId(zaloPatientId),
   ]);
 
-  let reservation = {
+  const reservation = {
     type: type,
     userId: ObjectId(OAUser.id),
     corId: ObjectId(corId),
     content: {
       zaloPatientId: zaloPatientId,
-      zaloDoctorId: zaloDoctorId,
+      zaloDoctorId: OAUser.zaloOA.oaId,
       reservationTime: time,
     },
     timestamp: moment().valueOf(),
   };
 
-  const message      = `Bạn đã hẹn bác sỹ ${zaloDoctorId} vào ngày ${moment.unix(time / 1000).format("YYYY-MM-DD")} lúc ${moment.unix(time / 1000).format("HH:mm")}`;
+  const message      = `Bạn đã hẹn bác sỹ ${OAUser.name} vào ngày ${moment.unix(time / 1000).format("YYYY-MM-DD")} lúc ${moment.unix(time / 1000).format("HH:mm")}`;
   const result       = await handler.create(reservation);
   const zaloResponse = await zaloMessageSender.sendText({text: message}, {zaloId: zaloPatientId});
 
