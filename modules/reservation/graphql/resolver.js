@@ -30,6 +30,8 @@ module.exports = {
       ];
 
       const { bookingOptions, patient } = reservation;
+      reservation.bookingOptions = bookingOptions.map(o => {return {doctor: ObjectId(o.doctor), time: o.time}})
+
       const examinationDate = moment(bookingOptions[0].time).format('YYYY-MM-DD');
       let examinationTemplate = await reservationTemplateProvider.findByType(EXAMINATION);
 
@@ -41,7 +43,7 @@ module.exports = {
           image_url: examinationTemplate.element.image_url,
           default_action: {
             type: examinationTemplate.element.default_action.type,
-            url: `https://b0fcf0e4.ngrok.io/api/zalo/reservation/confirmation?type=examination&zaloPatientId=${patient}&zaloDoctorId=${o.doctor}&time=${o.time}&corId=${corId}`
+            url: `https://dfefcc02.ngrok.io/api/zalo/reservation/confirmation?type=examination&zaloPatientId=${patient}&zaloDoctorId=${o.doctor}&time=${o.time}&corId=${corId}`
           }
         }
       });
@@ -62,21 +64,18 @@ module.exports = {
         throw new Error(`Zalo Response: ${zaLoResponse.message}`);
       }
 
-      const zaloMessageId = zaLoResponse.data.message_id;
-
       const reservationRequest = {
         source: "zalo",
-        zaloMessageId: zaloMessageId,
+        zaloMessageId:  zaLoResponse.data.message_id,
         zaloRecipientId: patient,
-        zaloSenderId: "4368496045530866759",
+        // zaloSenderId: "4368496045530866759", // This id get from account hard code
         corId: corId,
-        cleverSenderId: ObjectId(req.user.id),
+        userId: ObjectId(req.user.id),
         payload: reservation,
         timestamp: moment().valueOf(),
-      }
-
-      const result = await reservationRequestProvider.create(reservationRequest);
-      return result;
+      };
+      
+      return await reservationRequestProvider.create(reservationRequest);
     },
   }
 };
