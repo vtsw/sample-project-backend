@@ -54,6 +54,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     zaloInterestedUserProvider.finByOAFollowerId(zaloPatientId),
   ]);
 
+  
   const reservation = {
     type: type,
     userId: ObjectId(OAUser.id),
