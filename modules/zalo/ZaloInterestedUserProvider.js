@@ -37,7 +37,7 @@ class ZaloInterestedUserProvider {
    * @param id
    * @returns {Promise<void> | * | PromiseLike<any> | Promise<any>}
    */
-  finByOAFollowerId(followId) {
+  findByOAFollowerId(followId) {
     return this.zaloInterestedUsers.findOne({followings:  { $elemMatch: { OAFollowerId: followId } }})
        .then(ZaloInterestedUserProvider.factory);
   }

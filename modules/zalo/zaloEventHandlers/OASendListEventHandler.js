@@ -12,7 +12,7 @@ class OASendListEventHandler {
   async handle(data) {
     const [OAUser, interestedUser] = await Promise.all([
       this.userProvider.findByZaloId(data.sender.id),
-      this.zaloInterestedUserProvider.finByOAFollowerId(data.recipient.id),
+      this.zaloInterestedUserProvider.findByOAFollowerId(data.recipient.id),
     ]);
 
     if(! OAUser) {

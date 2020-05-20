@@ -26,7 +26,7 @@ class OASendTextEventHandler {
     if(! data.user_id_by_app) {
       [OAUser, interestedUser] = await Promise.all([
         this.userProvider.findByZaloId(data.sender.id),
-        this.zaloInterestedUserProvider.finByOAFollowerId(data.recipient.id),
+        this.zaloInterestedUserProvider.findByOAFollowerId(data.recipient.id),
       ]);
     }
 

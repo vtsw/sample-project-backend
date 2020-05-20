@@ -51,7 +51,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
 
   const [OAUser, interestedUser] = await Promise.all([
     userProvider.findById(userId),
-    zaloInterestedUserProvider.finByOAFollowerId(zaloPatientId),
+    zaloInterestedUserProvider.findByOAFollowerId(zaloPatientId),
   ]);
 
   const reservation = {
