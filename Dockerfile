@@ -1,5 +1,7 @@
 FROM node:12.16.1
 EXPOSE 4000
+EXPOSE 4001
+EXPOSE 80
 WORKDIR /usr/src/app
 RUN npm install -g node-gyp
 COPY . ./

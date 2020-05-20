@@ -23,12 +23,18 @@ module.exports = {
 
   Mutation: {
     createReservationRequest: async (_, { reservation }, { container, req }) => {
-      const [zaloMessageSender, reservationTemplateProvider, reservationRequestProvider] = [
+      const loggedUser = req.user;
+
+      const [zaloMessageSender, reservationTemplateProvider, reservationRequestProvider, userProvider] = [
         container.resolve('zaloMessageSender'),
         container.resolve('reservationTemplateProvider'),
-        container.resolve('reservationRequestProvider')
+        container.resolve('reservationRequestProvider'),
+        container.resolve('userProvider'),
       ];
 
+      const zaloUser = await userProvider.findById(loggedUser.id);
+      if (!zaloUser) console.log('cannot find user by ID', loggedUser.id);
+      console.log(zaloUser);
       const { bookingOptions, patient } = reservation;
       reservation.bookingOptions = bookingOptions.map(o => {return {doctor: ObjectId(o.doctor), time: o.time}})
 
@@ -36,10 +42,10 @@ module.exports = {
       let examinationTemplate = await reservationTemplateProvider.findByType(EXAMINATION);
 
       const corId = ObjectId();
-      const elementList = bookingOptions.map(o => {
-        const examTime = moment(o.time).format('HH:mm');
+      const elementList = bookingOptions.map((bookingOption) => {
+        const examTime = moment(bookingOption.time).format('HH:mm');
         return {
-          title: `${examinationTemplate.element.title} ${o.doctor} ${examinationTemplate.element.time} ${examTime}`,
+          title: `${examinationTemplate.element.title} ${bookingOption.doctor} ${examinationTemplate.element.time} ${examTime}`,
           image_url: examinationTemplate.element.image_url,
           default_action: {
             type: examinationTemplate.element.default_action.type,
@@ -57,7 +63,7 @@ module.exports = {
       let message = examinationTemplate.message;
       message.attachment.payload.elements = elements;
 
-      const zaLoResponse = await zaloMessageSender.sendListElement(message, { zaloId: patient });
+      const zaLoResponse = await zaloMessageSender.sendListElement(message, { zaloId: patient }, zaloUser);
 
       if (zaLoResponse.error) {
         console.log('Sender message fail');
