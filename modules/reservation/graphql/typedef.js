@@ -57,6 +57,10 @@ module.exports = gql`
       limit: Int = 10
     }
 
+    type ReservationRequest {
+      id: ID!,
+    }
+
     type ReservationRequestList {
       items: [ReservationRequest]!
       hasNext: Boolean,
@@ -64,13 +68,9 @@ module.exports = gql`
     }
 
     type ReservationList implements Paginatable {
-      items: [ReservationRequest]!
+      items: [Reservation]!
       hasNext: Boolean,
       total: Int,
-    }
-
-    type ReservationRequest {
-      id: ID!,
     }
     
     type Query {
