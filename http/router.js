@@ -61,7 +61,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     content: {
       zaloPatientId: zaloPatientId,
       zaloDoctorId: OAUser.zaloOA.oaId,
-      reservationTime: parseInt(time),
+      time: parseInt(time),
     },
     timestamp: moment().valueOf(),
   };

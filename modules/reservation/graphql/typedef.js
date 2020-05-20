@@ -24,7 +24,7 @@ module.exports = gql`
     type ReservationContent {
       zaloPatientId: ID,
       zaloDoctorId: ID,
-      reservationTime: String
+      time: Float
     }
 
     input ReservationRequestListInput {
