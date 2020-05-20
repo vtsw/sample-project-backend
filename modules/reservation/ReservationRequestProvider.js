@@ -21,6 +21,7 @@ class ReservationRequestProvider {
  * @returns {Promise<reservationRequest>}
  */
   async create(reservationRequest) {
+    const inserted = await this.reservationRequest.insertOne(reservationRequest);
     return ReservationRequestProvider.factory(inserted.ops[0]);
   }
   /**
