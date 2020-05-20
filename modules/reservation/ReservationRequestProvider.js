@@ -24,6 +24,34 @@ class ReservationRequestProvider {
     const inserted = await this.reservationRequest.insertOne(reservationRequest);
     return ReservationRequestProvider.factory(inserted.ops[0]);
   }
+
+
+  /**
+ *
+ * @param {Object} condition
+ * @returns {Promise<*>}
+ */
+  async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
+    let { query } = condition;
+    const items = await this.reservationRequest
+      .find(query)
+      .limit(condition.page.limit + 1)
+      .skip(condition.page.skip).sort({ timestamp: -1 })
+      .toArray();
+
+    const hasNext = (items.length === condition.page.limit + 1);
+
+    if (hasNext) {
+      items.pop();
+    }
+
+    return {
+      hasNext,
+      items: items.map(ReservationRequestProvider.factory),
+      total: items.length,
+    };
+  }
+
   /**
    *
    * @param {Object} rawData

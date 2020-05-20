@@ -4,10 +4,6 @@ const { ObjectId } = require('mongodb');
 
 module.exports = {
   Query: {
-    reservation: async (_, { }, { container }) => {
-      return 'reservation';
-    },
-
     reservationList: async (_, args, { container, req }) => {
       const {
         query: {
@@ -21,7 +17,15 @@ module.exports = {
     },
 
     reservationRequestList: async (_, args, { container, req }) => {
-      
+      const {
+        query: {
+          limit, skip,
+        },
+      } = args;
+
+      const reservationRequestProvider = container.resolve('reservationRequestProvider');
+
+      return await reservationRequestProvider.find({ query: { userId: ObjectId(req.user.id) }, page: { limit, skip } });
     }
   },
 

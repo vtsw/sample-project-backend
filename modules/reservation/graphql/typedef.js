@@ -2,24 +2,40 @@ const gql = require('graphql-tag');
 
 module.exports = gql`
 
-    input bookingOptionsInput {
-      doctor: ID!,
-      time: Float!,
+    input ReservationListInput {
+      skip: Int = 0
+      limit: Int = 10
     }
 
-    input ReservationInput {
-      patient: String,
-      bookingOptions: [bookingOptionsInput!]!
+    type ReservationList implements Paginatable {
+      items: [Reservation]!
+      hasNext: Boolean,
+      total: Int,
     }
 
-    type bookingOptions {
-      doctor: ID!,
-      time: Float!,
+    type Reservation {
+      id: ID!,
+      type: String,
+      timestamp: String,
+      corId: ID,
+      content: ReservationContent
     }
 
-    type ReservationRequestPayLoad {
-      patient: ID,
-      bookingOptions: [bookingOptions!]!
+    type ReservationContent {
+      zaloPatientId: ID,
+      zaloDoctorId: ID,
+      reservationTime: String
+    }
+
+    input ReservationRequestListInput {
+      skip: Int = 0
+      limit: Int = 10
+    }
+
+    type ReservationRequestList {
+      items: [ReservationRequest]!
+      hasNext: Boolean,
+      total: Int,
     }
 
     type ReservationRequest {
@@ -33,48 +49,27 @@ module.exports = gql`
       payload: ReservationRequestPayLoad
     }
 
-    type ReservationContent {
-      zaloPatientId: ID,
-      zaloDoctorId: ID,
-      reservationTime: String
-    }
-    
-    type Reservation {
-      id: ID!,
-      type: String,
-      timestamp: String,
-      corId: ID,
-      content: ReservationContent
+    type ReservationRequestPayLoad {
+      patient: String,
+      bookingOptions: [bookingOptions!]!
     }
 
-    input ReservationListInput {
-      skip: Int = 0
-      limit: Int = 10
+    input bookingOptionsInput {
+      doctor: ID!,
+      time: Float!,
     }
 
-    input ReservationRequestListInput {
-      skip: Int = 0
-      limit: Int = 10
+    type bookingOptions {
+      doctor: ID!,
+      time: Float!,
     }
-
-    type ReservationRequest {
-      id: ID!,
-    }
-
-    type ReservationRequestList {
-      items: [ReservationRequest]!
-      hasNext: Boolean,
-      total: Int,
-    }
-
-    type ReservationList implements Paginatable {
-      items: [Reservation]!
-      hasNext: Boolean,
-      total: Int,
+ 
+    input ReservationInput {
+      patient: String,
+      bookingOptions: [bookingOptionsInput!]!
     }
     
     type Query {
-      reservation: String,
       reservationList(query: ReservationListInput): ReservationList  @isAuthenticated
       reservationRequestList(query: ReservationRequestListInput): ReservationRequestList  @isAuthenticated
     }
