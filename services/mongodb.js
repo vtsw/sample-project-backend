@@ -11,7 +11,6 @@ module.exports = (config) => new Promise((resolve, reject) => {
     replicaSet: 'mongo-replica-set',
   };
 
-  console.log(mongoConf);
   MongoClient.connect(
     config.mongodb.url,
     mongoConf,
