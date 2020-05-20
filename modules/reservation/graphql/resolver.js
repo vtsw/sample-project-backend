@@ -1,6 +1,6 @@
-const { EXAMINATION } = require('../types');
 const moment = require('moment');
 const { ObjectId } = require('mongodb');
+const { EXAMINATION } = require('../types');
 
 module.exports = {
   Query: {
@@ -26,7 +26,7 @@ module.exports = {
       const reservationRequestProvider = container.resolve('reservationRequestProvider');
 
       return await reservationRequestProvider.find({ query: { userId: ObjectId(req.user.id) }, page: { limit, skip } });
-    }
+    },
   },
 
   Mutation: {
@@ -43,31 +43,31 @@ module.exports = {
         const zaloUser = await userProvider.findById(loggedUser.id);
         if (!zaloUser) console.log('cannot find user by ID', loggedUser.id);
         const { bookingOptions, patient } = reservation;
-        reservation.bookingOptions = bookingOptions.map(o => { return { doctor: ObjectId(o.doctor), time: o.time } })
+        reservation.bookingOptions = bookingOptions.map((o) => ({ doctor: ObjectId(o.doctor), time: o.time }));
 
         const examinationDate = moment(bookingOptions[0].time).format('YYYY-MM-DD');
-        let examinationTemplate = await reservationTemplateProvider.findByType(EXAMINATION);
+        const examinationTemplate = await reservationTemplateProvider.findByType(EXAMINATION);
 
         const corId = ObjectId();
-        const elementList = bookingOptions.map((o) => {
-          const examTime = moment(o.time).format('HH:mm');
+        const elementList = bookingOptions.map((bookingOption) => {
+          const examTime = moment(bookingOption.time).format('HH:mm');
           return {
-            title: `${examinationTemplate.element.title} ${o.doctor} ${examinationTemplate.element.time} ${examTime}`,
+            title: `${examinationTemplate.element.title} ${bookingOption.doctor} ${examinationTemplate.element.time} ${examTime}`,
             image_url: examinationTemplate.element.image_url,
             default_action: {
               type: examinationTemplate.element.default_action.type,
-              url: `https://37c7756d.ngrok.io/api/zalo/reservation/confirmation?type=examination&zaloPatientId=${patient}&userId=${o.doctor}&time=${o.time}&corId=${corId}`
-            }
-          }
+              url: `https://cleverservice.ap.ngrok.io/api/zalo/reservation/confirmation?type=examination&zaloPatientId=${patient}&userId=${bookingOption.doctor}&time=${bookingOption.time}&corId=${corId}`,
+            },
+          };
         });
 
         const elements = [{
           title: `${examinationTemplate.header.title} ${examinationDate}`,
           subtitle: examinationTemplate.header.subtitle,
-          image_url: examinationTemplate.header.image_url
+          image_url: examinationTemplate.header.image_url,
         }, ...elementList];
 
-        let message = examinationTemplate.message;
+        const { message } = examinationTemplate;
         message.attachment.payload.elements = elements;
 
         const zaLoResponse = await zaloMessageSender.sendListElement(message, { zaloId: patient }, zaloUser);
@@ -78,21 +78,20 @@ module.exports = {
         }
 
         const reservationRequest = {
-          source: "zalo",
+          source: 'zalo',
           zaloMessageId: zaLoResponse.data.message_id,
           zaloRecipientId: patient,
           // zaloSenderId: "4368496045530866759", // This id get from account hard code
-          corId: corId,
+          corId,
           userId: ObjectId(req.user.id),
           payload: reservation,
           timestamp: moment().valueOf(),
         };
 
         return await reservationRequestProvider.create(reservationRequest);
-      }
-      catch (err) {
+      } catch (err) {
         console.log(err);
       }
     },
-  }
+  },
 };
