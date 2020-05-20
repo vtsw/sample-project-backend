@@ -1,6 +1,7 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
+
     input bookingOptionsInput {
       doctor: ID!,
       time: Float!,
@@ -51,15 +52,31 @@ module.exports = gql`
       limit: Int = 10
     }
 
-    type ReservationList implements Paginatable {
-      items: [Reservation]!
+    input ReservationRequestListInput {
+      skip: Int = 0
+      limit: Int = 10
+    }
+
+    type ReservationRequestList {
+      items: [ReservationRequest]!
       hasNext: Boolean,
       total: Int,
+    }
+
+    type ReservationList implements Paginatable {
+      items: [ReservationRequest]!
+      hasNext: Boolean,
+      total: Int,
+    }
+
+    type ReservationRequest {
+      id: ID!,
     }
     
     type Query {
       reservation: String,
       reservationList(query: ReservationListInput): ReservationList  @isAuthenticated
+      reservationRequestList(query: ReservationRequestListInput): ReservationRequestList  @isAuthenticated
     }
 
     type Mutation {

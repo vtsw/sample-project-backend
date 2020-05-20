@@ -57,7 +57,7 @@ module.exports = {
       getInterestedUserProfile: "https://openapi.zalo.me/v2.0/oa/getprofile",
       sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message"
     },
-    accessToken: "YTjPLqv-m42Ds5fHGdt0GuVQNLz9PPuMqOTK1amYhatuzKOQRKdSVCkUFGvkTzP-zP8dErDQrYoLZneuAI_qRRVu20LoNVHbpBuQU51UuYlYcoLYVNteSUMr6JjIL8LiwQvc15fwdqoPhGK2EtES7lg8McDsJBKbkO93B115qZ--bp1f93__BehR4sWCAFGUcFCVOnSsqGYcbmv1EZUM5eNvI5yRBR18YDHG14aZpbYBW2qn6q7fODYpAtLSLD1Y_f0q3rbLwshEiWGHIM7aMFQHgIHCPC5B",
+    accessToken: "5xGw9Hc9YauLiZ4X6eY1J16qEo86pFOjT-ev0GUFsGvGqHmi78YlDspFUZbaiAeW1_5V54ojhHmCodOeRAZ77J3t6nOmgUeePfCc4mx-pIHSfIKJ0l7L456OO04cwj0hBD4hHt6Acrjwic1u49ILSLZ9T5uuf8SmCiumKaw9WaOxnqXLU8I5JI_yS7bveCTpCyeeM5NvmMaZcoe5TFgSBdwP9oOO_Cmj4yKO65EcxW1OnrG94fcHFtlYG5OsYl8qEVOp0c74voehhLCML-tzBb8v2uDQ7P6EIG",
     sendMessageToInterestedUser: "https://openapi.zalo.me/v2.0/oa/message",
     upload: {
       uploadImage: "https://openapi.zalo.me/v2.0/oa/upload/image",

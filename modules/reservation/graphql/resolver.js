@@ -48,7 +48,7 @@ module.exports = {
             image_url: examinationTemplate.element.image_url,
             default_action: {
               type: examinationTemplate.element.default_action.type,
-              url: `https://dfefcc02.ngrok.io/api/zalo/reservation/confirmation?type=examination&zaloPatientId=${patient}&userId=${o.doctor}&time=${o.time}&corId=${corId}`
+              url: `https://37c7756d.ngrok.io/api/zalo/reservation/confirmation?type=examination&zaloPatientId=${patient}&userId=${o.doctor}&time=${o.time}&corId=${corId}`
             }
           }
         });
