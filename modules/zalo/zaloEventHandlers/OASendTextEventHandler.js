@@ -15,15 +15,15 @@ class OASendTextEventHandler {
       return message;
     }
 
-    let OAUser, interestedUser;
-    if(data.user_id_by_app) {
+    let OAUser; let interestedUser;
+    if (data.user_id_by_app) {
       [OAUser, interestedUser] = await Promise.all([
         this.userProvider.findByZaloId(data.sender.id),
         this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
       ]);
     }
 
-    if(! data.user_id_by_app) {
+    if (!data.user_id_by_app) {
       [OAUser, interestedUser] = await Promise.all([
         this.userProvider.findByZaloId(data.sender.id),
         this.zaloInterestedUserProvider.findByOAFollowerId(data.recipient.id),
@@ -46,7 +46,6 @@ class OASendTextEventHandler {
       zaloMessageId: data.message.msg_id,
       type: 'Text',
     });
-    
     await Promise.all([
       this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),
       this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),

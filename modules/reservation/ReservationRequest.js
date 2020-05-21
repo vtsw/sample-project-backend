@@ -2,7 +2,7 @@ class ReservationRequest {
   constructor(id) {
     this.data = {
       id,
-      source : null,
+      source: null,
       cleverSenderId: null,
       zaloRecipientId: null,
       zaloMessageId: null,

@@ -1,9 +1,9 @@
 const { asClass } = require('awilix');
-const fetch = require('node-fetch');
 const ServiceProvider = require('../../ServiceProvider');
 const ReservationProvider = require('../reservation/ReservationProvider');
-const ReservationTemplateProvider  = require('../reservation/ReservationTemplateProvider');
+const ReservationTemplateProvider = require('../reservation/ReservationTemplateProvider');
 const ReservationRequestProvider = require('../reservation/ReservationRequestProvider');
+
 class ReservationServiceProvider extends ServiceProvider {
   register() {
     this.container.register('reservationProvider', asClass(ReservationProvider)

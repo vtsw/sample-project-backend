@@ -1,5 +1,4 @@
 const { ObjectId } = require('mongodb');
-const moment = require('moment');
 const Reservation = require('./Reservation');
 
 class ReservationProvider {
@@ -10,6 +9,7 @@ class ReservationProvider {
   constructor(reservation) {
     this.reservation = reservation;
   }
+
   /**
    *
    * @param {Object} reservation
@@ -26,7 +26,7 @@ class ReservationProvider {
  * @returns {Promise<*>}
  */
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
-    let { query } = condition;
+    const { query } = condition;
     const items = await this.reservation
       .find(query)
       .limit(condition.page.limit + 1)
@@ -35,7 +35,7 @@ class ReservationProvider {
 
     const hasNext = (items.length === condition.page.limit + 1);
 
-     if (hasNext) {
+    if (hasNext) {
       items.pop();
     }
 

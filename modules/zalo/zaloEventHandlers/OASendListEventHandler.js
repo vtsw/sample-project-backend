@@ -1,4 +1,4 @@
-const { ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED, ZALO_MESSAGE_SENT } = require('../../zaloMessage/events');
+const { ZALO_MESSAGE_CREATED, ZALO_MESSAGE_SENT } = require('../../zaloMessage/events');
 
 class OASendListEventHandler {
   constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
@@ -15,18 +15,10 @@ class OASendListEventHandler {
       this.zaloInterestedUserProvider.findByOAFollowerId(data.recipient.id),
     ]);
 
-    if(! OAUser) {
-      throw new Error("OAUser not found !")
-    }
-
-    if(! interestedUser) {
-      throw new Error("interestedUser not found !")
-    }
-    
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: {
-        id: OAUser.id ,
+        id: OAUser.id,
         displayName: OAUser.name,
         avatar: OAUser.image.link,
       },
