@@ -11,7 +11,7 @@ class ReservationTemplateProvider {
   }
 
   findByType(type) {
-    return this.reservationTemplate.findOne({type: type})
+    return this.reservationTemplate.findOne({type: type});
   }
 
   /**
@@ -20,7 +20,6 @@ class ReservationTemplateProvider {
    * @returns {null|ZaloInterestedUser}
    */
   static factory(rawData) {
-
     if (!rawData) {
       return null;
     }

@@ -9,8 +9,8 @@ class ReservationRequest {
       zaloSenderId: null,
       corId: null,
       timestamp: null,
-      payload: {}
-    }
+      payload: {},
+    };
   }
 
   get id() {

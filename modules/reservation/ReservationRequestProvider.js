@@ -57,7 +57,6 @@ class ReservationRequestProvider {
    * @returns {null|ZaloInterestedUser}
    */
   static factory(rawData) {
-
     if (!rawData) {
       return null;
     }
