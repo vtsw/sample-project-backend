@@ -23,7 +23,6 @@ module.exports = {
       } = args;
 
       const reservationRequestProvider = container.resolve('reservationRequestProvider');
-
       return reservationRequestProvider.find({ query: { userId: ObjectId(req.user.id) }, page: { limit, skip } });
     },
   },
