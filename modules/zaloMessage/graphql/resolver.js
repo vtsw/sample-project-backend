@@ -9,7 +9,6 @@ const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = requi
 
 
 module.exports = {
-  
   Query: {
     zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findByZaloMessageId(id),
     zaloMessageList: async (_, args, { container, req }) => {
@@ -145,14 +144,13 @@ module.exports = {
     onZaloMessageReceived: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_RECEIVED),
-        ({ onZaloMessageReceived }, args, { loggedUser }) => true,
+        ({ onZaloMessageReceived }, args, { loggedUser }) => onZaloMessageReceived.to.id === loggedUser.id,
       ),
     },
     onZaloMessageCreated: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_CREATED),
         ({ onZaloMessageCreated }, { filter }, { loggedUser }) => {
-
           // return true;
           // // console.log('onZalo message created', onZaloMessageCreated.attachments);
           // // return true;

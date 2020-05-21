@@ -8,7 +8,7 @@ class ZaloMessageSender {
 
   async sendText(message, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
-    const { accessToken } = sender ? sender.zaloOA : this.config.zaloApi ;
+    const { accessToken } = sender.zaloOA;
     const body = {
       recipient: {
         user_id: recipient.zaloId,
@@ -115,12 +115,12 @@ class ZaloMessageSender {
 
   async sendListElement(message, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
-    const { accessToken } = sender ? sender.zaloOA : this.config.zaloApi;
+    const { accessToken } = sender.zaloOA;
     const body = {
       recipient: {
         user_id: `${recipient.zaloId}`,
       },
-      message: message
+      message,
     };
 
     const response = await this.request(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {

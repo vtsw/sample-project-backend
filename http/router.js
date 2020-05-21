@@ -43,59 +43,52 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
   const userProvider = container.resolve('userProvider');
   const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
   const messageProvider = container.resolve('zaloMessageProvider');
+  const {
+    zaloPatientId, userId,
+    time, corId, type,
+  } = req.query;
 
-  try {
-    const {
-      zaloPatientId, userId,
-      time, corId, type,
-    } = req.query;
+  const [OAUser, interestedUser] = await Promise.all([
+    userProvider.findById(userId),
+    zaloInterestedUserProvider.findByOAFollowerId(zaloPatientId),
+  ]);
 
-    const [OAUser, interestedUser] = await Promise.all([
-      userProvider.findById(userId),
-      zaloInterestedUserProvider.findByOAFollowerId(zaloPatientId),
-    ]);
+  const reservation = {
+    type,
+    userId: ObjectId(OAUser.id),
+    corId: ObjectId(corId),
+    content: {
+      zaloPatientId,
+      zaloDoctorId: OAUser.zaloOA.oaId,
+      time: parseInt(time, 10),
+    },
+    timestamp: moment().valueOf(),
+  };
 
-    const reservation = {
-      type: type,
-      userId: ObjectId(OAUser.id),
-      corId: ObjectId(corId),
-      content: {
-        zaloPatientId: zaloPatientId,
-        zaloDoctorId: OAUser.zaloOA.oaId,
-        time: parseInt(time),
-      },
-      timestamp: moment().valueOf(),
-    };
+  const message = `Bạn đã hẹn bác sỹ ${OAUser.name} vào ngày ${moment.unix(time / 1000).format('YYYY-MM-DD')} lúc ${moment.unix(time / 1000).format('HH:mm')}`;
+  await handler.create(reservation);
+  const zaloResponse = await zaloMessageSender.sendText({ text: message }, { zaloId: zaloPatientId }, OAUser);
 
+  const messageLog = {
+    timestamp: moment().valueOf(),
+    from: {
+      id: OAUser.id,
+      displayName: OAUser.name,
+      avatar: OAUser.image.link,
+    },
+    content: message,
+    attachments: null,
+    to: {
+      id: interestedUser.id,
+      displayName: interestedUser.displayName,
+      avatar: interestedUser.avatar,
+    },
+    zaloMessageId: zaloResponse.data.message_id,
+    type: 'Text',
+  };
 
-    console.log(reservation);
-    const message = `Bạn đã hẹn bác sỹ ${OAUser.name} vào ngày ${moment.unix(time / 1000).format('YYYY-MM-DD')} lúc ${moment.unix(time / 1000).format('HH:mm')}`;
-    await handler.create(reservation);
-    const zaloResponse = await zaloMessageSender.sendText({ text: message }, { zaloId: zaloPatientId });
-
-    const messageLog = {
-      timestamp: moment().valueOf(),
-      from: {
-        id: OAUser.id,
-        displayName: OAUser.name,
-        avatar: OAUser.image.link,
-      },
-      content: message,
-      attachments: null,
-      to: {
-        id: interestedUser.id,
-        displayName: interestedUser.displayName,
-        avatar: interestedUser.avatar,
-      },
-      zaloMessageId: zaloResponse.data.message_id,
-      type: 'Text',
-    };
-
-    await messageProvider.create(messageLog);
-    res.send(message);
-  } catch (err) {
-    console.log(err);
-  }
+  await messageProvider.create(messageLog);
+  res.send(message);
 });
 
 module.exports = router;
