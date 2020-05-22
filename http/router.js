@@ -38,11 +38,15 @@ router.post('/zalo/webhook', (req, res) => {
 
 router.get('/zalo/reservation/confirmation', async (req, res) => {
   const { container } = req;
-  const handler = container.resolve('reservationProvider');
-  const zaloMessageSender = container.resolve('zaloMessageSender');
-  const userProvider = container.resolve('userProvider');
-  const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
-  const messageProvider = container.resolve('zaloMessageProvider');
+
+  const [handler, zaloMessageSender, userProvider, zaloInterestedUserProvider, messageProvider] = await Promise.all([
+    container.resolve('reservationProvider'),
+    container.resolve('zaloMessageSender'),
+    container.resolve('userProvider'),
+    container.resolve('zaloInterestedUserProvider'),
+    container.resolve('zaloMessageProvider'),
+  ]);
+
   const {
     zaloPatientId, userId,
     time, corId, type,
