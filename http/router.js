@@ -53,6 +53,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     zaloInterestedUserProvider.findByOAFollowerId(zaloPatientId),
   ]);
 
+
   const reservation = {
     type,
     userId: ObjectId(OAUser.id),
@@ -72,14 +73,14 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
   const messageLog = {
     timestamp: moment().valueOf(),
     from: {
-      id: OAUser.id,
+      id: ObjectId(OAUser.id),
       displayName: OAUser.name,
       avatar: OAUser.image.link,
     },
     content: message,
     attachments: null,
     to: {
-      id: interestedUser.id,
+      id: ObjectId(interestedUser.id),
       displayName: interestedUser.displayName,
       avatar: interestedUser.avatar,
     },
