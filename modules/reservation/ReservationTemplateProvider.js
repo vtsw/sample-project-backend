@@ -10,6 +10,10 @@ class ReservationTemplateProvider {
     this.reservationTemplate = reservationTemplate;
   }
 
+  /**
+   * @param {string} type
+   * @returns {Promise<reservationTemplate>}
+   */
   findByType(type) {
     return this.reservationTemplate.findOne({ type });
   }
