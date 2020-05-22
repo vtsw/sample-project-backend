@@ -53,7 +53,6 @@ class ReservationProvider {
    * @returns {null|Reservation}
    */
   static factory(rawData) {
-
     if (!rawData) {
       return null;
     }
@@ -68,9 +67,12 @@ class ReservationProvider {
     });
     const reservation = new Reservation(data._id || data.id);
     reservation.type = data.type;
-    reservation.timestamp = data.timestamp;
     reservation.corId = data.corId;
-    reservation.content = data.content;
+    reservation.userId = data.userId;
+    reservation.doctor = data.doctor;
+    reservation.patient = data.patient;
+    reservation.timestamp = data.timestamp;
+    reservation.reservationTime = data.reservationTime;
     return reservation;
   }
 }

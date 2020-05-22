@@ -37,6 +37,30 @@ class Reservation {
     return this.data.patient;
   }
 
+  set corId(value) {
+    this.data.corId = value;
+  }
+
+  get corId() {
+    return this.data.corId;
+  }
+
+  set userId(value) {
+    this.data.userId = value;
+  }
+
+  get userId() {
+    return this.data.userId;
+  }
+
+  set timestamp(value) {
+    this.data.timestamp = value;
+  }
+
+  get timestamp() {
+    return this.data.timestamp;
+  }
+
   set patient(value) {
     this.data.patient = value;
   }
