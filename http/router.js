@@ -77,6 +77,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
       zaloRecipientId: zaloPatientId,
     },
     reservationTime: parseInt(time, 10),
+    timestamp: moment().valueOf(),
   };
 
   const message = messageTemplate
