@@ -2,9 +2,11 @@ class Reservation {
   constructor(id) {
     this.data = {
       id,
-      type : "",
-      content: {}
-    }
+      type: null,
+      doctor: {},
+      patient: {},
+      reservationTime: null,
+    };
   }
 
   get id() {
@@ -23,13 +25,30 @@ class Reservation {
     this.data.type = value;
   }
 
-  get content() {
-    return this.data.content;
+  get doctor() {
+    return this.data.doctor;
   }
 
-  set content(value) {
-    this.data.content = value;
+  set doctor(value) {
+    this.data.doctor = value;
   }
+
+  get patient() {
+    return this.data.patient;
+  }
+
+  set patient(value) {
+    this.data.patient = value;
+  }
+
+  get reservationTime() {
+    return this.data.reservationTime;
+  }
+
+  set reservationTime(value) {
+    this.data.reservationTime = value;
+  }
+
 
   toJson() {
     return this.data;
