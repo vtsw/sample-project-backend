@@ -60,12 +60,12 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     doctor: {
       userId: ObjectId(OAUser.id),
       name: OAUser.name,
-      zaloOAId: OAUser.zaloOA.oaId,
+      zaloOaId: OAUser.zaloOA.oaId,
     },
     patient: {
       interestedId: ObjectId(interestedUser.id),
       name: interestedUser.displayName,
-      zaloRecipientid: zaloPatientId,
+      zaloRecipientId: zaloPatientId,
     },
     reservationTime: parseInt(time, 10),
   };
