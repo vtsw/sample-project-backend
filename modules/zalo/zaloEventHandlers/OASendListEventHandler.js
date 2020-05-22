@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const { ZALO_MESSAGE_CREATED, ZALO_MESSAGE_SENT } = require('../../zaloMessage/events');
 
 class OASendListEventHandler {
@@ -18,14 +19,14 @@ class OASendListEventHandler {
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: {
-        id: OAUser.id,
+        id: ObjectId(OAUser.id),
         displayName: OAUser.name,
         avatar: OAUser.image.link,
       },
       content: null,
       attachments: data.message.attachments,
       to: {
-        id: interestedUser.id,
+        id: ObjectId(interestedUser.id),
         displayName: interestedUser.displayName,
         avatar: interestedUser.avatar,
       },

@@ -64,7 +64,7 @@ module.exports = {
       uploadFile: "https://openapi.zalo.me/v2.0/oa/upload/file",
       uploadGif: "https://openapi.zalo.me/v2.0/oa/upload/gif",
     },
-    confirmationCb: "https://3121321e.ngrok.io/api/zalo/reservation/confirmation?type=examination"
+    confirmationCb: "https://71814280.ngrok.io/api/zalo/reservation/confirmation?type=examination"
   },
   zaloWebhook: {
     ignoreEvents: []

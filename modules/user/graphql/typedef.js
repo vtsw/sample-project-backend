@@ -20,6 +20,8 @@ module.exports = gql`
     image: File
     zaloOA: ZaloOA
     followers(query: ZaloInterestedUserListInput): ZaloInterestedUserList
+    reservationRequests: [ReservationRequest]
+    reservations: [Reservation]
   }
 
   type UserList implements Paginatable {
