@@ -53,17 +53,21 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     zaloInterestedUserProvider.findByOAFollowerId(zaloPatientId),
   ]);
 
-
   const reservation = {
     type,
     userId: ObjectId(OAUser.id),
     corId: ObjectId(corId),
-    content: {
-      zaloPatientId,
-      zaloDoctorId: OAUser.zaloOA.oaId,
-      time: parseInt(time, 10),
+    doctor: {
+      userId: ObjectId(OAUser.id),
+      name: OAUser.name,
+      zaloOAId: OAUser.zaloOA.oaId,
     },
-    timestamp: moment().valueOf(),
+    patient: {
+      interestedId: ObjectId(interestedUser.id),
+      name: interestedUser.displayName,
+      zaloRecipientid: zaloPatientId,
+    },
+    reservationTime: parseInt(time, 10),
   };
 
   const message = `Bạn đã hẹn bác sỹ ${OAUser.name} vào ngày ${moment.unix(time / 1000).format('YYYY-MM-DD')} lúc ${moment.unix(time / 1000).format('HH:mm')}`;
