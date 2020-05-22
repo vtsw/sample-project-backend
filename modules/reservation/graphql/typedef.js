@@ -13,12 +13,26 @@ module.exports = gql`
       total: Int,
     }
 
+    type Doctor {
+      userId: ID,
+      name: String,
+      zaloOaId: String
+    }
+
+    type Patient {
+      interestedId: ID,
+      name: String,
+      zaloRecipientId: String
+    }
+
     type Reservation {
       id: ID!,
       type: String,
-      timestamp: String,
+      timestamp: Float,
       corId: ID,
-      content: ReservationContent
+      doctor: Doctor,
+      patient: Patient,
+      reservationTime: Float
     }
 
     type ReservationContent {
