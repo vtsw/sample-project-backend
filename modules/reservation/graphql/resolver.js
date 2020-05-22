@@ -79,7 +79,7 @@ module.exports = {
         zaloMessageId: zaLoResponse.data.message_id,
         zaloRecipientId: patient,
         corId,
-        userId: ObjectId(req.user.id),
+        userId: ObjectId(req.user.id), // OA sender ID
         payload: sendReservation,
         timestamp: moment().valueOf(),
       };
