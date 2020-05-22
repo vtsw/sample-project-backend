@@ -11,7 +11,7 @@ class ReservationTemplateProvider {
   }
 
   findByType(type) {
-    return this.reservationTemplate.findOne({type: type});
+    return this.reservationTemplate.findOne({ type });
   }
 
   /**
