@@ -75,6 +75,18 @@ class UserProvider {
   }
 
   /**
+   * @param {Array} condition
+   * @returns {Promise<T>}
+   */
+  async findByIds(condition = { query: {} }) {
+    const users = await this.users
+      .find(Object.assign(condition.query, { deleted: false }))
+      .toArray();
+
+    return users.map((user) => UserProvider.factory(user));
+  }
+
+  /**
    *
    * @param id
    * @param userUpdate

@@ -85,8 +85,6 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     .replace('%date%', moment.unix(time / 1000).format('YYYY-MM-DD'))
     .replace('%time%', moment.unix(time / 1000).format('HH:mm'));
 
-  console.log(message);
-
   await handler.create(reservation);
   const zaloResponse = await zaloMessageSender.sendText({ text: message }, { zaloId: zaloPatientId }, OAUser);
 
