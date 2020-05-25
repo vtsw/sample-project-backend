@@ -48,12 +48,12 @@ module.exports = gql`
       corID: ID,
       timestamp: String,
       zaloMessageId: ID,
-      payload: ReservationRequestPayLoad
+      payload: ReservationRequestPayLoad,
     }
 
     type ReservationRequestPayLoad {
-      patient: String,
-      bookingOptions: [bookingOptions!]!
+      patient: ID!,
+      bookingOptions: [BookingOption!]!
     }
 
     input bookingOptionsInput {
@@ -61,7 +61,7 @@ module.exports = gql`
       time: Float!,
     }
 
-    type bookingOptions {
+    type BookingOption {
       doctor: ID!,
       time: Float!,
     }
