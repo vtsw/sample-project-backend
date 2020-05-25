@@ -100,13 +100,11 @@ module.exports = {
     onPattientConfirmination: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(PATIENT_CONFIRMINATION_EVENTS),
-        ({ onZaloMessageCreated }, { filter }, { loggedUser }) => {
-          console.log(loggedUser);
+        ({ onPattientConfirmination }, { filter }, { loggedUser }) => {
           return true;
-          // if (filter && filter.to) {
-          //   return onZaloMessageCreated.from.id === loggedUser.id && filter.to === onZaloMessageCreated.to.id;
+          // if (!filter && onPattientConfirmination.doctor.userId === loggedUser.data.id) { // Fake
+          //   return true;
           // }
-          // return onZaloMessageCreated.from.id === loggedUser.id;
         },
       ),
     },

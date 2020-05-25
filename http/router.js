@@ -2,8 +2,7 @@ const { Router } = require('express');
 const moment = require('moment');
 const ObjectId = require('objectid');
 const { isAuthenticated } = require('./middleware');
-const { CONFIRMINATION } = require('../modules/reservation/types');
-
+const { CONFIRMINATION, PATIENT_CONFIRMINATION_EVENTS } = require('../modules/reservation/types');
 
 const router = Router();
 
@@ -27,7 +26,6 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
 
 router.post('/zalo/webhook', (req, res) => {
   const { container } = req;
-  console.log(req.body.event_name);
   if (req.body.event_name && req.body.event_name !== 'user_seen_message' && req.body.event_name !== 'user_received_message') { // fake
     const handler = container.resolve('zaloMessageHandlerProvider')
       .provide(req.body.event_name);
@@ -41,13 +39,17 @@ router.post('/zalo/webhook', (req, res) => {
 router.get('/zalo/reservation/confirmation', async (req, res) => {
   const { container } = req;
 
-  const [handler, zaloMessageSender, userProvider, zaloInterestedUserProvider, messageProvider, reservationTemplateProvider] = await Promise.all([
+  const [
+    handler, zaloMessageSender, userProvider, zaloInterestedUserProvider,
+    messageProvider, reservationTemplateProvider, pubsub,
+  ] = await Promise.all([
     container.resolve('reservationProvider'),
     container.resolve('zaloMessageSender'),
     container.resolve('userProvider'),
     container.resolve('zaloInterestedUserProvider'),
     container.resolve('zaloMessageProvider'),
     container.resolve('reservationTemplateProvider'),
+    container.resolve('pubsub'),
   ]);
 
   const {
@@ -87,7 +89,8 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     .replace('%date%', moment.unix(time / 1000).format('YYYY-MM-DD'))
     .replace('%time%', moment.unix(time / 1000).format('HH:mm'));
 
-  await handler.create(reservation);
+  const reservationCreated = await handler.create(reservation);
+  pubsub.publish(PATIENT_CONFIRMINATION_EVENTS, { onPattientConfirmination: reservationCreated.toJson() });
   const zaloResponse = await zaloMessageSender.sendText({ text: message }, { zaloId: zaloPatientId }, OAUser);
 
   const messageLog = {
