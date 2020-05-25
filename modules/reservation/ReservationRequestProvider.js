@@ -11,7 +11,7 @@ class ReservationRequestProvider {
   }
 
   findOne() {
-    return this.reservationRequest.findOne()
+    return this.reservationRequest.findOne();
   }
 
   /**
@@ -20,7 +20,8 @@ class ReservationRequestProvider {
  * @returns {Promise<reservationRequest>}
  */
   async create(reservationRequest) {
-    const inserted = await this.reservationRequest.insertOne(reservationRequest);
+    const documentToInsert = ReservationRequestProvider.convertDataToMongodbDocument(reservationRequest);
+    const inserted = await this.reservationRequest.insertOne(documentToInsert);
     return ReservationRequestProvider.factory(inserted.ops[0]);
   }
 
@@ -52,6 +53,20 @@ class ReservationRequestProvider {
   }
 
   /**
+   * @param {Object} rawData
+   * @returns {null|ZaloInterestedUser}
+   */
+
+  static convertDataToMongodbDocument(rawData) {
+    return Object.assign(rawData, {
+      payload: {
+        patient: rawData.payload.patient,
+        bookingOptions: rawData.payload.bookingOptions.map((o) => ({ doctor: ObjectId(o.doctor), time: o.time })),
+      },
+    });
+  }
+
+  /**
    *
    * @param {Object} rawData
    * @returns {null|ZaloInterestedUser}
@@ -72,7 +87,7 @@ class ReservationRequestProvider {
     const reservationRequest = new ReservationRequest(data._id || data.id);
     reservationRequest.source = data.source;
     reservationRequest.zaloRecipientId = data.zaloRecipientId;
-    reservationRequest.zaloSenderId = data.zaloSenderId;
+    reservationRequest.userId = data.userId;
     reservationRequest.payload = data.payload;
     reservationRequest.timestamp = data.timestamp;
     reservationRequest.zaloMessageId = data.zaloMessageId;
