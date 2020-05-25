@@ -2,7 +2,7 @@ const { Router } = require('express');
 const moment = require('moment');
 const ObjectId = require('objectid');
 const { isAuthenticated } = require('./middleware');
-const { CONFIRMINATION, PATIENT_CONFIRMINATION_EVENTS } = require('../modules/reservation/types');
+const { CONFIRMINATION, RESERVATION_CONFIRM_EVENTS } = require('../modules/reservation/types');
 
 const router = Router();
 
@@ -90,7 +90,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     .replace('%time%', moment.unix(time / 1000).format('HH:mm'));
 
   const reservationCreated = await handler.create(reservation);
-  pubsub.publish(PATIENT_CONFIRMINATION_EVENTS, { onReservationConfirmed: reservationCreated.toJson() });
+  pubsub.publish(RESERVATION_CONFIRM_EVENTS, { onReservationConfirmed: reservationCreated.toJson() });
   const zaloResponse = await zaloMessageSender.sendText({ text: message }, { zaloId: zaloPatientId }, OAUser);
 
   const messageLog = {
