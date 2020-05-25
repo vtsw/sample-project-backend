@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const moment = require('moment');
-const { ObjectId } = require('mongodb');
+const ObjectId = require('objectid');
 const { isAuthenticated } = require('./middleware');
 const { CONFIRMINATION } = require('../modules/reservation/types');
 
@@ -27,6 +27,7 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
 
 router.post('/zalo/webhook', (req, res) => {
   const { container } = req;
+  console.log(req.body.event_name);
   if (req.body.event_name && req.body.event_name !== 'user_seen_message' && req.body.event_name !== 'user_received_message') { // fake
     const handler = container.resolve('zaloMessageHandlerProvider')
       .provide(req.body.event_name);
