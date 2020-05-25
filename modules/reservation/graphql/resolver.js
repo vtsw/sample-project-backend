@@ -96,8 +96,12 @@ module.exports = {
     },
   },
   Reservation: {
-    doctor: async (reservation, args, { dataloader, container }) => container.resolve('userProvider').findById(reservation.doctor.userId),
-      // return dataloader.getUserByIdList.load(reservation.doctor.userId);
+    // doctor: async (reservation, args, { dataloader, container }) => container.resolve('userProvider').findById(reservation.doctor.userId),
+    // return dataloader.getUserByIdList.load(reservation.doctor.userId);
+    doctor: (reservation) => ({
+      id: reservation.doctor.userId,
+      name: reservation.doctor.name,
+    }),
     patient: (reservation) => ({
       id: reservation.patient.interestedId,
       displayName: reservation.patient.name,
