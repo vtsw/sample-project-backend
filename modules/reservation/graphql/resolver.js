@@ -1,7 +1,7 @@
 const moment = require('moment');
 const ObjectId = require('objectid');
 const { withFilter } = require('apollo-server-express');
-const { EXAMINATION, PATIENT_CONFIRMINATION_EVENTS } = require('../types.js');
+const { EXAMINATION, RESERVATION_CONFIRM_EVENTS } = require('../types.js');
 
 const buildZaloListPayload = (examinationTemplate, bookingOptions, config, patient, corId) => {
   const examinationDate = moment(bookingOptions[0].time).format('YYYY-MM-DD');
@@ -99,7 +99,7 @@ module.exports = {
   Subscription: {
     onReservationConfirmed: {
       subscribe: withFilter(
-        (_, __, { container }) => container.resolve('pubsub').asyncIterator(PATIENT_CONFIRMINATION_EVENTS),
+        (_, __, { container }) => container.resolve('pubsub').asyncIterator(RESERVATION_CONFIRM_EVENTS),
         ({ onReservationConfirmed }, { filter }, { loggedUser }) => {
           return true;
           // if (!filter && onPattientConfirmination.doctor.userId === loggedUser.data.id) { // Fake
