@@ -47,6 +47,7 @@
     "open": "^7.0.3",
     "sharp": "^0.25.2",
     "subscriptions-transport-ws": "^0.9.16",
+    "uuid": "^8.1.0",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.4.2",
     "winston-transport": "^4.3.0"
@@ -70,7 +71,6 @@
     "jest-sinon": "^1.0.4",
     "migrate-mongo": "^7.1.0",
     "node-fetch": "^2.6.0",
-    "sinon": "^9.0.1",
-    "uuid": "^7.0.2"
+    "sinon": "^9.0.1"
   }
 }
