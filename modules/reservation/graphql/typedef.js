@@ -79,4 +79,8 @@ module.exports = gql`
     type Mutation {
       createReservationRequest(reservation: ReservationInput!): ReservationRequest  @isAuthenticated
     }
+
+    extend type Subscription  {
+      onPattientConfirmination: Reservation
+    }
 `;

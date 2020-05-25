@@ -1,6 +1,7 @@
 const moment = require('moment');
 const ObjectId = require('objectid');
-const { EXAMINATION } = require('../types.js');
+const { withFilter } = require('apollo-server-express');
+const { EXAMINATION, PATIENT_CONFIRMINATION_EVENTS } = require('../types.js');
 
 const buildZaloListPayload = (examinationTemplate, bookingOptions, config, patient, corId) => {
   const examinationDate = moment(bookingOptions[0].time).format('YYYY-MM-DD');
@@ -95,7 +96,21 @@ module.exports = {
       return reservationRequestProvider.create(reservationRequest);
     },
   },
-
+  Subscription: {
+    onPattientConfirmination: {
+      subscribe: withFilter(
+        (_, __, { container }) => container.resolve('pubsub').asyncIterator(PATIENT_CONFIRMINATION_EVENTS),
+        ({ onZaloMessageCreated }, { filter }, { loggedUser }) => {
+          console.log(loggedUser);
+          return true;
+          // if (filter && filter.to) {
+          //   return onZaloMessageCreated.from.id === loggedUser.id && filter.to === onZaloMessageCreated.to.id;
+          // }
+          // return onZaloMessageCreated.from.id === loggedUser.id;
+        },
+      ),
+    },
+  },
   Reservation: {
     // doctor: async (reservation, args, { dataloader, container }) => container.resolve('userProvider').findById(reservation.doctor.userId),
     // return dataloader.getUserByIdList.load(reservation.doctor.userId);
