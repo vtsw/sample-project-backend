@@ -59,7 +59,7 @@ module.exports = {
       const [zaloUser, examinationTemplate, doctors] = await Promise.all([
         userProvider.findById(loggedUser.id),
         reservationTemplateProvider.findByType(EXAMINATION),
-        userProvider.findByIds({ query: { _id: { $in: bookingOptions.map((o) => ObjectId(o.doctor)) } } })
+        userProvider.findByIds(bookingOptions.map((o) => o.doctor)),
       ]);
       const requestPayload = bookingOptions.map((itm) => ({
         ...doctors.find((item) => (item.data.id === itm.doctor) && item),
@@ -95,6 +95,7 @@ module.exports = {
       return reservationRequestProvider.create(reservationRequest);
     },
   },
+
   Reservation: {
     // doctor: async (reservation, args, { dataloader, container }) => container.resolve('userProvider').findById(reservation.doctor.userId),
     // return dataloader.getUserByIdList.load(reservation.doctor.userId);
