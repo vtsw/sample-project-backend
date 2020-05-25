@@ -90,7 +90,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     .replace('%time%', moment.unix(time / 1000).format('HH:mm'));
 
   const reservationCreated = await handler.create(reservation);
-  pubsub.publish(PATIENT_CONFIRMINATION_EVENTS, { onPattientConfirmination: reservationCreated.toJson() });
+  pubsub.publish(PATIENT_CONFIRMINATION_EVENTS, { onReservationConfirmed: reservationCreated.toJson() });
   const zaloResponse = await zaloMessageSender.sendText({ text: message }, { zaloId: zaloPatientId }, OAUser);
 
   const messageLog = {

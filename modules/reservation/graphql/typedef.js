@@ -81,6 +81,6 @@ module.exports = gql`
     }
 
     extend type Subscription  {
-      onPattientConfirmination: Reservation
+      onReservationConfirmed: Reservation
     }
 `;

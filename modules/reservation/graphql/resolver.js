@@ -97,10 +97,10 @@ module.exports = {
     },
   },
   Subscription: {
-    onPattientConfirmination: {
+    onReservationConfirmed: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(PATIENT_CONFIRMINATION_EVENTS),
-        ({ onPattientConfirmination }, { filter }, { loggedUser }) => {
+        ({ onReservationConfirmed }, { filter }, { loggedUser }) => {
           return true;
           // if (!filter && onPattientConfirmination.doctor.userId === loggedUser.data.id) { // Fake
           //   return true;
