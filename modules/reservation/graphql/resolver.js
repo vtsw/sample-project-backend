@@ -84,10 +84,10 @@ module.exports = {
         zaloMessageId: zaLoResponse.data.message_id,
         zaloRecipientId: patient,
         corId,
-        userId: ObjectId(req.user.id), // OA sender ID
+        userId: req.user.id, // OA sender ID
         payload: {
           patient,
-          bookingOptions: bookingOptions.map((o) => ({ doctor: ObjectId(o.doctor), time: o.time })),
+          bookingOptions,
         },
         timestamp: moment().valueOf(),
       };
