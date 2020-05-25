@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { ObjectId } = require('mongodb');
+const ObjectId = require('objectid');
 const { EXAMINATION } = require('../types.js');
 
 const buildZaloListPayload = (examinationTemplate, bookingOptions, config, patient, corId) => {
