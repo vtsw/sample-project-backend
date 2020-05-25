@@ -43,7 +43,7 @@ module.exports = gql`
     type ReservationRequest {
       id: ID!,
       zaloRecipientId: ID,
-      zaloSenderId: String,
+      userId: String,
       source: String,
       corID: ID,
       timestamp: String,
