@@ -3,10 +3,10 @@ class ReservationRequest {
     this.data = {
       id,
       source: null,
-      cleverSenderId: null,
       zaloRecipientId: null,
       zaloMessageId: null,
       zaloSenderId: null,
+      userId: null,
       corId: null,
       timestamp: null,
       payload: {},
@@ -45,14 +45,6 @@ class ReservationRequest {
     this.data.zaloSenderId = value;
   }
 
-  get cleverSenderId() {
-    return this.data.cleverSenderId;
-  }
-
-  set cleverSenderId(value) {
-    this.data.cleverSenderId = value;
-  }
-
   get timestamp() {
     return this.data.senderId;
   }
@@ -71,6 +63,14 @@ class ReservationRequest {
 
   get corId() {
     return this.data.corId;
+  }
+
+  set userId(value) {
+    this.data.userId = value;
+  }
+
+  get userId() {
+    return this.data.userId;
   }
 
   set timestamp(value) {
