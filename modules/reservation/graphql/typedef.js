@@ -1,12 +1,6 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
-
-    input ReservationListInput {
-      skip: Int = 0
-      limit: Int = 10
-    }
-
     type ReservationList implements Paginatable {
       items: [Reservation]!
       hasNext: Boolean,
@@ -23,17 +17,6 @@ module.exports = gql`
       reservationTime: Float
     }
 
-    type ReservationContent {
-      zaloPatientId: ID,
-      zaloDoctorId: ID,
-      time: Float
-    }
-
-    input ReservationRequestListInput {
-      skip: Int = 0
-      limit: Int = 10
-    }
-
     type ReservationRequestList {
       items: [ReservationRequest]!
       hasNext: Boolean,
@@ -48,14 +31,8 @@ module.exports = gql`
       corID: ID,
       timestamp: String,
       zaloMessageId: ID,
-      payload: ReservationRequestPayLoad,
       patient: ZaloInterestedUser,
-      doctors: [User]
-    }
-
-    type ReservationRequestPayLoad {
-      patient: ID,
-      bookingOptions: [BookingOption!]
+      doctors: [BookingOption]
     }
 
     input bookingOptionsInput {
@@ -64,22 +41,24 @@ module.exports = gql`
     }
 
     type BookingOption {
+      name: String,
+      id: ID,
       doctor: ID!,
       time: Float!,
     }
  
-    input ReservationInput {
+    input ReservationRequestInput {
       patient: String,
       bookingOptions: [bookingOptionsInput!]!
     }
     
     type Query {
-      reservationList(query: ReservationListInput): ReservationList  @isAuthenticated
-      reservationRequestList(query: ReservationRequestListInput): ReservationRequestList  @isAuthenticated
+      reservationList(query: DefaultPaginationInput): ReservationList  @isAuthenticated
+      reservationRequestList(query: DefaultPaginationInput): ReservationRequestList @isAuthenticated
     }
 
     type Mutation {
-      createReservationRequest(reservation: ReservationInput!): ReservationRequest  @isAuthenticated
+      createReservationRequest(reservation: ReservationRequestInput!): ReservationRequest @isAuthenticated
     }
 
     extend type Subscription  {

@@ -131,5 +131,18 @@ module.exports = {
         displayName: patient.data.displayName,
       };
     },
+    doctors: async (reservation, args, { container }) => {
+      const userProvider = container.resolve('userProvider');
+      const { bookingOptions } = reservation.data.payload;
+
+      return bookingOptions.map(async (o) => {
+        const doctor = await userProvider.findById(o.doctor);
+        return {
+          id: o.doctor,
+          name: doctor.name,
+          time: o.time,
+        };
+      });
+    },
   },
 };
