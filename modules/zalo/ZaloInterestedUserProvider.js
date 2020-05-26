@@ -38,8 +38,8 @@ class ZaloInterestedUserProvider {
    * @returns {Promise<void> | * | PromiseLike<any> | Promise<any>}
    */
   findByOAFollowerId(followId) {
-    return this.zaloInterestedUsers.findOne({followings:  { $elemMatch: { OAFollowerId: followId } }})
-       .then(ZaloInterestedUserProvider.factory);
+    return this.zaloInterestedUsers.findOne({ followings: { $elemMatch: { OAFollowerId: followId } } })
+      .then(ZaloInterestedUserProvider.factory);
   }
 
   /**
