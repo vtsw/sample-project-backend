@@ -5,7 +5,6 @@ class ReservationRequest {
       source: null,
       zaloRecipientId: null,
       zaloMessageId: null,
-      zaloSenderId: null,
       userId: null,
       corId: null,
       timestamp: null,
@@ -35,14 +34,6 @@ class ReservationRequest {
 
   set zaloRecipientId(value) {
     this.data.zaloRecipientId = value;
-  }
-
-  get zaloSenderId() {
-    return this.data.zaloSenderId;
-  }
-
-  set zaloSenderId(value) {
-    this.data.zaloSenderId = value;
   }
 
   get timestamp() {
