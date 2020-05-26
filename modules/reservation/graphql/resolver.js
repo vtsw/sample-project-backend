@@ -50,19 +50,21 @@ module.exports = {
   Mutation: {
     createReservationRequest: async (_, { reservation }, { container, req }) => {
       const loggedUser = req.user;
-      const [zaloMessageSender, reservationTemplateProvider, reservationRequestProvider, userProvider] = [
+      const [zaloMessageSender, reservationTemplateProvider, reservationRequestProvider, userProvider, zaloInterestedUserProvider] = [
         container.resolve('zaloMessageSender'),
         container.resolve('reservationTemplateProvider'),
         container.resolve('reservationRequestProvider'),
         container.resolve('userProvider'),
+        container.resolve('zaloInterestedUserProvider'),
       ];
       const { bookingOptions, patient } = reservation;
-      const [zaloUser, examinationTemplate, doctors] = await Promise.all([
+      const [zaloUser, examinationTemplate, doctors, patientInfo] = await Promise.all([
         userProvider.findById(loggedUser.id),
         reservationTemplateProvider.findByType(EXAMINATION),
         userProvider.findByIds(bookingOptions.map((o) => o.doctor)),
+        zaloInterestedUserProvider.findById(patient),
       ]);
-
+      const zaloRecipientId = patientInfo.data.followings[0].OAFollowerId;
       const requestPayload = bookingOptions.map((itm) => ({
         ...doctors.find((item) => (item.data.id === itm.doctor) && item),
         ...itm,
@@ -72,12 +74,10 @@ module.exports = {
         name: o.data.name,
       }));
 
-      console.log(requestPayload);
-
       const corId = ObjectId();
-      const elements = buildZaloListPayload(examinationTemplate, requestPayload, patient, corId);
+      const elements = buildZaloListPayload(examinationTemplate, requestPayload, zaloRecipientId, corId);
       const { message } = examinationTemplate; message.attachment.payload.elements = elements;
-      const zaLoResponse = await zaloMessageSender.sendListElement(message, { zaloId: patient }, zaloUser);
+      const zaLoResponse = await zaloMessageSender.sendListElement(message, { zaloId: zaloRecipientId }, zaloUser);
 
       if (zaLoResponse.error) {
         throw new Error(`Zalo Response: ${zaLoResponse.message}`);
@@ -86,7 +86,7 @@ module.exports = {
       const reservationRequest = {
         source: 'zalo',
         zaloMessageId: zaLoResponse.data.message_id,
-        zaloRecipientId: patient,
+        zaloRecipientId,
         corId,
         userId: req.user.id, // OA sender ID
         payload: {
