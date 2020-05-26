@@ -1,16 +1,17 @@
 const moment = require('moment');
 const ObjectId = require('objectid');
 const { withFilter } = require('apollo-server-express');
+const { zaloApi } = require('../../../config');
 const { EXAMINATION, RESERVATION_CONFIRM_EVENTS } = require('../types.js');
 
-const buildZaloListPayload = (examinationTemplate, bookingOptions, config, patient, corId) => {
+const buildZaloListPayload = (examinationTemplate, bookingOptions, patient, corId) => {
   const examinationDate = moment(bookingOptions[0].time).format('YYYY-MM-DD');
   const elementList = bookingOptions.map((o) => ({
     title: `${examinationTemplate.element.title} ${o.name} ${examinationTemplate.element.time} ${moment(o.time).format('HH:mm')}`,
     image_url: examinationTemplate.element.image_url,
     default_action: {
       type: examinationTemplate.element.default_action.type,
-      url: `${config.zaloApi.confirmationCb}&zaloPatientId=${patient}&userId=${o.doctor}&time=${o.time}&corId=${corId}`,
+      url: `${zaloApi.confirmationCb}&zaloPatientId=${patient}&userId=${o.doctor}&time=${o.time}&corId=${corId}`,
     },
   }));
 
@@ -49,12 +50,11 @@ module.exports = {
   Mutation: {
     createReservationRequest: async (_, { reservation }, { container, req }) => {
       const loggedUser = req.user;
-      const [zaloMessageSender, reservationTemplateProvider, reservationRequestProvider, userProvider, config] = [
+      const [zaloMessageSender, reservationTemplateProvider, reservationRequestProvider, userProvider] = [
         container.resolve('zaloMessageSender'),
         container.resolve('reservationTemplateProvider'),
         container.resolve('reservationRequestProvider'),
         container.resolve('userProvider'),
-        container.resolve('config'),
       ];
       const { bookingOptions, patient } = reservation;
       const [zaloUser, examinationTemplate, doctors] = await Promise.all([
@@ -62,6 +62,7 @@ module.exports = {
         reservationTemplateProvider.findByType(EXAMINATION),
         userProvider.findByIds(bookingOptions.map((o) => o.doctor)),
       ]);
+
       const requestPayload = bookingOptions.map((itm) => ({
         ...doctors.find((item) => (item.data.id === itm.doctor) && item),
         ...itm,
@@ -71,8 +72,10 @@ module.exports = {
         name: o.data.name,
       }));
 
+      console.log(requestPayload);
+
       const corId = ObjectId();
-      const elements = buildZaloListPayload(examinationTemplate, requestPayload, config, patient, corId);
+      const elements = buildZaloListPayload(examinationTemplate, requestPayload, patient, corId);
       const { message } = examinationTemplate; message.attachment.payload.elements = elements;
       const zaLoResponse = await zaloMessageSender.sendListElement(message, { zaloId: patient }, zaloUser);
 
