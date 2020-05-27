@@ -25,12 +25,10 @@ module.exports = gql`
 
     type ReservationRequest {
       id: ID!,
-      zaloRecipientId: ID,
-      userId: String,
       source: String,
-      corID: ID,
-      timestamp: String,
-      zaloMessageId: ID,
+      corId: ID,
+      timestamp: Float,
+      messageId: ID,
       patient: ZaloInterestedUser,
       doctors: [BookingOption]
     }

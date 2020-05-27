@@ -103,7 +103,10 @@ module.exports = {
           },
           timestamp: moment().valueOf(),
         };
-        return reservationRequestProvider.create(reservationRequest);
+        const a = await reservationRequestProvider.create(reservationRequest);
+
+        console.log('11111111111111', a);
+        return a;
       } catch (err) {
         console.log(err);
       }

@@ -5,27 +5,39 @@ class ReservationRequest {
       source: null,
       sender: {},
       recipient: {},
-      userId: null,
       corId: null,
       timestamp: null,
+      messageId: null,
       payload: {},
     };
-  }
-
-  get id() {
-    return this.data.id;
   }
 
   set id(value) {
     this.data.id = value;
   }
 
-  get source() {
-    return this.data.source;
+  get id() {
+    return this.data.id;
   }
 
   set source(value) {
     this.data.source = value;
+  }
+
+  get source() {
+    return this.data.source;
+  }
+
+  set messageId(value) {
+    this.data.messageId = value;
+  }
+
+  get messageId() {
+    return this.data.messageId;
+  }
+
+  set timestamp(value) {
+    this.data.timestamp = value;
   }
 
   get timestamp() {
@@ -41,11 +53,11 @@ class ReservationRequest {
   }
 
   set recipient(value) {
-    this.data.sender = value;
+    this.data.recipient = value;
   }
 
   get recipient() {
-    return this.data.sender;
+    return this.data.recipient;
   }
 
   set corId(value) {
@@ -62,10 +74,6 @@ class ReservationRequest {
 
   get userId() {
     return this.data.userId;
-  }
-
-  set timestamp(value) {
-    this.data.timestamp = value;
   }
 
   get payload() {

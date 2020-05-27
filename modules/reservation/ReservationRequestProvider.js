@@ -94,12 +94,14 @@ class ReservationRequestProvider {
     });
     const reservationRequest = new ReservationRequest(data._id || data.id);
     reservationRequest.source = data.source;
-    reservationRequest.zaloRecipientId = data.zaloRecipientId;
-    reservationRequest.userId = data.userId;
+    reservationRequest.sender = data.sender;
+    reservationRequest.recipient = data.recipient;
     reservationRequest.payload = data.payload;
     reservationRequest.timestamp = data.timestamp;
-    reservationRequest.zaloMessageId = data.zaloMessageId;
+    reservationRequest.messageId = data.messageId;
     reservationRequest.corId = data.corId;
+
+    // console.log(reservationRequest);
 
     return reservationRequest;
   }
