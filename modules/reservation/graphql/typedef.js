@@ -43,7 +43,6 @@ module.exports = gql`
     type BookingOption {
       name: String,
       id: ID,
-      doctor: ID!,
       time: Float!,
     }
  

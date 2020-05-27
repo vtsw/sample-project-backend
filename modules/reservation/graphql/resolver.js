@@ -90,7 +90,7 @@ module.exports = {
         corId,
         userId: req.user.id, // OA sender ID
         payload: {
-          patient,
+          patient: ObjectId(patient),
           bookingOptions,
         },
         timestamp: moment().valueOf(),
@@ -128,7 +128,7 @@ module.exports = {
     patient: async (reservation, args, { container }) => {
       const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
       const interestedId = reservation.data.payload.patient;
-      const patient = await zaloInterestedUserProvider.findByOAFollowerId(interestedId);
+      const patient = await zaloInterestedUserProvider.findById(interestedId);
       return {
         id: patient.data.id,
         displayName: patient.data.displayName,
