@@ -33,8 +33,8 @@ module.exports = gql`
       doctors: [BookingOption]
     }
 
-    input bookingOptionsInput {
-      doctor: ID!,
+    input BookingOptionsInput {
+      id: ID!,
       time: Float!,
     }
 
@@ -46,7 +46,7 @@ module.exports = gql`
  
     input ReservationRequestInput {
       patient: String,
-      bookingOptions: [bookingOptionsInput!]!
+      doctors: [BookingOptionsInput!]!
     }
     
     type Query {
