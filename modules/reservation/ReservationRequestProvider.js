@@ -59,9 +59,16 @@ class ReservationRequestProvider {
 
   static convertDataToMongodbDocument(rawData) {
     return Object.assign(rawData, {
-      userId: ObjectId(rawData.userId),
+      sender: {
+        id: ObjectId(rawData.sender.id),
+        oaId: rawData.sender.oaId,
+      },
+      recipient: {
+        id: ObjectId(rawData.recipient.id),
+        zaloId: rawData.recipient.zaloId,
+      },
       payload: {
-        patient: rawData.payload.patient,
+        patient: ObjectId(rawData.payload.patient),
         bookingOptions: rawData.payload.bookingOptions.map((o) => ({ doctor: ObjectId(o.doctor), time: o.time })),
       },
     });
