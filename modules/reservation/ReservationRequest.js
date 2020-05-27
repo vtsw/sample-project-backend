@@ -3,8 +3,8 @@ class ReservationRequest {
     this.data = {
       id,
       source: null,
-      zaloRecipientId: null,
-      zaloMessageId: null,
+      sender: {},
+      recipient: {},
       userId: null,
       corId: null,
       timestamp: null,
@@ -28,24 +28,24 @@ class ReservationRequest {
     this.data.source = value;
   }
 
-  get zaloRecipientId() {
-    return this.data.zaloRecipientId;
-  }
-
-  set zaloRecipientId(value) {
-    this.data.zaloRecipientId = value;
-  }
-
   get timestamp() {
     return this.data.senderId;
   }
 
-  set zaloMessageId(value) {
-    this.data.zaloMessageId = value;
+  set sender(value) {
+    this.data.sender = value;
   }
 
-  get zaloMessageId() {
-    return this.data.zaloMessageId;
+  get sender() {
+    return this.data.sender;
+  }
+
+  set recipient(value) {
+    this.data.sender = value;
+  }
+
+  get recipient() {
+    return this.data.sender;
   }
 
   set corId(value) {
