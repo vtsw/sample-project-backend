@@ -42,7 +42,7 @@ class UserFollowOAEventHandler {
         avatar: userInfo.data.avatar,
         avatars: userInfo.data.avatars,
         timestamp: data.timestamp,
-        status: 'need_update_more_info',
+        state: 'deactive',
         followings: [
           { zaloId: zaloId.toJson(), userId: user.id },
         ],
@@ -53,7 +53,7 @@ class UserFollowOAEventHandler {
       followings: interestedUser.followings.push(
         { zaloId: zaloId.toJson(), userId: user.id },
       ),
-      status: 'active',
+      state: 'active',
     });
   }
 

@@ -5,9 +5,15 @@ class ZaloMessageSender {
     this.zaloUploader = zaloUploader;
   }
 
+  /**
+   *
+   * @param {Object} param0
+   * @param {Object} recipient
+   * @param {User} sender
+   */
   sendRequestUserInfo({ content }, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
-    const { accessToken } = sender.zaloOA;
+    const { accessToken, cover } = sender.zaloOA;
     const body = {
       recipient: {
         user_id: recipient.zaloId,
@@ -19,9 +25,9 @@ class ZaloMessageSender {
           payload: {
             template_type: 'request_user_info',
             elements: [{
-              title: 'OA chatbot (Testing)',
+              title: 'Request to grant access your information.',
               subtitle: 'Request to grant access your information',
-              image_url: 'https://developers.zalo.me/web/static/zalo.png',
+              image_url: cover,
             }],
           },
         },
@@ -34,6 +40,12 @@ class ZaloMessageSender {
     }).then((res) => res.json());
   }
 
+  /**
+   *
+   * @param {Object} message
+   * @param {ZaloInterestedUser} recipient
+   * @param {User} sender
+   */
   sendText(message, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
     const { accessToken, oaId } = sender.zaloOA;
@@ -50,6 +62,12 @@ class ZaloMessageSender {
     }).then((res) => res.json());
   }
 
+  /**
+   *
+   * @param {Object} param0
+   * @param {ZaloInterestedUser} recipient
+   * @param {User} sender
+   */
   async sendImage({ file, content }, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
     const uploadResult = await this.zaloUploader.uploadImage(file, sender);
@@ -82,6 +100,12 @@ class ZaloMessageSender {
     }).then((res) => res.json());
   }
 
+  /**
+   *
+   * @param {Object} param0
+   * @param {ZaloInterestedUser} recipient
+   * @param {User} sender
+   */
   async sendGif({ file, content }, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
     const uploadResult = await this.zaloUploader.uploadGif(file, sender);
@@ -114,6 +138,12 @@ class ZaloMessageSender {
     }).then((res) => res.json());
   }
 
+  /**
+   *
+   * @param {Object} param0
+   * @param {ZaloInterestedUser} recipient
+   * @param {User} sender
+   */
   async sendFile({ file }, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
     const res = await this.zaloUploader.uploadFile(file, sender);

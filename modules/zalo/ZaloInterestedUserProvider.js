@@ -19,7 +19,7 @@ class ZaloInterestedUserProvider {
    * @returns {PromiseLike<any> | Promise<any>}
    */
   findById(id) {
-    return this.zaloInterestedUsers.findOne({ _id: ObjectId(id) })
+    return this.zaloInterestedUsers.findOne({ _id: ObjectId(id), state: 'active' })
       .then(ZaloInterestedUserProvider.factory);
   }
 
@@ -30,10 +30,10 @@ class ZaloInterestedUserProvider {
    */
   findByZaloId(id) {
     if (id.phoneNumber) {
-      return this.zaloInterestedUsers.findOne({ phoneNumber: id.phoneNumber })
+      return this.zaloInterestedUsers.findOne({ phoneNumber: id.phoneNumber, state: 'active' })
         .then(ZaloInterestedUserProvider.factory);
     }
-    return this.zaloInterestedUsers.findOne({ 'followings.zaloId': id.toJson() })
+    return this.zaloInterestedUsers.findOne({ 'followings.zaloId': id.toJson(), state: 'active' })
       .then(ZaloInterestedUserProvider.factory);
   }
 
@@ -56,6 +56,7 @@ class ZaloInterestedUserProvider {
       phoneNumber: user.phoneNumber,
       followings: mappedFollowings,
       info: user.info,
+      state: user.state,
     });
     return ZaloInterestedUserProvider.factory(inserted.ops[0]);
   }
@@ -68,7 +69,7 @@ class ZaloInterestedUserProvider {
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
     let { query } = condition;
     if (query.following) {
-      query = { ...condition.query, 'followings.userId': ObjectId(query.following) };
+      query = { ...condition.query, 'followings.userId': ObjectId(query.following), state: 'active' };
       delete query.following;
     }
     const users = await this.zaloInterestedUsers
@@ -132,6 +133,7 @@ class ZaloInterestedUserProvider {
     user.followings = mappedFollowings;
     user.info = data.info;
     user.phoneNumber = data.phoneNumber;
+    user.state = data.state;
     return user;
   }
 }

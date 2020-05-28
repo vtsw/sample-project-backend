@@ -14,6 +14,7 @@ class UserShareInfoEventHandler {
     return this.zaloInterestedUserProvider.update(interestedUser.id, {
       phone: data.info.phone,
       info: data.info,
+      state: 'active',
     });
   }
 
