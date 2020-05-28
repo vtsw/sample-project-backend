@@ -5,7 +5,6 @@ const { zaloApi } = require('../../../config');
 const { EXAMINATION, RESERVATION_CONFIRM_EVENTS } = require('../types.js');
 
 const buildZaloListPayload = (examinationTemplate, doctorOptions, corId) => {
-  console.log('xxxxxxxxxxxx', doctorOptions);
   const examinationDate = moment(doctorOptions[0].time).format('YYYY-MM-DD');
   const elementList = doctorOptions.map((doctor, index) => ({
     title: `${examinationTemplate.element.title} ${doctor.name} ${examinationTemplate.element.time} ${moment(doctor.time).format('HH:mm')}`,
