@@ -158,5 +158,9 @@ module.exports = {
         };
       });
     },
+    patient: (reservation) => ({
+      id: reservation.recipient.id,
+      name: reservation.recipient.name,
+    }),
   },
 };

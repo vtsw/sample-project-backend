@@ -34,9 +34,8 @@ module.exports = gql`
       corId: ID,
       timestamp: String,
       sender: User,
-      recipient: Patient,
       messageId: ID,
-      patient: ZaloInterestedUser,
+      patient: Patient,
       doctors: [ReservationOption]
     }
 
