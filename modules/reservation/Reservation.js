@@ -5,36 +5,32 @@ class Reservation {
       type: null,
       doctor: {},
       patient: {},
-      reservationTime: null,
+      time: null,
     };
-  }
-
-  get id() {
-    return this.data.id;
   }
 
   set id(value) {
     this.data.id = value;
   }
 
-  get type() {
-    return this.data.type;
+  get id() {
+    return this.data.id;
   }
 
   set type(value) {
     this.data.type = value;
   }
 
-  get doctor() {
-    return this.data.doctor;
+  get type() {
+    return this.data.type;
   }
 
   set doctor(value) {
     this.data.doctor = value;
   }
 
-  get patient() {
-    return this.data.patient;
+  get doctor() {
+    return this.data.doctor;
   }
 
   set corId(value) {
@@ -43,14 +39,6 @@ class Reservation {
 
   get corId() {
     return this.data.corId;
-  }
-
-  set userId(value) {
-    this.data.userId = value;
-  }
-
-  get userId() {
-    return this.data.userId;
   }
 
   set timestamp(value) {
@@ -65,14 +53,17 @@ class Reservation {
     this.data.patient = value;
   }
 
-  get reservationTime() {
-    return this.data.reservationTime;
+  get patient() {
+    return this.data.patient;
   }
 
-  set reservationTime(value) {
-    this.data.reservationTime = value;
+  set time(value) {
+    this.data.time = value;
   }
 
+  get time() {
+    return this.data.time;
+  }
 
   toJson() {
     return this.data;

@@ -39,7 +39,7 @@ class ReservationProvider {
         oaId: rawData.doctor.oaId,
       },
       patient: {
-        patient: ObjectId(rawData.patient.id),
+        id: ObjectId(rawData.patient.id),
         name: rawData.patient.name,
         zaloId: rawData.patient.zaloId,
       },
@@ -97,7 +97,7 @@ class ReservationProvider {
     reservation.doctor = data.doctor;
     reservation.patient = data.patient;
     reservation.timestamp = data.timestamp;
-    reservation.reservationTime = data.reservationTime;
+    reservation.time = data.time;
     return reservation;
   }
 }

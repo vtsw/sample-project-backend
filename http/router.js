@@ -81,6 +81,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
 
   const reservation = {
     corId,
+    type: 'examination',
     sender: {
       id: oASender.id,
       name: oASender.name,

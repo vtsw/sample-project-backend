@@ -6,15 +6,18 @@ module.exports = gql`
       hasNext: Boolean,
       total: Int,
     }
-
+    type Patient {
+      id: ID,
+      name: String,
+    }
     type Reservation {
       id: ID!,
       type: String,
       timestamp: Float,
       corId: ID,
       doctor: User,
-      patient: ZaloInterestedUser,
-      reservationTime: Float
+      patient: Patient,
+      time: Float
     }
 
     type ReservationRequestList {
@@ -23,22 +26,12 @@ module.exports = gql`
       total: Int,
     }
 
-    type Sender {
-      id: ID,
-      name: String,
-    }
-
-    type Patient {
-      id: ID,
-      name: String,
-    }
-
     type ReservationRequest {
       id: ID!,
       source: String,
       corId: ID,
       timestamp: String,
-      sender: Sender,
+      sender: User,
       recipient: Patient,
       messageId: ID,
       patient: ZaloInterestedUser,

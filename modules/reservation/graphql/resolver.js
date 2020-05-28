@@ -33,7 +33,10 @@ module.exports = {
       } = args;
 
       const reservationProvider = container.resolve('reservationProvider');
-      return reservationProvider.find({ query: { 'sender.id': ObjectId(req.user.id) }, page: { limit, skip } });
+      const a = await reservationProvider.find({ query: { 'sender.id': ObjectId(req.user.id) }, page: { limit, skip } });
+
+      console.log(a.items[0].data);
+      return a;
     },
 
     reservationRequestList: async (_, args, { container, req }) => {
@@ -133,14 +136,14 @@ module.exports = {
   Reservation: {
     // doctor: async (reservation, args, { dataloader, container }) => container.resolve('userProvider').findById(reservation.doctor.userId),
     // return dataloader.getUserByIdList.load(reservation.doctor.userId);
-    doctor: (reservation) => ({
-      id: reservation.doctor.userId,
-      name: reservation.doctor.name,
-    }),
-    patient: (reservation) => ({
-      id: reservation.patient.interestedId,
-      displayName: reservation.patient.name,
-    }),
+    // doctor: (reservation) => ({
+    //   id: reservation.doctor.userId,
+    //   name: reservation.doctor.name,
+    // }),
+    // patient: (reservation) => ({
+    //   id: reservation.patient.interestedId,
+    //   displayName: reservation.patient.name,
+    // }),
   },
   ReservationRequest: {
     doctors: async (reservation, args, { container }) => {
