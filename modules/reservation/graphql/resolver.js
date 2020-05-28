@@ -111,11 +111,7 @@ module.exports = {
           },
           timestamp: moment().valueOf(),
         };
-        const a = await reservationRequestProvider.create(reservationRequest);
-
-        console.log(a);
-
-        return a;
+        return await reservationRequestProvider.create(reservationRequest);
       } catch (err) {
         console.log(err);
       }
@@ -147,31 +143,17 @@ module.exports = {
     }),
   },
   ReservationRequest: {
-    // timestamp: async (reservation, args, { container }) => {
-    //   console.log('xxxxxxxxxxxxxxx', reservation.timestamp);
-    //   return reservation.timestamp;
-    // },
-    // patient: async (reservation, args, { container }) => {
-    //   const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
-    //   const interestedId = reservation.data.payload.patient;
-    //   const patient = await zaloInterestedUserProvider.findById(interestedId);
-    //   return {
-    //     id: patient.data.id,
-    //     displayName: patient.data.displayName,
-    //   };
-    // },
-    // doctors: async (reservation, args, { container }) => {
-    //   const userProvider = container.resolve('userProvider');
-    //   const { bookingOptions } = reservation.data.payload;
-
-    //   return bookingOptions.map(async (o) => {
-    //     const doctor = await userProvider.findById(o.doctor);
-    //     return {
-    //       id: o.doctor,
-    //       name: doctor.name,
-    //       time: o.time,
-    //     };
-    //   });
-    // },
+    doctors: async (reservation, args, { container }) => {
+      const { doctors } = reservation.data.payload;
+      const userProvider = container.resolve('userProvider');
+      return doctors.map(async (doctor) => {
+        const doctorInfo = await userProvider.findById(doctor.id);
+        return {
+          id: doctorInfo.data.id,
+          name: doctorInfo.data.name,
+          time: doctor.time,
+        };
+      });
+    },
   },
 };
