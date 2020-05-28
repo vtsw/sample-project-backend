@@ -6,10 +6,12 @@ module.exports = gql`
       hasNext: Boolean,
       total: Int,
     }
+    
     type Patient {
       id: ID,
       name: String,
     }
+
     type Reservation {
       id: ID!,
       type: String,
