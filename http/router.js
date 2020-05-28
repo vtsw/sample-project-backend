@@ -25,6 +25,8 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
 });
 
 router.post('/zalo/webhook', (req, res) => {
+
+  console.log(req.body.event_name);
   const { container } = req;
   if (req.body.event_name && req.body.event_name !== 'user_seen_message' && req.body.event_name !== 'user_received_message') { // fake
     const handler = container.resolve('zaloMessageHandlerProvider')
@@ -38,12 +40,12 @@ router.post('/zalo/webhook', (req, res) => {
 
 router.get('/zalo/reservation/confirmation', async (req, res) => {
   const { container } = req;
-
   const [
-    handler, zaloMessageSender, userProvider, zaloInterestedUserProvider,
+    handler, reservationRequestProvider, zaloMessageSender, userProvider, zaloInterestedUserProvider,
     messageProvider, reservationTemplateProvider, pubsub,
   ] = await Promise.all([
     container.resolve('reservationProvider'),
+    container.resolve('reservationRequestProvider'),
     container.resolve('zaloMessageSender'),
     container.resolve('userProvider'),
     container.resolve('zaloInterestedUserProvider'),
@@ -52,60 +54,69 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     container.resolve('pubsub'),
   ]);
 
-  const {
-    zaloPatientId, userId,
-    time, corId, type,
-  } = req.query;
+  const { corId, patientSelected } = req.query;
 
-  const [OAUser, interestedUser, reservationConfirmTemplate] = await Promise.all([
-    userProvider.findById(userId),
-    zaloInterestedUserProvider.findByOAFollowerId(zaloPatientId),
+  const reservationReq = await reservationRequestProvider.findByCorId(corId);
+
+  const { recipient, sender } = reservationReq;
+
+  const doctorSelected = reservationReq.payload.doctors[patientSelected];
+
+  const doctorId = doctorSelected.id; const reservationTime = doctorSelected.time;
+
+  const [oASender, doctor, patient, reservationConfirmTemplate] = await Promise.all([
+    userProvider.findById(sender.id),
+    userProvider.findById(doctorId),
+    zaloInterestedUserProvider.findById(recipient.id),
     reservationTemplateProvider.findByType(CONFIRMINATION),
   ]);
 
   const { messageTemplate } = reservationConfirmTemplate;
 
+  const message = messageTemplate
+    .replace('%pattien_name%', patient.displayName)
+    .replace('%doctor_name%', doctor.name)
+    .replace('%date%', moment.unix(reservationTime / 1000).format('DD-MM-YYYY'))
+    .replace('%time%', moment.unix(reservationTime / 1000).format('HH:mm'));
+
   const reservation = {
-    type,
-    userId: ObjectId(OAUser.id),
-    corId: ObjectId(corId),
+    corId,
+    sender: {
+      id: oASender.id,
+      name: oASender.name,
+      oaId: oASender.zaloOA.oaId,
+    },
     doctor: {
-      userId: ObjectId(OAUser.id),
-      name: OAUser.name,
-      zaloOaId: OAUser.zaloOA.oaId,
+      id: doctor.id,
+      name: doctor.name,
+      oaId: doctor.zaloOA.oaId,
     },
     patient: {
-      interestedId: ObjectId(interestedUser.id),
-      name: interestedUser.displayName,
-      zaloRecipientId: zaloPatientId,
+      id: patient.id,
+      name: patient.displayName,
+      zaloId: recipient.zaloId,
     },
-    reservationTime: parseInt(time, 10),
+    time: parseInt(reservationTime, 10),
     timestamp: moment().valueOf(),
   };
 
-  const message = messageTemplate
-    .replace('%pattien_name%', interestedUser.displayName)
-    .replace('%doctor_name%', OAUser.name)
-    .replace('%date%', moment.unix(time / 1000).format('DD-MM-YYYY'))
-    .replace('%time%', moment.unix(time / 1000).format('HH:mm'));
-
   const reservationCreated = await handler.create(reservation);
   pubsub.publish(RESERVATION_CONFIRM_EVENTS, { onReservationConfirmed: reservationCreated.toJson() });
-  const zaloResponse = await zaloMessageSender.sendText({ text: message }, { zaloId: zaloPatientId }, OAUser);
+  const zaloResponse = await zaloMessageSender.sendText({ text: message }, { zaloId: recipient.zaloId }, oASender);
 
   const messageLog = {
     timestamp: moment().valueOf(),
     from: {
-      id: ObjectId(OAUser.id),
-      displayName: OAUser.name,
-      avatar: OAUser.image.link,
+      id: ObjectId(doctor.id),
+      displayName: doctor.name,
+      avatar: doctor.image.link,
     },
     content: message,
     attachments: null,
     to: {
-      id: ObjectId(interestedUser.id),
-      displayName: interestedUser.displayName,
-      avatar: interestedUser.avatar,
+      id: ObjectId(patient.id),
+      displayName: patient.displayName,
+      avatar: patient.avatar,
     },
     zaloMessageId: zaloResponse.data.message_id,
     type: 'Text',
