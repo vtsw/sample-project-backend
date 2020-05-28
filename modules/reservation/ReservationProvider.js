@@ -28,6 +28,11 @@ class ReservationProvider {
   static convertDataToMongodbDocument(rawData) {
     return Object.assign(rawData, {
       corId: ObjectId(rawData.corId),
+      sender: {
+        id: ObjectId(rawData.sender.id),
+        name: rawData.sender.name,
+        oaId: rawData.sender.oaId,
+      },
       doctor: {
         id: ObjectId(rawData.doctor.id),
         name: rawData.doctor.name,

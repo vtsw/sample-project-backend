@@ -33,7 +33,7 @@ module.exports = {
       } = args;
 
       const reservationProvider = container.resolve('reservationProvider');
-      return reservationProvider.find({ query: { userId: ObjectId(req.user.id) }, page: { limit, skip } });
+      return reservationProvider.find({ query: { 'sender.id': ObjectId(req.user.id) }, page: { limit, skip } });
     },
 
     reservationRequestList: async (_, args, { container, req }) => {
