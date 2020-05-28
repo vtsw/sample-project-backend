@@ -108,14 +108,14 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
   const messageLog = {
     timestamp: moment().valueOf(),
     from: {
-      id: ObjectId(doctor.id),
+      id: doctor.id,
       displayName: doctor.name,
       avatar: doctor.image.link,
     },
     content: message,
     attachments: null,
     to: {
-      id: ObjectId(patient.id),
+      id: patient.id,
       displayName: patient.displayName,
       avatar: patient.avatar,
     },

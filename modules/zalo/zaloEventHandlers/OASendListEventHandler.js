@@ -19,14 +19,14 @@ class OASendListEventHandler {
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: {
-        id: ObjectId(OAUser.id),
+        id: OAUser.id,
         displayName: OAUser.name,
         avatar: OAUser.image.link,
       },
       content: null,
       attachments: data.message.attachments,
       to: {
-        id: ObjectId(interestedUser.id),
+        id: interestedUser.id,
         displayName: interestedUser.displayName,
         avatar: interestedUser.avatar,
       },
