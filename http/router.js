@@ -1,6 +1,5 @@
 const { Router } = require('express');
 const moment = require('moment');
-const ObjectId = require('objectid');
 const { isAuthenticated } = require('./middleware');
 const { CONFIRMINATION, RESERVATION_CONFIRM_EVENTS } = require('../modules/reservation/types');
 
@@ -101,16 +100,15 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     timestamp: moment().valueOf(),
   };
 
-  const reservationCreated = await handler.create(reservation);
-  pubsub.publish(RESERVATION_CONFIRM_EVENTS, { onReservationConfirmed: reservationCreated.toJson() });
+  await handler.create(reservation);
   const zaloResponse = await zaloMessageSender.sendText({ text: message }, { zaloId: recipient.zaloId }, oASender);
 
   const messageLog = {
     timestamp: moment().valueOf(),
     from: {
-      id: doctor.id,
-      displayName: doctor.name,
-      avatar: doctor.image.link,
+      id: oASender.id,
+      displayName: oASender.name,
+      avatar: oASender.image.link,
     },
     content: message,
     attachments: null,
@@ -122,8 +120,13 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     zaloMessageId: zaloResponse.data.message_id,
     type: 'Text',
   };
+  const createdMessage = await messageProvider.create(messageLog);
 
-  await messageProvider.create(messageLog);
+  await Promise.all([
+    pubsub.publish('ZALO_MESSAGE_SENT', { onZaloMessageSent: createdMessage.toJson() }),
+    pubsub.publish('ZALO_MESSAGE_CREATED', { onZaloMessageCreated: createdMessage.toJson() }),
+  ]);
+
   res.send(message);
 });
 

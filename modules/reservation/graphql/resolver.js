@@ -33,10 +33,7 @@ module.exports = {
       } = args;
 
       const reservationProvider = container.resolve('reservationProvider');
-      const a = await reservationProvider.find({ query: { 'sender.id': ObjectId(req.user.id) }, page: { limit, skip } });
-
-      console.log(a.items[0].data);
-      return a;
+      return reservationProvider.find({ query: { 'sender.id': ObjectId(req.user.id) }, page: { limit, skip } });
     },
 
     reservationRequestList: async (_, args, { container, req }) => {
@@ -124,6 +121,7 @@ module.exports = {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(RESERVATION_CONFIRM_EVENTS),
         ({ onReservationConfirmed }, { filter }, { loggedUser }) => {
+          console.log('12312312');
           return true;
           // if (!filter && onPattientConfirmination.doctor.userId === loggedUser.data.id) { // Fake
           //   return true;
