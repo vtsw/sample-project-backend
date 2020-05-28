@@ -11,17 +11,37 @@ class ReservationProvider {
   }
 
   /**
-   *
-   * @param {Object} reservation
+   * @param {Object} rawData
    * @returns {Promise<Reservation>}
    */
-  async create(reservation) {
-    const inserted = await this.reservation.insertOne(reservation);
+  async create(rawData) {
+    const documentToInsert = ReservationProvider.convertDataToMongodbDocument(rawData);
+    const inserted = await this.reservation.insertOne(documentToInsert);
     return ReservationProvider.factory(inserted.ops[0]);
   }
 
   /**
- *
+   * @param {Object} rawData
+   * @returns {null|reservation}
+   */
+
+  static convertDataToMongodbDocument(rawData) {
+    return Object.assign(rawData, {
+      corId: ObjectId(rawData.corId),
+      doctor: {
+        id: ObjectId(rawData.doctor.id),
+        name: rawData.doctor.name,
+        oaId: rawData.doctor.oaId,
+      },
+      patient: {
+        patient: ObjectId(rawData.patient.id),
+        name: rawData.patient.name,
+        zaloId: rawData.patient.zaloId,
+      },
+    });
+  }
+
+  /**
  * @param {Object} condition
  * @returns {Promise<*>}
  */

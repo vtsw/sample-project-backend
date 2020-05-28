@@ -10,8 +10,12 @@ class ReservationRequestProvider {
     this.reservationRequest = reservationRequest;
   }
 
-  findOne() {
-    return this.reservationRequest.findOne();
+  /**
+   * @param {String} corId
+   *  @returns {Promise<reservationRequest>}
+   */
+  findByCorId(corId) {
+    return this.reservationRequest.findOne({ corId: ObjectId(corId) });
   }
 
   /**
@@ -19,12 +23,11 @@ class ReservationRequestProvider {
  * @param {Object} reservationRequest
  * @returns {Promise<reservationRequest>}
  */
-  async create(reservationRequest) {
-    const documentToInsert = ReservationRequestProvider.convertDataToMongodbDocument(reservationRequest);
+  async create(rawData) {
+    const documentToInsert = ReservationRequestProvider.convertDataToMongodbDocument(rawData);
     const inserted = await this.reservationRequest.insertOne(documentToInsert);
     return ReservationRequestProvider.factory(inserted.ops[0]);
   }
-
 
   /**
  *

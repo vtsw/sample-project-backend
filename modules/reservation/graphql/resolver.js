@@ -6,12 +6,13 @@ const { EXAMINATION, RESERVATION_CONFIRM_EVENTS } = require('../types.js');
 
 const buildZaloListPayload = (examinationTemplate, bookingOptions, patient, corId) => {
   const examinationDate = moment(bookingOptions[0].time).format('YYYY-MM-DD');
-  const elementList = bookingOptions.map((o) => ({
+  const elementList = bookingOptions.map((o, index) => ({
     title: `${examinationTemplate.element.title} ${o.name} ${examinationTemplate.element.time} ${moment(o.time).format('HH:mm')}`,
     image_url: examinationTemplate.element.image_url,
     default_action: {
       type: examinationTemplate.element.default_action.type,
-      url: `${zaloApi.confirmationCb}&zaloPatientId=${patient}&userId=${o.doctor}&time=${o.time}&corId=${corId}`,
+      // url: `${zaloApi.confirmationCb}&zaloPatientId=${patient}&userId=${o.doctor}&time=${o.time}&corId=${corId}`,
+      url: `${zaloApi.confirmationCb}&corId=${corId}&patientSelected=${index}`,
     },
   }));
 
@@ -58,18 +59,26 @@ module.exports = {
         container.resolve('zaloInterestedUserProvider'),
       ];
       const { bookingOptions, patient } = reservation;
-      const [sender, examinationTemplate, doctors, recipient] = await Promise.all([
+      const doctorIds = bookingOptions.map((bookingOption) => {
+        const doctorId = bookingOption.doctor;
+        return doctorId;
+      });
+      const doctors = await userProvider.findByIds(doctorIds);
+
+      const [sender, examinationTemplate, recipient] = await Promise.all([
         userProvider.findById(loggedUser.id),
         reservationTemplateProvider.findByType(EXAMINATION),
-        userProvider.findByIds(bookingOptions.map((o) => o.doctor)),
         zaloInterestedUserProvider.findById(patient),
       ]);
       const { oaId } = sender.zaloOA;
-      const zaloRecipientId = recipient.data.followings.find((o) => o.zaloId === oaId).OAFollowerId;
-      const requestPayload = bookingOptions.map((itm) => ({
+      const zaloRecipientId = recipient.data.followings.find((followingItem) => followingItem.zaloId === oaId).OAFollowerId;
+
+      const mappedDoctors = bookingOptions.map((itm) => ({
         ...doctors.find((item) => (item.data.id === itm.doctor) && item),
         ...itm,
-      })).map((o) => ({
+      }));
+
+      const requestPayload = mappedDoctors.map((o) => ({
         doctor: o.doctor,
         time: o.time,
         name: o.data.name,
