@@ -5,12 +5,41 @@ class ZaloMessageSender {
     this.zaloUploader = zaloUploader;
   }
 
-  async sendText(message, recipient, sender) {
+  sendRequestUserInfo({ content }, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
     const { accessToken } = sender.zaloOA;
     const body = {
       recipient: {
         user_id: recipient.zaloId,
+      },
+      message: {
+        text: content,
+        attachment: {
+          type: 'template',
+          payload: {
+            template_type: 'request_user_info',
+            elements: [{
+              title: 'OA chatbot (Testing)',
+              subtitle: 'Request to grant access your information',
+              image_url: 'https://developers.zalo.me/web/static/zalo.png',
+            }],
+          },
+        },
+      },
+    };
+    return this.request(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
+      method: 'post',
+      body: JSON.stringify(body),
+      headers: { 'Content-Type': 'application/json' },
+    }).then((res) => res.json());
+  }
+
+  sendText(message, recipient, sender) {
+    const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
+    const { accessToken, oaId } = sender.zaloOA;
+    const body = {
+      recipient: {
+        user_id: recipient.getZaloIdByOAId(oaId).zaloIdByOA,
       },
       message,
     };
@@ -27,10 +56,10 @@ class ZaloMessageSender {
     if (uploadResult.error) {
       throw new Error(uploadResult.message);
     }
-    const { accessToken } = sender.zaloOA;
+    const { accessToken, oaId } = sender.zaloOA;
     const body = {
       recipient: {
-        user_id: recipient.zaloId,
+        user_id: recipient.getZaloIdByOAId(oaId).zaloIdByOA,
       },
       message: {
         text: content,
@@ -59,10 +88,10 @@ class ZaloMessageSender {
     if (uploadResult.error) {
       throw new Error(uploadResult.message);
     }
-    const { accessToken } = sender.zaloOA;
+    const { accessToken, oaId } = sender.zaloOA;
     const body = {
       recipient: {
-        user_id: recipient.zaloId,
+        user_id: recipient.getZaloIdByOAId(oaId).zaloIdByOA,
       },
       message: {
         text: content,
@@ -91,10 +120,10 @@ class ZaloMessageSender {
     if (res.error) {
       throw new Error(res.message);
     }
-    const { accessToken } = sender.zaloOA;
+    const { accessToken, oaId } = sender.zaloOA;
     const body = {
       recipient: {
-        user_id: recipient.zaloId,
+        user_id: recipient.getZaloIdByOAId(oaId).zaloIdByOA,
       },
       message: {
         attachment: {

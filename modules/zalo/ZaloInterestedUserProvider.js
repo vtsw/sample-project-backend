@@ -24,11 +24,15 @@ class ZaloInterestedUserProvider {
 
   /**
    *
-   * @param id
+   * @param {ZaloIdentifier} id
    * @returns {Promise<void> | * | PromiseLike<any> | Promise<any>}
    */
   findByZaloId(id) {
-    return this.zaloInterestedUsers.findOne({ zaloId: id })
+    if (id.phoneNumber) {
+      return this.zaloInterestedUsers.findOne({ phoneNumber: id.phoneNumber })
+        .then(ZaloInterestedUserProvider.factory);
+    }
+    return this.zaloInterestedUsers.findOne({ followings: id.toJson() })
       .then(ZaloInterestedUserProvider.factory);
   }
 
@@ -47,6 +51,7 @@ class ZaloInterestedUserProvider {
       avatars: user.avatars,
       lastModified: moment().format(),
       timestamp: user.timestamp,
+      phoneNumber: user.phoneNumber,
       followings: user.followings,
       info: user.info,
     });
@@ -124,6 +129,7 @@ class ZaloInterestedUserProvider {
     user.followings = data.followings;
     user.info = data.info;
     user.zaloId = data.zaloId;
+    user.phoneNumber = data.phoneNumber;
     return user;
   }
 }
