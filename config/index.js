@@ -44,7 +44,6 @@ module.exports = {
     require('../modules/zalo/ZaloServiceProvider'),
     require('../modules/zaloMessage/ZaloMessageServiceProvider'),
     require('../modules/user/UserServiceProvider'),
-    require('../modules/message/MessageServiceProvider')
   ],
   redis: {
     host: process.env.REDIS_HOST || 'localhost',

@@ -39,17 +39,6 @@ module.exports = {
     deleteUser: (_, { id }, { container }) => container.resolve('userProvider').delete(id),
   },
   User: {
-    messages: (user, args, { container }) => {
-      const messageProvider = container.resolve('messageProvider');
-      if (isEmpty(args)) {
-        return messageProvider
-          .find({ query: { userId: user.id }, page: { limit: 10, skip: 0 } });
-      }
-      const { query: { searchText, limit, skip } } = args;
-      const content = !isEmpty(searchText) ? new RegExp(`${searchText}`) : null;
-      return messageProvider
-        .find({ query: pickBy({ userId: user.id, content }, identity), page: { limit, skip } });
-    },
     followers: (user, args, { container }) => {
       const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
       if (isEmpty(args)) {

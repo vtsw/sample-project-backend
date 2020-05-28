@@ -7,8 +7,8 @@ module.exports = {
           { role: 'readWrite', db: 'simple_db' },
         ],
       });
-    await simpleDb.createCollection('users');
-    await simpleDb.createCollection('messages');
+    await simpleDb.createCollection('zaloOA');
+    await simpleDb.createCollection('zaloInterestedUser');
   },
 
   async down(db, client) {

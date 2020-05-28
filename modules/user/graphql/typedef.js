@@ -16,7 +16,6 @@ module.exports = gql`
     name: String
     email: String
     lastModified: Date
-    messages(query: MessageListInput): MessageList
     image: File
     zaloOA: ZaloOA
     followers(query: ZaloInterestedUserListInput): ZaloInterestedUserList
