@@ -2,6 +2,7 @@ const { ObjectId } = require('mongodb');
 const moment = require('moment');
 const { ResourceNotFoundError } = require('../errors');
 const User = require('./ZaloInterestedUser');
+const ZaloIdentifier = require('./ZaloIdentifier');
 
 class ZaloInterestedUserProvider {
   /**
@@ -32,7 +33,7 @@ class ZaloInterestedUserProvider {
       return this.zaloInterestedUsers.findOne({ phoneNumber: id.phoneNumber })
         .then(ZaloInterestedUserProvider.factory);
     }
-    return this.zaloInterestedUsers.findOne({ followings: id.toJson() })
+    return this.zaloInterestedUsers.findOne({ 'followings.zaloId': id.toJson() })
       .then(ZaloInterestedUserProvider.factory);
   }
 
@@ -42,8 +43,9 @@ class ZaloInterestedUserProvider {
    * @returns {Promise<ZaloInterestedUser>}
    */
   async create(user) {
+    const { followings } = user;
+    const mappedFollowings = followings.map((item) => ({ userId: ObjectId(item.userId), zaloId: item.zaloId }));
     const inserted = await this.zaloInterestedUsers.insertOne({
-      zaloId: user.zaloId,
       displayName: user.displayName,
       dob: user.dob,
       gender: user.gender,
@@ -52,7 +54,7 @@ class ZaloInterestedUserProvider {
       lastModified: moment().format(),
       timestamp: user.timestamp,
       phoneNumber: user.phoneNumber,
-      followings: user.followings,
+      followings: mappedFollowings,
       info: user.info,
     });
     return ZaloInterestedUserProvider.factory(inserted.ops[0]);
@@ -66,7 +68,7 @@ class ZaloInterestedUserProvider {
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
     let { query } = condition;
     if (query.following) {
-      query = { ...condition.query, 'followings.id': query.following };
+      query = { ...condition.query, 'followings.userId': ObjectId(query.following) };
       delete query.following;
     }
     const users = await this.zaloInterestedUsers
@@ -118,6 +120,7 @@ class ZaloInterestedUserProvider {
         data[key] = rawData[key];
       }
     });
+    const mappedFollowings = data.followings.map((item) => ({ userId: ObjectId(item.userId), zaloId: ZaloIdentifier.factory(item.zaloId) }));
     const user = new User(data._id || data.id);
     user.displayName = data.displayName;
     user.dob = data.dob;
@@ -126,9 +129,8 @@ class ZaloInterestedUserProvider {
     user.avatar = data.avatar;
     user.avatars = data.avatars;
     user.timestamp = data.timestamp;
-    user.followings = data.followings;
+    user.followings = mappedFollowings;
     user.info = data.info;
-    user.zaloId = data.zaloId;
     user.phoneNumber = data.phoneNumber;
     return user;
   }

@@ -44,14 +44,14 @@ class UserFollowOAEventHandler {
         timestamp: data.timestamp,
         status: 'need_update_more_info',
         followings: [
-          zaloId.toJson(),
+          { zaloId: zaloId.toJson(), userId: user.id },
         ],
       });
     }
     const interestedUser = await this.zaloInterestedUserProvider.findByZaloId(zaloId);
     return this.zaloInterestedUserProvider.update(interestedUser.id, {
       followings: interestedUser.followings.push(
-        zaloId.toJson(),
+        { zaloId: zaloId.toJson(), userId: user.id },
       ),
       status: 'active',
     });

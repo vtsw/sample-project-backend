@@ -90,7 +90,7 @@ class ZaloInterestedUser {
   }
 
   getZaloIdByOAId(oaId) {
-    return ZaloIdentifier.factory(this.data.followings.find((item) => item.OAID === oaId));
+    return ZaloIdentifier.factory(this.data.followings.find((item) => item.zaloId.OAID === oaId).zaloId);
   }
 
   constructor(id) {
