@@ -42,15 +42,15 @@ module.exports = gql`
       recipient: Patient,
       messageId: ID,
       patient: ZaloInterestedUser,
-      doctors: [BookingOption]
+      doctors: [ReservationOption]
     }
 
-    input BookingOptionsInput {
+    input ReservationOptionsInput {
       id: ID!,
       time: Float!,
     }
 
-    type BookingOption {
+    type ReservationOption {
       name: String,
       id: ID,
       time: Float!,
@@ -58,7 +58,7 @@ module.exports = gql`
  
     input ReservationRequestInput {
       patient: String,
-      doctors: [BookingOptionsInput!]!
+      doctors: [ReservationOptionsInput!]!
     }
     
     type Query {
