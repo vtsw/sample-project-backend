@@ -50,68 +50,69 @@ module.exports = {
 
   Mutation: {
     createReservationRequest: async (_, { reservation }, { container, req }) => {
-      const loggedUser = req.user;
-      const [zaloMessageSender, reservationTemplateProvider, reservationRequestProvider, userProvider, zaloInterestedUserProvider] = [
-        container.resolve('zaloMessageSender'),
-        container.resolve('reservationTemplateProvider'),
-        container.resolve('reservationRequestProvider'),
-        container.resolve('userProvider'),
-        container.resolve('zaloInterestedUserProvider'),
-      ];
-      const { bookingOptions, patient } = reservation;
-      const doctorIds = bookingOptions.map((bookingOption) => {
-        const doctorId = bookingOption.doctor;
-        return doctorId;
-      });
-      const doctors = await userProvider.findByIds(doctorIds);
+      try {
+        const loggedUser = req.user;
+        const [zaloMessageSender, reservationTemplateProvider, reservationRequestProvider, userProvider, zaloInterestedUserProvider] = [
+          container.resolve('zaloMessageSender'),
+          container.resolve('reservationTemplateProvider'),
+          container.resolve('reservationRequestProvider'),
+          container.resolve('userProvider'),
+          container.resolve('zaloInterestedUserProvider'),
+        ];
+        const { doctors, patient } = reservation;
+        const doctorIds = doctors.map((doctor) => doctor.id);
+        const infoDoctors = await userProvider.findByIds(doctorIds);
+        const [sender, examinationTemplate, recipient] = await Promise.all([
+          userProvider.findById(loggedUser.id),
+          reservationTemplateProvider.findByType(EXAMINATION),
+          zaloInterestedUserProvider.findById(patient),
+        ]);
 
-      const [sender, examinationTemplate, recipient] = await Promise.all([
-        userProvider.findById(loggedUser.id),
-        reservationTemplateProvider.findByType(EXAMINATION),
-        zaloInterestedUserProvider.findById(patient),
-      ]);
-      const { oaId } = sender.zaloOA;
-      const zaloRecipientId = recipient.data.followings.find((followingItem) => followingItem.zaloId === oaId).OAFollowerId;
+        const { oaId } = sender.zaloOA;
+        const zaloRecipientId = recipient.data.followings.find((followingItem) => followingItem.zaloId === oaId).OAFollowerId;
 
-      const mappedDoctors = bookingOptions.map((itm) => ({
-        ...doctors.find((item) => (item.data.id === itm.doctor) && item),
-        ...itm,
-      }));
+        const mappedDoctors = doctors.map((itm) => ({
+          ...infoDoctors.find((item) => (item.data.id === itm.id) && item),
+          ...itm,
+        }));
 
-      const requestPayload = mappedDoctors.map((o) => ({
-        doctor: o.doctor,
-        time: o.time,
-        name: o.data.name,
-      }));
+        const requestPayload = mappedDoctors.map((o) => ({
+          doctor: o.doctor,
+          time: o.time,
+          name: o.data.name,
+        }));
 
-      const corId = ObjectId();
-      const elements = buildZaloListPayload(examinationTemplate, requestPayload, zaloRecipientId, corId);
-      const { message } = examinationTemplate; message.attachment.payload.elements = elements;
-      const zaLoResponse = await zaloMessageSender.sendListElement(message, { zaloId: zaloRecipientId }, sender);
+        const corId = ObjectId();
+        const elements = buildZaloListPayload(examinationTemplate, requestPayload, zaloRecipientId, corId);
+        const { message } = examinationTemplate; message.attachment.payload.elements = elements;
+        const zaLoResponse = await zaloMessageSender.sendListElement(message, { zaloId: zaloRecipientId }, sender);
 
-      if (zaLoResponse.error) {
-        throw new Error(`Zalo Response: ${zaLoResponse.message}`);
+        if (zaLoResponse.error) {
+          throw new Error(`Zalo Response: ${zaLoResponse.message}`);
+        }
+
+        const reservationRequest = {
+          source: 'zalo',
+          sender: {
+            id: sender.data.id,
+            oaId,
+          },
+          recipient: {
+            id: recipient.data.id,
+            zaloId: zaloRecipientId,
+          },
+          messageId: zaLoResponse.data.message_id,
+          corId,
+          payload: {
+            patient: ObjectId(patient),
+            doctors,
+          },
+          timestamp: moment().valueOf(),
+        };
+        return reservationRequestProvider.create(reservationRequest);
+      } catch (err) {
+        console.log(err);
       }
-
-      const reservationRequest = {
-        source: 'zalo',
-        sender: {
-          id: sender.data.id,
-          oaId,
-        },
-        recipient: {
-          id: recipient.data.id,
-          zaloId: zaloRecipientId,
-        },
-        messageId: zaLoResponse.data.message_id,
-        corId,
-        payload: {
-          patient: ObjectId(patient),
-          bookingOptions,
-        },
-        timestamp: moment().valueOf(),
-      };
-      return reservationRequestProvider.create(reservationRequest);
     },
   },
   Subscription: {
@@ -139,28 +140,28 @@ module.exports = {
       displayName: reservation.patient.name,
     }),
   },
-  ReservationRequest: {
-    patient: async (reservation, args, { container }) => {
-      const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
-      const interestedId = reservation.data.payload.patient;
-      const patient = await zaloInterestedUserProvider.findById(interestedId);
-      return {
-        id: patient.data.id,
-        displayName: patient.data.displayName,
-      };
-    },
-    doctors: async (reservation, args, { container }) => {
-      const userProvider = container.resolve('userProvider');
-      const { bookingOptions } = reservation.data.payload;
+  // ReservationRequest: {
+  //   patient: async (reservation, args, { container }) => {
+  //     const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
+  //     const interestedId = reservation.data.payload.patient;
+  //     const patient = await zaloInterestedUserProvider.findById(interestedId);
+  //     return {
+  //       id: patient.data.id,
+  //       displayName: patient.data.displayName,
+  //     };
+  //   },
+  //   doctors: async (reservation, args, { container }) => {
+  //     const userProvider = container.resolve('userProvider');
+  //     const { bookingOptions } = reservation.data.payload;
 
-      return bookingOptions.map(async (o) => {
-        const doctor = await userProvider.findById(o.doctor);
-        return {
-          id: o.doctor,
-          name: doctor.name,
-          time: o.time,
-        };
-      });
-    },
-  },
+  //     return bookingOptions.map(async (o) => {
+  //       const doctor = await userProvider.findById(o.doctor);
+  //       return {
+  //         id: o.doctor,
+  //         name: doctor.name,
+  //         time: o.time,
+  //       };
+  //     });
+  //   },
+  // },
 };

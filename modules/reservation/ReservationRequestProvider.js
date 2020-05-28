@@ -72,7 +72,7 @@ class ReservationRequestProvider {
       },
       payload: {
         patient: ObjectId(rawData.payload.patient),
-        bookingOptions: rawData.payload.bookingOptions.map((o) => ({ doctor: ObjectId(o.doctor), time: o.time })),
+        doctors: rawData.payload.doctors.map((o) => ({ id: ObjectId(o.id), time: o.time })),
       },
     });
   }
