@@ -33,9 +33,6 @@ class Authenticator {
         id: user.id,
         name: user.name,
         email: user.email,
-        zaloOA: {
-          OAID: user.zaloOA.OAID,
-        },
       }),
       user,
     };
