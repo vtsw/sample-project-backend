@@ -41,7 +41,7 @@ class ReservationRequest {
   }
 
   get timestamp() {
-    return this.data.senderId;
+    return this.data.timestamp;
   }
 
   set sender(value) {

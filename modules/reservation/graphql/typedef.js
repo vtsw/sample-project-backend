@@ -23,11 +23,23 @@ module.exports = gql`
       total: Int,
     }
 
+    type Sender {
+      id: ID,
+      name: String,
+    }
+
+    type Patient {
+      id: ID,
+      name: String,
+    }
+
     type ReservationRequest {
       id: ID!,
       source: String,
       corId: ID,
-      timestamp: Float,
+      timestamp: String,
+      sender: Sender,
+      recipient: Patient,
       messageId: ID,
       patient: ZaloInterestedUser,
       doctors: [BookingOption]

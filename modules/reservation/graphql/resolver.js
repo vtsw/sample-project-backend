@@ -147,10 +147,10 @@ module.exports = {
     }),
   },
   ReservationRequest: {
-    sender: async (reservation, args, { container }) => {
-      console.log(reservation);
-      return 'asdasdasd';
-    },
+    // timestamp: async (reservation, args, { container }) => {
+    //   console.log('xxxxxxxxxxxxxxx', reservation.timestamp);
+    //   return reservation.timestamp;
+    // },
     // patient: async (reservation, args, { container }) => {
     //   const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
     //   const interestedId = reservation.data.payload.patient;
