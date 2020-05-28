@@ -71,7 +71,6 @@ class ReservationProvider {
     };
   }
 
-
   /**
    *
    * @param {Object} rawData

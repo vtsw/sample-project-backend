@@ -107,8 +107,6 @@ class ReservationRequestProvider {
     reservationRequest.messageId = data.messageId;
     reservationRequest.corId = data.corId;
 
-    // console.log(reservationRequest);
-
     return reservationRequest;
   }
 }
