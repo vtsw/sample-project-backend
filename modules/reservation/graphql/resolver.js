@@ -95,10 +95,12 @@ module.exports = {
           source: 'zalo',
           sender: {
             id: sender.data.id,
+            name: sender.name,
             oaId,
           },
           recipient: {
             id: recipient.data.id,
+            name: recipient.displayName,
             zaloId: zaloRecipientId,
           },
           messageId: zaLoResponse.data.message_id,
@@ -109,7 +111,11 @@ module.exports = {
           },
           timestamp: moment().valueOf(),
         };
-        return reservationRequestProvider.create(reservationRequest);
+        const a = await reservationRequestProvider.create(reservationRequest);
+
+        console.log(a);
+
+        return a;
       } catch (err) {
         console.log(err);
       }
@@ -140,28 +146,32 @@ module.exports = {
       displayName: reservation.patient.name,
     }),
   },
-  // ReservationRequest: {
-  //   patient: async (reservation, args, { container }) => {
-  //     const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
-  //     const interestedId = reservation.data.payload.patient;
-  //     const patient = await zaloInterestedUserProvider.findById(interestedId);
-  //     return {
-  //       id: patient.data.id,
-  //       displayName: patient.data.displayName,
-  //     };
-  //   },
-  //   doctors: async (reservation, args, { container }) => {
-  //     const userProvider = container.resolve('userProvider');
-  //     const { bookingOptions } = reservation.data.payload;
+  ReservationRequest: {
+    sender: async (reservation, args, { container }) => {
+      console.log(reservation);
+      return 'asdasdasd';
+    },
+    // patient: async (reservation, args, { container }) => {
+    //   const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
+    //   const interestedId = reservation.data.payload.patient;
+    //   const patient = await zaloInterestedUserProvider.findById(interestedId);
+    //   return {
+    //     id: patient.data.id,
+    //     displayName: patient.data.displayName,
+    //   };
+    // },
+    // doctors: async (reservation, args, { container }) => {
+    //   const userProvider = container.resolve('userProvider');
+    //   const { bookingOptions } = reservation.data.payload;
 
-  //     return bookingOptions.map(async (o) => {
-  //       const doctor = await userProvider.findById(o.doctor);
-  //       return {
-  //         id: o.doctor,
-  //         name: doctor.name,
-  //         time: o.time,
-  //       };
-  //     });
-  //   },
-  // },
+    //   return bookingOptions.map(async (o) => {
+    //     const doctor = await userProvider.findById(o.doctor);
+    //     return {
+    //       id: o.doctor,
+    //       name: doctor.name,
+    //       time: o.time,
+    //     };
+    //   });
+    // },
+  },
 };

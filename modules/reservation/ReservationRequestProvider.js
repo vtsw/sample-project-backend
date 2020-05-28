@@ -64,10 +64,12 @@ class ReservationRequestProvider {
     return Object.assign(rawData, {
       sender: {
         id: ObjectId(rawData.sender.id),
+        name: rawData.sender.name,
         oaId: rawData.sender.oaId,
       },
       recipient: {
         id: ObjectId(rawData.recipient.id),
+        name: rawData.recipient.name,
         zaloId: rawData.recipient.zaloId,
       },
       payload: {
@@ -95,6 +97,7 @@ class ReservationRequestProvider {
         data[key] = rawData[key];
       }
     });
+
     const reservationRequest = new ReservationRequest(data._id || data.id);
     reservationRequest.source = data.source;
     reservationRequest.sender = data.sender;
