@@ -2,6 +2,7 @@ const { ObjectId } = require('mongodb');
 const moment = require('moment');
 const { ResourceNotFoundError } = require('../errors');
 const User = require('./ZaloInterestedUser');
+const ZaloIdentifier = require('./ZaloIdentifier');
 
 class ZaloInterestedUserProvider {
   /**
@@ -18,17 +19,21 @@ class ZaloInterestedUserProvider {
    * @returns {PromiseLike<any> | Promise<any>}
    */
   findById(id) {
-    return this.zaloInterestedUsers.findOne({ _id: ObjectId(id) })
+    return this.zaloInterestedUsers.findOne({ _id: ObjectId(id), state: 'active' })
       .then(ZaloInterestedUserProvider.factory);
   }
 
   /**
    *
-   * @param id
+   * @param {ZaloIdentifier} id
    * @returns {Promise<void> | * | PromiseLike<any> | Promise<any>}
    */
   findByZaloId(id) {
-    return this.zaloInterestedUsers.findOne({ zaloId: id })
+    if (id.phoneNumber) {
+      return this.zaloInterestedUsers.findOne({ phoneNumber: id.phoneNumber, state: 'active' })
+        .then(ZaloInterestedUserProvider.factory);
+    }
+    return this.zaloInterestedUsers.findOne({ 'followings.zaloId': id.toJson(), state: 'active' })
       .then(ZaloInterestedUserProvider.factory);
   }
 
@@ -38,8 +43,9 @@ class ZaloInterestedUserProvider {
    * @returns {Promise<ZaloInterestedUser>}
    */
   async create(user) {
+    const { followings } = user;
+    const mappedFollowings = followings.map((item) => ({ userId: ObjectId(item.userId), zaloId: item.zaloId }));
     const inserted = await this.zaloInterestedUsers.insertOne({
-      zaloId: user.zaloId,
       displayName: user.displayName,
       dob: user.dob,
       gender: user.gender,
@@ -47,8 +53,10 @@ class ZaloInterestedUserProvider {
       avatars: user.avatars,
       lastModified: moment().format(),
       timestamp: user.timestamp,
-      followings: user.followings,
+      phoneNumber: user.phoneNumber,
+      followings: mappedFollowings,
       info: user.info,
+      state: user.state,
     });
     return ZaloInterestedUserProvider.factory(inserted.ops[0]);
   }
@@ -61,7 +69,7 @@ class ZaloInterestedUserProvider {
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
     let { query } = condition;
     if (query.following) {
-      query = { ...condition.query, 'followings.id': query.following };
+      query = { ...condition.query, 'followings.userId': ObjectId(query.following), state: 'active' };
       delete query.following;
     }
     const users = await this.zaloInterestedUsers
@@ -113,6 +121,7 @@ class ZaloInterestedUserProvider {
         data[key] = rawData[key];
       }
     });
+    const mappedFollowings = data.followings.map((item) => ({ userId: ObjectId(item.userId), zaloId: ZaloIdentifier.factory(item.zaloId) }));
     const user = new User(data._id || data.id);
     user.displayName = data.displayName;
     user.dob = data.dob;
@@ -121,9 +130,10 @@ class ZaloInterestedUserProvider {
     user.avatar = data.avatar;
     user.avatars = data.avatars;
     user.timestamp = data.timestamp;
-    user.followings = data.followings;
+    user.followings = mappedFollowings;
     user.info = data.info;
-    user.zaloId = data.zaloId;
+    user.phoneNumber = data.phoneNumber;
+    user.state = data.state;
     return user;
   }
 }

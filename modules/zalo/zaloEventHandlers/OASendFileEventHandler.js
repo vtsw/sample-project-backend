@@ -1,4 +1,5 @@
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
+const ZaloIdentifier = require('../ZaloIdentifier');
 
 class OASendFileEventHandler {
   constructor(zaloInterestedUserProvider, userProvider, zaloMessageProvider, pubsub) {
@@ -13,9 +14,12 @@ class OASendFileEventHandler {
     if (message) {
       return message;
     }
+    const zaloId = ZaloIdentifier.factory({
+      zaloIdByOA: data.recipient.id, OAID: data.sender.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
+    });
     const [OAUser, interestedUser] = await Promise.all([
       this.userProvider.findByZaloId(data.sender.id),
-      this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
+      this.zaloInterestedUserProvider.findByZaloId(zaloId),
     ]);
 
     const createdMessage = await this.zaloMessageProvider.create({
