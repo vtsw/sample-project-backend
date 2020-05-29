@@ -1,7 +1,13 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
+
     type bookingOptions {
+      doctor: String!,
+      time: String!,
+    }
+
+    input bookingOptions {
       doctor: String!,
       time: String!,
     }

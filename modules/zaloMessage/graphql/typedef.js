@@ -14,6 +14,7 @@ module.exports = gql`
     size: String
     name: String
     type: String
+    title: String
   }
   
   type ZaloAttachmentFile {
