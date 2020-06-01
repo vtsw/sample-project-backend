@@ -1,5 +1,5 @@
-const { ObjectId } = require('mongodb');
 const { ZALO_MESSAGE_CREATED, ZALO_MESSAGE_SENT } = require('../../zaloMessage/events');
+const ZaloIdentifier = require('../ZaloIdentifier');
 
 class OASendListEventHandler {
   constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
@@ -11,9 +11,13 @@ class OASendListEventHandler {
   }
 
   async handle(data) {
+    const zaloId = ZaloIdentifier.factory({
+      zaloIdByOA: data.recipient.id, OAID: data.sender.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
+    });
+
     const [OAUser, interestedUser] = await Promise.all([
       this.userProvider.findByZaloId(data.sender.id),
-      this.zaloInterestedUserProvider.findByOAFollowerId(data.recipient.id),
+      this.zaloInterestedUserProvider.findByZaloIndentifier(zaloId),
     ]);
 
     const createdMessage = await this.zaloMessageProvider.create({

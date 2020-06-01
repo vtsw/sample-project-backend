@@ -24,6 +24,15 @@ class ZaloInterestedUserProvider {
   }
 
   /**
+   * @param {ZaloIndentifier} zaloIndentifier
+   * @returns {PromiseLike<any> | Promise<any>}
+   */
+  findByZaloIndentifier(zaloIndentifier) {
+    return this.zaloInterestedUsers.findOne({ followings: { $elemMatch: { zaloId: zaloIndentifier.toJson() } } })
+      .then(ZaloInterestedUserProvider.factory);
+  }
+
+  /**
    *
    * @param {ZaloIdentifier} id
    * @returns {Promise<void> | * | PromiseLike<any> | Promise<any>}

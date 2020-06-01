@@ -83,7 +83,7 @@ module.exports = {
         const corId = ObjectId();
         const elements = buildZaloListPayload(examinationTemplate, doctorOptions, corId);
         const { message } = examinationTemplate; message.attachment.payload.elements = elements;
-        const zaLoResponse = await zaloMessageSender.sendListElement(message, { zaloId: zaloRecipientId }, sender);
+        const zaLoResponse = await zaloMessageSender.sendListElement(message, recipient, sender);
 
         if (zaLoResponse.error) {
           throw new Error(`Zalo Response: ${zaLoResponse.message}`);
