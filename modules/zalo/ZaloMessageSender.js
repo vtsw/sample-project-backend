@@ -173,10 +173,10 @@ class ZaloMessageSender {
 
   async sendListElement(message, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
-    const { accessToken } = sender.zaloOA;
+    const { accessToken, oaId } = sender.zaloOA;
     const body = {
       recipient: {
-        user_id: `${recipient.zaloId}`,
+        user_id: recipient.getZaloIdByOAId(oaId).zaloIdByOA,
       },
       message,
     };

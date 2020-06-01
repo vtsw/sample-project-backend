@@ -24,11 +24,8 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
 });
 
 router.post('/zalo/webhook', (req, res) => {
-  console.log(req.body.event_name);
-
-  console.log(req.body);
   const { container } = req;
-  if (req.body.event_name && req.body.event_name !== 'user_seen_message' && req.body.event_name !== 'user_received_message') { // fake
+  if (req.body.event_name) {
     const handler = container.resolve('zaloMessageHandlerProvider')
       .provide(req.body.event_name);
 
@@ -102,7 +99,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
   };
 
   await handler.create(reservation);
-  const zaloResponse = await zaloMessageSender.sendText({ text: message }, { zaloId: recipient.zaloId }, oASender);
+  const zaloResponse = await zaloMessageSender.sendText({ text: message }, patient, oASender);
 
   const messageLog = {
     timestamp: moment().valueOf(),

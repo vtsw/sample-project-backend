@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start:local": "cross-env MONGODB_URL=mongodb://foobar:foobarPassword@172.76.10.161:27017/simple_db MINIO_END_POINT=localhost nodemon server.js",
+    "start:local": "cross-env MONGODB_URL=mongodb://foobar:foobarPassword@127.0.0.1:27017/simple_db MINIO_END_POINT=localhost nodemon server.js",
     "test": "jest",
     "migrate-mongo": "migrate-mongo up",
     "migrate-mongo:local": "migrate-mongo up -f migrate-mongo-config.local.js",
