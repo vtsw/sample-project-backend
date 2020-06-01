@@ -3,7 +3,7 @@ const _ = require('lodash');
 class ZaloIdentifier {
   constructor(zaloIdByOA) {
     this.data = {
-      zaloIdByApp: null, appId: null, OAID: null, zaloIdByOA, phoneNumber: null,
+      zaloIdByApp: null, appId: null, OAID: null, zaloIdByOA,
     };
   }
 
@@ -53,7 +53,7 @@ class ZaloIdentifier {
 
   static factory(data) {
     const zaloId = new ZaloIdentifier(data.zaloIdByOA);
-    zaloId.phoneNumber = data.phoneNumber;
+    // zaloId.phoneNumber = data.phoneNumber;
     zaloId.OAID = data.OAID;
     zaloId.appId = data.appId;
     zaloId.zaloIdByApp = data.zaloIdByApp;
