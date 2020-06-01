@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const ZaloIdentifier = require('../ZaloIdentifier');
 
 class UserFollowOAEventHandler {
@@ -55,7 +56,7 @@ class UserFollowOAEventHandler {
     const interestedUser = await this.zaloInterestedUserProvider.findByZaloId(zaloId);
     let { followings } = interestedUser;
     const foundFollowIndex = followings.findIndex((follow) => JSON.stringify(follow.zaloId.toJson()) === JSON.stringify(zaloId.toJson()));
-    interestedUser.followings[foundFollowIndex] = { zaloId, userId: user.id, state: 'active' };
+    interestedUser.followings[foundFollowIndex] = { zaloId, userId: ObjectId(user.id), state: 'active' };
 
     followings = followings.map((following) => ({
       user: following.userId,

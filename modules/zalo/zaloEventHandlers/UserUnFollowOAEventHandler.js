@@ -1,5 +1,5 @@
-const ZaloIdentifier = require('../ZaloIdentifier');
 const { ObjectId } = require('mongodb');
+const ZaloIdentifier = require('../ZaloIdentifier');
 
 class UserUnFollowOAEventHandler {
   /**
