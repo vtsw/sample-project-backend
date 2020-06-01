@@ -9,6 +9,9 @@ const UserFollowOAEventHandler = require('../zalo/zaloEventHandlers/UserFollowOA
 const OASendImageEventHandler = require('../zalo/zaloEventHandlers/OASendImageEventHandler');
 const OASendFileEventHandler = require('../zalo/zaloEventHandlers/OASendFileEventHandler');
 const UserSendFileEventHandler = require('../zalo/zaloEventHandlers/UserSendFileEventHandler');
+const UserShareInfoEventHandler = require('../zalo/zaloEventHandlers/UserShareInfoEventHandler');
+const UserUnFollowOAEventHandler = require('../zalo/zaloEventHandlers/UserUnFollowOAEventHandler');
+
 const ZaloMessageSender = require('./ZaloMessageSender');
 const ZaloInterestedUserProvider = require('../zalo/ZaloInterestedUserProvider');
 const OASendListEventHandler = require('../zalo/zaloEventHandlers/OASendListEventHandler');
@@ -23,7 +26,15 @@ class ZaloServiceProvider extends ServiceProvider {
     this.container.register('oASendImageEventHandler', asClass(OASendImageEventHandler).singleton());
     this.container.register('oASendFileEventHandler', asClass(OASendFileEventHandler).singleton());
     this.container.register('userSendFileEventHandler', asClass(UserSendFileEventHandler).singleton());
+    this.container.register('userShareInfoEventHandler', asClass(UserShareInfoEventHandler).singleton());
     this.container.register('userFollowOAEventHandler', asClass(UserFollowOAEventHandler).inject((injectedContainer) => ({
+      request: fetch,
+      zaloInterestedUserProvider: injectedContainer.resolve('zaloInterestedUserProvider'),
+      userProvider: injectedContainer.resolve('userProvider'),
+      config: injectedContainer.resolve('config'),
+    }))
+      .singleton());
+    this.container.register('userUnFollowOAEventHandler', asClass(UserUnFollowOAEventHandler).inject((injectedContainer) => ({
       request: fetch,
       zaloInterestedUserProvider: injectedContainer.resolve('zaloInterestedUserProvider'),
       userProvider: injectedContainer.resolve('userProvider'),
@@ -51,8 +62,10 @@ class ZaloServiceProvider extends ServiceProvider {
     zaloMessageHandlerProvider.register(OASendTextEventHandler.getEvent(), this.container.resolve('oASendTextEventHandler'));
     zaloMessageHandlerProvider.register(UserFollowOAEventHandler.getEvent(), this.container.resolve('userFollowOAEventHandler'));
     zaloMessageHandlerProvider.register(OASendListEventHandler.getEvent(), this.container.resolve('oASendListEventHandler'));
+    zaloMessageHandlerProvider.register(UserUnFollowOAEventHandler.getEvent(), this.container.resolve('userUnFollowOAEventHandler'));
     zaloMessageHandlerProvider.register(UserSendFileEventHandler.getEvent(), this.container.resolve('userSendFileEventHandler'));
     zaloMessageHandlerProvider.register(OASendFileEventHandler.getEvent(), this.container.resolve('oASendFileEventHandler'));
+    zaloMessageHandlerProvider.register(UserShareInfoEventHandler.getEvent(), this.container.resolve('userShareInfoEventHandler'));
     zaloMessageHandlerProvider.apply([OASendImageEventHandler.getEvent(), 'oa_send_gif'], this.container.resolve('oASendImageEventHandler'));
     zaloMessageHandlerProvider.apply([UserSendImageEventHandler.getEvent(), 'user_send_gif'], this.container.resolve('userSendImageEventHandler'));
   }

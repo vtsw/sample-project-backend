@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const moment = require('moment');
 const { isAuthenticated } = require('./middleware');
-const { CONFIRMINATION, RESERVATION_CONFIRM_EVENTS } = require('../modules/reservation/types');
+const { CONFIRMINATION } = require('../modules/reservation/types');
 
 const router = Router();
 
