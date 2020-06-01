@@ -69,8 +69,7 @@ module.exports = {
         ]);
 
         const { oaId } = sender.zaloOA;
-        const zaloRecipientId = recipient.data.followings.find((followingItem) => followingItem.zaloId === oaId).OAFollowerId;
-
+        const zaloRecipientId = recipient.followings.find((followingItem) => followingItem.zaloId.OAID === oaId).zaloId.data.zaloIdByOA;
         const mappedDoctors = doctors.map((itm) => ({
           ...infoDoctors.find((item) => (item.data.id === itm.id) && item),
           ...itm,
