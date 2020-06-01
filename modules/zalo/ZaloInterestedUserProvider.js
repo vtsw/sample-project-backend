@@ -88,7 +88,7 @@ class ZaloInterestedUserProvider {
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
     let { query } = condition;
     if (query.following) {
-      query = { ...condition.query, 'followings.userId': ObjectId(query.following), state: 'active' };
+      query = { ...condition.query, followings: { $elemMatch: { userId: ObjectId(query.following) } } };
       delete query.following;
     }
     const users = await this.zaloInterestedUsers
