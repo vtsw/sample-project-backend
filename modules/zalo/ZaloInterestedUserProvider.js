@@ -30,10 +30,10 @@ class ZaloInterestedUserProvider {
    */
   findByZaloId(id) {
     if (id.phoneNumber) {
-      return this.zaloInterestedUsers.findOne({ phoneNumber: id.phoneNumber, state: 'active' })
+      return this.zaloInterestedUsers.findOne({ phoneNumber: id.phoneNumber })
         .then(ZaloInterestedUserProvider.factory);
     }
-    return this.zaloInterestedUsers.findOne({ 'followings.zaloId': id.toJson(), state: 'active' })
+    return this.zaloInterestedUsers.findOne({ 'followings.zaloId': id.toJson() })
       .then(ZaloInterestedUserProvider.factory);
   }
 
@@ -121,7 +121,7 @@ class ZaloInterestedUserProvider {
         data[key] = rawData[key];
       }
     });
-    const mappedFollowings = data.followings.map((item) => ({ userId: ObjectId(item.userId), zaloId: ZaloIdentifier.factory(item.zaloId) }));
+    const mappedFollowings = rawData.followings.map((item) => ({ userId: ObjectId(item.userId), zaloId: ZaloIdentifier.factory(item.zaloId) }));
     const user = new User(data._id || data.id);
     user.displayName = data.displayName;
     user.dob = data.dob;

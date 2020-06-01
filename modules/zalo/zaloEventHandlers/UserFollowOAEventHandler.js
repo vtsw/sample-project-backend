@@ -29,10 +29,12 @@ class UserFollowOAEventHandler {
       {
         method: 'GET',
       }).then((response) => response.json());
+
     const phoneNumber = userInfo.data.shared_info ? userInfo.data.shared_info.phone : null;
     const zaloId = ZaloIdentifier.factory({
       zaloIdByOA: data.follower.id, phoneNumber, OAID: data.oa_id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
     });
+
     if (!phoneNumber) {
       this.zaloMessageSender.sendRequestUserInfo({ content: '' }, { zaloId: data.follower.id }, user);
       return this.zaloInterestedUserProvider.create({
@@ -46,14 +48,23 @@ class UserFollowOAEventHandler {
         followings: [
           { zaloId: zaloId.toJson(), userId: user.id },
         ],
+
       });
     }
+
     const interestedUser = await this.zaloInterestedUserProvider.findByZaloId(zaloId);
+    let { followings } = interestedUser;
+    const foundFollowIndex = followings.findIndex((follow) => JSON.stringify(follow.zaloId.toJson()) === JSON.stringify(zaloId.toJson()));
+    interestedUser.followings[foundFollowIndex] = { zaloId, userId: user.id, state: 'active' };
+
+    followings = followings.map((following) => ({
+      user: following.userId,
+      zaloId: following.zaloId.toJson(),
+      state: following.state,
+    }));
+
     return this.zaloInterestedUserProvider.update(interestedUser.id, {
-      followings: interestedUser.followings.push(
-        { zaloId: zaloId.toJson(), userId: user.id },
-      ),
-      state: 'active',
+      followings,
     });
   }
 
