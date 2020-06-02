@@ -1,12 +1,11 @@
 const { asValue } = require('awilix');
 const container = require('./container');
-const config = require('./config');
 
 /**
  * ensures all essential modules are already available before lunching app.
  * @returns {Promise<container>}
  */
-module.exports = async () => {
+module.exports = async (config) => {
   const { serviceProviders } = config;
   container.register({
     config: asValue(config),

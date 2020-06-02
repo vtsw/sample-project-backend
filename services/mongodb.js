@@ -1,15 +1,11 @@
-const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
 
-module.exports = (config) => new Promise((resolve, reject) => {
-  MongoClient.connect(
-    config.mongodb.url,
-    {
-      native_parser: true,
-      useUnifiedTopology: true,
-    },
-    (err, client) => {
-      if (err) reject(err);
-      resolve(client);
-    },
-  );
-});
+
+module.exports = (config) => mongoose.connect(
+  config.mongodb.url,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  },
+);

@@ -22,9 +22,6 @@ module.exports = {
       privateKey: process.env.JWT_PRIVATE_KEY || 'privateKey',
       expiresIn: process.env.JWT_EXPIRES_IN || '1d',
     },
-    bcrypt: {
-      saltRounds: parseInt(process.env.BCRYPT_SALT_ROUND, 10) || 10,
-    },
   },
   // https://github.com/winstonjs/winston-daily-rotate-file#options
   winstonDailyRotate: {
@@ -43,7 +40,7 @@ module.exports = {
     require('../services/ThirdPartyServiceProvider'),
     require('../modules/zalo/ZaloServiceProvider'),
     require('../modules/zaloMessage/ZaloMessageServiceProvider'),
-    require('../modules/user/UserServiceProvider'),
+    require('../modules/zaloOfficialAccount/ZaloOfficialAccountServiceProvider'),
   ],
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
@@ -58,7 +55,8 @@ module.exports = {
         uploadImage: "https://openapi.zalo.me/v2.0/oa/upload/image",
         uploadFile: "https://openapi.zalo.me/v2.0/oa/upload/file",
         uploadGif: "https://openapi.zalo.me/v2.0/oa/upload/gif",
-      }
+      },
+      getOAinfo: "https://openapi.zalo.me/v2.0/oa/getoa",
     }
   },
   zaloWebhook: {

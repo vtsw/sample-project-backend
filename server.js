@@ -15,7 +15,7 @@ const config = require('./config');
 const bootstrapper = require('./bootstrapper');
 
 async function runApp() {
-  const container = await bootstrapper();
+  const container = await bootstrapper(config);
   const app = createApp(container);
   const privateKey = fs.readFileSync('./sslcert/server.key', 'utf8');
   const certificate = fs.readFileSync('./sslcert/server.crt', 'utf8');

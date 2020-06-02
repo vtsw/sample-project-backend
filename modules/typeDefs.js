@@ -1,7 +1,7 @@
 const gql = require('graphql-tag');
 const { mergeTypes } = require('merge-graphql-schemas');
 
-const UserTypeDefs = require('./user/graphql/typedef');
+const ZaloOATypeDefs = require('./zaloOfficialAccount/graphql/typedef');
 const ZaloMessageTypeDefs = require('./zaloMessage/graphql/typedef');
 const ZaloTypeDefs = require('./zalo/graphql/typedef');
 
@@ -24,24 +24,18 @@ const baseTypeDefs = gql`
     total: Int
   }
 
-  type AuthPayload {
-    token: String!
-	  user: User
-  }
-
   type Query {
     hello: String
   }
 
   type Mutation {
     hello(name: String): String
-    uploadImage (file: Upload!): File! @isAuthenticated
   }
 
   type Subscription {
-      onHello: String
+    onHello: String
   }
 `;
 
-const typeDefs = [baseTypeDefs, UserTypeDefs, ZaloMessageTypeDefs, ZaloTypeDefs];
+const typeDefs = [baseTypeDefs, ZaloOATypeDefs, ZaloMessageTypeDefs, ZaloTypeDefs];
 module.exports = mergeTypes(typeDefs, { all: true });

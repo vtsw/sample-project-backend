@@ -2,10 +2,10 @@ const { ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../../zaloMessa
 const ZaloIdentifier = require('../ZaloIdentifier');
 
 class UserSendTextEventHandler {
-  constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
+  constructor(zaloMessageProvider, pubsub, zaloOAProvider, zaloInterestedUserProvider) {
     this.name = UserSendTextEventHandler.getEvent();
     this.zaloMessageProvider = zaloMessageProvider;
-    this.userProvider = userProvider;
+    this.zaloOAProvider = zaloOAProvider;
     this.zaloInterestedUserProvider = zaloInterestedUserProvider;
     this.pubsub = pubsub;
   }
@@ -19,7 +19,7 @@ class UserSendTextEventHandler {
       zaloIdByOA: data.sender.id, OAID: data.recipient.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
     });
     const [oaUser, interestedUser] = await Promise.all([
-      this.userProvider.findByZaloId(data.recipient.id),
+      this.zaloOAProvider.findByZaloId(data.recipient.id),
       this.zaloInterestedUserProvider.findByZaloId(zaloId),
     ]);
     const createdMessage = await this.zaloMessageProvider.create({

@@ -1,6 +1,7 @@
 const { asClass, asValue, asFunction } = require('awilix');
 const { GraphQLSchema } = require('graphql');
 const { RedisPubSub } = require('graphql-redis-subscriptions');
+const fetch = require('node-fetch');
 const kue = require('kue');
 const Redis = require('ioredis');
 const winston = require('./winston');
@@ -24,7 +25,7 @@ class ThirdPartyServiceProvider extends ServiceProvider {
       publisher: new Redis(config.redis),
       subscriber: new Redis(config.redis),
     });
-    const db = (await mongodb(config)).db('simple_db');
+    const db = await mongodb(config);
     const minioClient = minio(config);
     const loggingQueue = kue.createQueue();
     const winstonLogger = winston(minioClient, config);
@@ -35,6 +36,7 @@ class ThirdPartyServiceProvider extends ServiceProvider {
     this.container.register({
       db: asValue(db),
       pubsub: asValue(pubsub),
+      fetch: asValue(fetch),
       minio: asValue(minioClient),
       logger: asFunction(() => ({
         log: (logData) => {
