@@ -25,7 +25,7 @@ module.exports = gql`
     description: String
     avatar: String
     cover: String
-    interestedUsers(query: ZaloInterestedUserListInput): ZaloInterestedUserList
+    interestedUsers(query: ZaloSocialAccountListInput): ZaloSocialAccountList
   }
 
   type ZaloOAList implements Paginatable {

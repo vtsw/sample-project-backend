@@ -1,5 +1,4 @@
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
-const ZaloIdentifier = require('../ZaloIdentifier');
 
 class OASendFileEventHandler {
   constructor(zaloInterestedUserProvider, userProvider, zaloMessageProvider, pubsub) {

@@ -6,12 +6,11 @@ const zaloOAUser = require('./models/ZaloOAUser');
 
 class ZaloOfficialAccountServiceProvider extends ServiceProvider {
   register() {
-    this.container.register('authService', asClass(Authenticator).singleton());
-  }
-
-  async boot() {
-    const db = this.container.resolve('db');
-    this.container.register('zaloOAProvider', asFunction(() => db.model('ZaloOfficialAccount', zaloOAUser, 'zaloOfficialAccounts')).singleton());
+    const { container } = this;
+    container.register('authService', asClass(Authenticator).singleton());
+    container.register('zaloOAProvider', asFunction(() => container.resolve('db')
+      .model('ZaloOfficialAccount', zaloOAUser, 'zaloOfficialAccounts'))
+      .singleton());
   }
 }
 

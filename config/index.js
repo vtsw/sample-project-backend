@@ -41,6 +41,7 @@ module.exports = {
     require('../modules/zalo/ZaloServiceProvider'),
     require('../modules/zaloMessage/ZaloMessageServiceProvider'),
     require('../modules/zaloOfficialAccount/ZaloOfficialAccountServiceProvider'),
+    require('../modules/zaloSocialAccount/ZaloSocialAccountServiceProvider'),
   ],
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
@@ -56,7 +57,7 @@ module.exports = {
         uploadFile: "https://openapi.zalo.me/v2.0/oa/upload/file",
         uploadGif: "https://openapi.zalo.me/v2.0/oa/upload/gif",
       },
-      getOAinfo: "https://openapi.zalo.me/v2.0/oa/getoa",
+      getOAInfo: "https://openapi.zalo.me/v2.0/oa/getoa",
     }
   },
   zaloWebhook: {

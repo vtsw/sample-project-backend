@@ -2,7 +2,7 @@ const { merge } = require('lodash');
 const { GraphQLUpload } = require('graphql-upload');
 const zaloOAResolvers = require('./zaloOfficialAccount/graphql/resolver');
 const zaloMessageResolver = require('./zaloMessage/graphql/resolver');
-const zaloResolver = require('./zalo/graphql/resolver');
+const zaloSocialAccountResolver = require('./zaloSocialAccount/graphql/resolver');
 
 const baseResolver = {
   Upload: GraphQLUpload,
@@ -14,4 +14,4 @@ const baseResolver = {
   },
 };
 
-module.exports = merge(baseResolver, zaloOAResolvers, zaloMessageResolver, zaloResolver);
+module.exports = merge(baseResolver, zaloOAResolvers, zaloMessageResolver, zaloSocialAccountResolver);

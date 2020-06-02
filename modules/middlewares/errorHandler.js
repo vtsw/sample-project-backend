@@ -16,6 +16,7 @@ module.exports = async (resolve, parent, args, context, info) => {
   try {
     return await resolve(parent, args, context, info);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(e);
     if (config.app.env === 'development') {
       return e;

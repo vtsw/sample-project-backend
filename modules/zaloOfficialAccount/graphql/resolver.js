@@ -27,11 +27,11 @@ module.exports = {
       return container.resolve('zaloOAProvider').findOneWithDeleted({ _id: id });
     },
     createZaloOA: async (_, { zaloOA }, { container }) => {
-      const { zaloApi: { officialAccount: { getOAinfo } } } = container.resolve('config');
-      const oa = await fetch(`${getOAinfo}?access_token=${zaloOA.accessToken}`).then((response) => response.json());
+      const { zaloApi: { officialAccount: { getOAInfo } } } = container.resolve('config');
+      const oa = await fetch(`${getOAInfo}?access_token=${zaloOA.accessToken}`).then((response) => response.json());
       return container.resolve('zaloOAProvider').create(pickBy({
         ...oa.data,
-        oaId: zaloOA.oaId, // @Todo oaId from dashboard is difference with the one getted from api https://openapi.zalo.me/v2.0/oa/getoa
+        oaId: zaloOA.oaId, // @Todo oaId from dashboard is difference with the one is getted from api https://openapi.zalo.me/v2.0/oa/getoa
         oa_id: null,
         credential: zaloOA,
       }, identity));

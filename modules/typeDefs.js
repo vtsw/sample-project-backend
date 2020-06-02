@@ -3,7 +3,7 @@ const { mergeTypes } = require('merge-graphql-schemas');
 
 const ZaloOATypeDefs = require('./zaloOfficialAccount/graphql/typedef');
 const ZaloMessageTypeDefs = require('./zaloMessage/graphql/typedef');
-const ZaloTypeDefs = require('./zalo/graphql/typedef');
+const ZaloSATypeDefs = require('./zaloSocialAccount/graphql/typedef');
 
 const baseTypeDefs = gql`
 
@@ -37,5 +37,5 @@ const baseTypeDefs = gql`
   }
 `;
 
-const typeDefs = [baseTypeDefs, ZaloOATypeDefs, ZaloMessageTypeDefs, ZaloTypeDefs];
+const typeDefs = [baseTypeDefs, ZaloOATypeDefs, ZaloMessageTypeDefs, ZaloSATypeDefs];
 module.exports = mergeTypes(typeDefs, { all: true });
