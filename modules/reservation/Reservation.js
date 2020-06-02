@@ -3,6 +3,7 @@ class Reservation {
     this.data = {
       id,
       type: null,
+      sender: {},
       doctor: {},
       patient: {},
       time: null,
@@ -63,6 +64,14 @@ class Reservation {
 
   get time() {
     return this.data.time;
+  }
+
+  set sender(value) {
+    this.data.sender = value;
+  }
+
+  get sender() {
+    return this.data.sender;
   }
 
   toJson() {

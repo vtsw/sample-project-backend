@@ -27,7 +27,6 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
 });
 
 router.post('/zalo/webhook', (req, res) => {
-  console.log(req.body);
   const { container } = req;
   if (req.body.event_name) {
     const handler = container.resolve('zaloMessageHandlerProvider')
@@ -124,10 +123,12 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
   };
   const createdMessage = await messageProvider.create(messageLog);
 
+  console.log(reservationCreated.toJson());
+
   await Promise.all([
     pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),
     pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),
-    pubsub.publish(RESERVATION_CONFIRM_EVENTS, { onReservationConfirmed: reservationCreated.toJson() })
+    pubsub.publish(RESERVATION_CONFIRM_EVENTS, { onReservationConfirmed: reservationCreated.toJson() }),
   ]);
 
   res.send(message);

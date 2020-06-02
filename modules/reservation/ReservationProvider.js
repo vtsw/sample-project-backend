@@ -92,6 +92,7 @@ class ReservationProvider {
     const reservation = new Reservation(data._id || data.id);
     reservation.type = data.type;
     reservation.corId = data.corId;
+    reservation.sender = data.sender;
     reservation.userId = data.userId;
     reservation.doctor = data.doctor;
     reservation.patient = data.patient;
