@@ -42,7 +42,7 @@ class OASendImageEventHandler {
       attachments: data.message.attachments,
       to: {
         id: interestedUser._id,
-        displayName: interestedUser.displayName,
+        displayName: interestedUser.name,
         avatar: interestedUser.avatar,
         zaloId: data.recipient.id,
       },

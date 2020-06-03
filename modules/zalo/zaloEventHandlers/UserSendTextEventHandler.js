@@ -10,12 +10,12 @@ class UserSendTextEventHandler {
   }
 
   async handle(data) {
-    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
+    const message = await this.zaloMessageProvider.findOne({ zaloMessageId: data.message.msg_id });
     if (message) {
       return message;
     }
     const [OAUser, interestedUser] = await Promise.all([
-      this.zaloOAProvider.findOne({ oaId: data.sender.id }),
+      this.zaloOAProvider.findOne({ oaId: data.recipient.id }),
       this.zaloSAProvider.findOne({
         followings: {
           $elemMatch: {
@@ -32,9 +32,10 @@ class UserSendTextEventHandler {
         avatar: OAUser.avatar,
         zaloId: OAUser.oaId,
       },
+      attachments: data.message.attachments,
       from: {
         id: interestedUser._id,
-        displayName: interestedUser.displayName,
+        displayName: interestedUser.name,
         avatar: interestedUser.avatar,
         zaloId: data.recipient.id,
       },

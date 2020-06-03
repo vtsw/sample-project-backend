@@ -37,7 +37,7 @@ class OASendTextEventHandler {
       content: data.message.text,
       to: {
         id: interestedUser._id,
-        displayName: interestedUser.displayName,
+        displayName: interestedUser.name,
         avatar: interestedUser.avatar,
         zaloId: data.recipient.id,
       },

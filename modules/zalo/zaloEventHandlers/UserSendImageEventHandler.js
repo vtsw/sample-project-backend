@@ -1,37 +1,42 @@
 const { ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
 
 class UserSendImageEventHandler {
-  constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
+  constructor(zaloMessageProvider, pubsub, zaloOAProvider, zaloSAProvider) {
     this.name = UserSendImageEventHandler.getEvent();
     this.zaloMessageProvider = zaloMessageProvider;
-    this.userProvider = userProvider;
-    this.zaloInterestedUserProvider = zaloInterestedUserProvider;
+    this.zaloOAProvider = zaloOAProvider;
+    this.zaloSAProvider = zaloSAProvider;
     this.pubsub = pubsub;
   }
 
   async handle(data) {
-    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
+    const message = await this.zaloMessageProvider.findOne({ zaloMessageId: data.message.msg_id });
     if (message) {
       return message;
     }
-    // const zaloId = ZaloIdentifier.factory({
-    //   zaloIdByOA: data.sender.id, OAID: data.recipient.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
-    // });
-    const [oaUser, interestedUser] = await Promise.all([
-      this.userProvider.findByZaloId(data.recipient.id),
-      this.zaloInterestedUserProvider.findByZaloId(zaloId),
+    const [OAUser, interestedUser] = await Promise.all([
+      this.zaloOAProvider.findOne({ oaId: data.recipient.id }),
+      this.zaloSAProvider.findOne({
+        followings: {
+          $elemMatch: {
+            zaloIdByOA: data.sender.id, oaId: data.recipient.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app, state: 'PHONE_NUMBER_PROVIDED',
+          },
+        },
+      }),
     ]);
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       to: {
-        id: oaUser.id,
-        displayName: oaUser.name,
-        avatar: oaUser.image.link,
+        id: OAUser._id,
+        displayName: OAUser.name,
+        avatar: OAUser.avatar,
+        zaloId: OAUser.oaId,
       },
       from: {
-        id: interestedUser.id,
-        displayName: interestedUser.displayName,
+        id: interestedUser._id,
+        displayName: interestedUser.name,
         avatar: interestedUser.avatar,
+        zaloId: data.recipient.id,
       },
       content: data.message.text,
       attachments: data.message.attachments,
@@ -39,8 +44,8 @@ class UserSendImageEventHandler {
       type: data.event_name === UserSendImageEventHandler.getEvent() ? 'Image' : 'Gif',
     });
     await Promise.all([
-      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),
-      this.pubsub.publish(ZALO_MESSAGE_RECEIVED, { onZaloMessageReceived: createdMessage.toJson() }),
+      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage }),
+      this.pubsub.publish(ZALO_MESSAGE_RECEIVED, { onZaloMessageReceived: createdMessage }),
     ]);
     return createdMessage;
   }
