@@ -9,6 +9,7 @@ module.exports = {
     }
     try {
       req.user = await container.resolve('authService').verify(token);
+
       return next();
     } catch (e) {
       if (e instanceof AuthenticationError) {

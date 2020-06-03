@@ -1,18 +1,19 @@
 const { MongoClient } = require('mongodb');
 
 module.exports = (config) => new Promise((resolve, reject) => {
+  const baseConf = { native_parser: true, useUnifiedTopology: true };
+  const mongoConf = process.env.NODE_ENV === 'development' ? baseConf : {
+    ...baseConf, auth: {
+      user: 'foobar',
+      password: 'foobarPassword',
+    },
+    readPreference: 'secondaryPreferred',
+    replicaSet: 'mongo-replica-set',
+  };
+
   MongoClient.connect(
     config.mongodb.url,
-    {
-      native_parser: true,
-      useUnifiedTopology: true,
-      auth: {
-        user: 'foobar',
-        password: 'foobarPassword',
-      },
-      readPreference: 'secondaryPreferred',
-      replicaSet: 'mongo-replica-set',
-    },
+    mongoConf,
     (err, client) => {
       if (err) {
         console.log(err);

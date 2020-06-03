@@ -7,6 +7,7 @@ services:
     ports:
       - "4000:4000"
       - "4001:4001"
+      - "80:80"
     environment:
       MINIO_ACCESS_KEY: "EGN382IMEPNND2JB46PQ"
       MINIO_SECRET_KEY: "5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM"

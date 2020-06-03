@@ -1,3 +1,5 @@
+const ZaloIdentifier = require('./ZaloIdentifier');
+
 class ZaloInterestedUser {
   get displayName() {
     return this.data.displayName;
@@ -79,19 +81,23 @@ class ZaloInterestedUser {
     this.data.id = value;
   }
 
-  get zaloId() {
-    return this.data.zaloId;
+  get phoneNumber() {
+    return this.data.phoneNumber;
   }
 
-  set zaloId(value) {
-    this.data.zaloId = value;
+  set phoneNumber(value) {
+    this.data.phoneNumber = value;
+  }
+
+  getZaloIdByOAId(oaId) {
+    return ZaloIdentifier.factory(this.data.followings.find((item) => item.zaloId.OAID === oaId).zaloId);
   }
 
   constructor(id) {
     this.data = {
       id,
-      zaloId: null,
       displayName: null,
+      phoneNumber: null,
       dob: null,
       gender: null,
       avatar: null,

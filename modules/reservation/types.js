@@ -1,0 +1,9 @@
+const EXAMINATION = 'examination';
+const CONFIRMINATION = 'confirmation';
+const RESERVATION_CONFIRM = 'RESERVATION_CONFIRM';
+
+module.exports = {
+  EXAMINATION,
+  CONFIRMINATION,
+  RESERVATION_CONFIRM,
+};
