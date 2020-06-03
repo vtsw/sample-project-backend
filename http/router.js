@@ -26,9 +26,6 @@ router.get('/download/images/:filename', isAuthenticated, async (req, res) => {
 
 router.post('/zalo/webhook', (req, res) => {
   const { container } = req;
-  console.log(req.body.event_name);
-
-  console.log(req.body);
   if (req.body.event_name) {
     const handler = container.resolve('zaloMessageHandlerProvider')
       .provide(req.body.event_name);
@@ -43,7 +40,7 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
   const { container } = req;
   const [
     handler, reservationRequestProvider, zaloMessageSender, userProvider, zaloInterestedUserProvider,
-    messageProvider, reservationTemplateProvider, pubsub,
+    messageProvider, pubsub, templateBuilder,
   ] = await Promise.all([
     container.resolve('reservationProvider'),
     container.resolve('reservationRequestProvider'),
@@ -51,8 +48,8 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
     container.resolve('userProvider'),
     container.resolve('zaloInterestedUserProvider'),
     container.resolve('zaloMessageProvider'),
-    container.resolve('reservationTemplateProvider'),
     container.resolve('pubsub'),
+    container.resolve('templateBuilder'),
   ]);
 
   const { corId, patientSelected } = req.query;
@@ -65,20 +62,15 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
 
   const doctorId = doctorSelected.id; const reservationTime = doctorSelected.time;
 
-  const [oASender, doctor, patient, reservationConfirmTemplate] = await Promise.all([
+  const [oASender, doctor, patient] = await Promise.all([
     userProvider.findById(sender.id),
     userProvider.findById(doctorId),
     zaloInterestedUserProvider.findById(recipient.id),
-    reservationTemplateProvider.findByType(CONFIRMINATION),
   ]);
 
-  const { messageTemplate } = reservationConfirmTemplate;
-
-  const message = messageTemplate
-    .replace('%pattien_name%', patient.displayName)
-    .replace('%doctor_name%', doctor.name)
-    .replace('%date%', moment.unix(reservationTime / 1000).format('DD-MM-YYYY'))
-    .replace('%time%', moment.unix(reservationTime / 1000).format('HH:mm'));
+  const message = await templateBuilder
+    .register(CONFIRMINATION)
+    .build({ patientName: patient.displayName, doctorName: doctor.name, reservationTime });
 
   const reservation = {
     corId,
@@ -104,8 +96,6 @@ router.get('/zalo/reservation/confirmation', async (req, res) => {
 
   const reservationCreated = await handler.create(reservation);
   const zaloResponse = await zaloMessageSender.sendText({ text: message }, patient, oASender);
-
-  console.log(zaloResponse);
 
   const messageLog = {
     timestamp: moment().valueOf(),

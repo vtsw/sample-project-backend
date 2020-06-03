@@ -28,9 +28,9 @@ class ReservationTemplateBuiler {
   build(rawData) {
     switch (this.type) {
       case EXAMINATION:
-        return this.buildExamination(rawData);
+        return this.buildExaminationMessage(rawData);
       case CONFIRMINATION:
-        break;
+        return this.buildConfirminationMessage(rawData);
       default:
     }
   }
@@ -39,7 +39,7 @@ class ReservationTemplateBuiler {
    * @param {Object} rawData
    * @returns {Promise<*>}
    */
-  async buildExamination(rawData) {
+  async buildExaminationMessage(rawData) {
     const { doctorOptions, corId } = rawData;
     const template = await this.templateProvider.findByType(this.type);
     const { message } = template;
@@ -60,6 +60,25 @@ class ReservationTemplateBuiler {
     }, ...elementList];
 
     message.attachment.payload.elements = payload;
+    return message;
+  }
+
+  /**
+   * @param {Object} rawData
+   * @returns {Promise<String>}
+   */
+  async buildConfirminationMessage(rawData) {
+    const { patientName, doctorName, reservationTime } = rawData;
+    const template = await this.templateProvider.findByType(this.type);
+
+    const { messageTemplate } = template;
+
+    const message = messageTemplate
+      .replace('%pattien_name%', patientName)
+      .replace('%doctor_name%', doctorName)
+      .replace('%date%', moment.unix(reservationTime / 1000).format('DD-MM-YYYY'))
+      .replace('%time%', moment.unix(reservationTime / 1000).format('HH:mm'));
+
     return message;
   }
 }
