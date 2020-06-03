@@ -14,39 +14,45 @@ class OASendImageEventHandler {
    * @returns {Promise<void>}
    */
   async handle(data) {
-    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
+    const message = await this.zaloMessageProvider.findOne({ zaloMessageId: data.message.msg_id });
     if (message) {
       return message;
     }
-    // const zaloId = ZaloIdentifier.factory({
-    //   zaloIdByOA: data.recipient.id, OAID: data.sender.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
-    // });
+
     const [OAUser, interestedUser] = await Promise.all([
-      this.zaloOAProvider.findByZaloId(data.sender.id),
-      this.zaloSAProvider.findByZaloId({}),
+      this.zaloOAProvider.findOne({ oaId: data.sender.id }),
+      this.zaloSAProvider.findOne({
+        followings: {
+          $elemMatch: {
+            appId: data.app_id, zaloIdByApp: data.user_id_by_app, zaloIdByOA: data.recipient.id, oaId: data.sender.id, state: 'PHONE_NUMBER_PROVIDED',
+          },
+        },
+      }),
     ]);
 
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: {
-        id: OAUser.id,
+        id: OAUser._id,
         displayName: OAUser.name,
-        avatar: OAUser.image.link,
+        avatar: OAUser.avatar,
+        zaloId: OAUser.oaId,
       },
       content: data.message.text,
       attachments: data.message.attachments,
       to: {
-        id: interestedUser.id,
+        id: interestedUser._id,
         displayName: interestedUser.displayName,
         avatar: interestedUser.avatar,
+        zaloId: data.recipient.id,
       },
       zaloMessageId: data.message.msg_id,
       type: data.event_name === OASendImageEventHandler.getEvent() ? 'Image' : 'Gif',
     });
 
     await Promise.all([
-      this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),
-      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),
+      this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage }),
+      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage }),
     ]);
 
     return createdMessage;
