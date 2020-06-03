@@ -1,52 +1,62 @@
 const { withFilter } = require('apollo-server-express');
+const { Types: { ObjectId } } = require('mongoose');
 const sizeOf = require('buffer-image-size');
 const sharp = require('sharp');
-const {
-  UserInputError,
-} = require('apollo-server-express');
 
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../events');
 
 
 module.exports = {
   Query: {
-    zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findByZaloMessageId(id),
-    zaloMessageList: async (_, args, { container, req }) => {
-      const { user } = req;
-      const messageProvider = container.resolve('zaloMessageProvider');
+    zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findOne({ zaloMessageId: id }),
+    zaloMessageList: async (_, { query }, { container }) => {
       const {
-        query: {
-          interestedUserId, limit, skip,
-        },
-      } = args;
-      const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(interestedUserId);
-      if (!interestedUser) {
-        throw new UserInputError('InterestedUserId is invalid!');
-      }
-      return messageProvider
-        .find({ query: { from: [user.id, interestedUserId], to: [user.id, interestedUserId] }, page: { limit, skip } });
+        oaId, saId, limit, offset,
+      } = query;
+      const customLabels = {
+        totalDocs: 'itemCount',
+        docs: 'items',
+        limit: 'perPage',
+        page: 'currentPage',
+        nextPage: 'next',
+        prevPage: 'prev',
+        totalPages: 'pageCount',
+        pagingCounter: 'slNo',
+        meta: 'paginator',
+      };
+      return container.resolve('zaloMessageProvider').paginate({
+        'from.id': { $in: [ObjectId(oaId), ObjectId(saId)] }, 'to.id': { $in: [ObjectId(oaId), ObjectId(saId)] },
+      }, {
+        limit, offset, customLabels, sort: { timestamp: -1 },
+      });
     },
   },
   Mutation: {
-    createZaloMessage: async (_, { message }, { container, req }) => {
-      const { user } = req;
-      const loggedUser = await container.resolve('userProvider').findById(user.id);
-      const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
+    createZaloMessage: async (_, { message }, { container }) => {
+      const {
+        oaId, saId, content,
+      } = message;
+      const [OAUser, interestedUser] = await Promise.all([
+        container.resolve('zaloOAProvider').findById(oaId),
+        container.resolve('zaloSAProvider').findById(saId),
+      ]);
       const response = await container.resolve('zaloMessageSender').sendText({
         text: message.content,
-      }, interestedUser, loggedUser);
+      }, interestedUser, OAUser);
       return {
         timestamp: new Date().getTime(),
         from: {
-          id: loggedUser.id,
-          displayName: loggedUser.name,
-          avatar: loggedUser.image.link,
+          id: OAUser._id,
+          displayName: OAUser.name,
+          avatar: OAUser.avatar,
+          zaloId: OAUser.oaId,
         },
-        content: message.content,
+        content,
         to: {
-          id: interestedUser.id,
-          displayName: interestedUser.displayName,
+          id: interestedUser._id,
+          displayName: interestedUser.name,
           avatar: interestedUser.avatar,
+          zaloId: interestedUser.getFollowingByCleverOAId(OAUser._id).zaloIdByOA,
         },
         type: 'text',
         zaloMessageId: response.data.message_id,

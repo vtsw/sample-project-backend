@@ -21,8 +21,8 @@ class UserFollowOAEventHandler {
    * @returns {Promise<*>}
    */
   async handle(data) {
-    const user = await this.zaloOAProvider.findOne({ oaId: data.oa_id });
-    const { credential: { accessToken }, id } = user;
+    const zaloOA = await this.zaloOAProvider.findOne({ oaId: data.oa_id });
+    const { credential: { accessToken } } = zaloOA;
     const { zaloApi: { officialAccount: { getInterestedUserProfile } } } = this.config;
 
     const userInfo = await this.request(`${getInterestedUserProfile}?access_token=${accessToken}&data={"user_id":"${data.follower.id}"}`,
@@ -36,7 +36,7 @@ class UserFollowOAEventHandler {
      *
      */
     if (!phoneNumber) {
-      this.zaloMessageSender.sendRequestUserInfo({ content: '' }, data.follower.id, user);
+      this.zaloMessageSender.sendRequestUserInfo({ content: '' }, data.follower.id, zaloOA);
       /**
        * create an new user as NEED_PROVIDE_PHONE_NUMBER state
        */
@@ -49,7 +49,7 @@ class UserFollowOAEventHandler {
         avatars: userInfo.data.avatars,
         followings: [
           {
-            zaloIdByOA: data.follower.id, oaId: data.oa_id, appId: data.app_id, zaloIdByApp: data.user_id_by_app, cleverOAId: id,
+            zaloIdByOA: data.follower.id, oaId: data.oa_id, appId: data.app_id, zaloIdByApp: data.user_id_by_app, cleverOAId: zaloOA._id,
           },
         ],
       });
@@ -66,7 +66,7 @@ class UserFollowOAEventHandler {
         oaId: data.oa_id,
         appId: data.app_id,
         zaloIdByApp: data.user_id_by_app,
-        cleverOAId: id,
+        cleverOAId: zaloOA._id,
         state: 'PHONE_NUMBER_PROVIDED',
       },
     );
