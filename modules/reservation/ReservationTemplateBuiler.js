@@ -7,8 +7,8 @@ class ReservationTemplateBuiler {
    * @param templateProvider
    */
   constructor(templateProvider, config) {
-    this.config = config;
     this.templateProvider = templateProvider;
+    this.config = config;
     this.type = null;
   }
 
