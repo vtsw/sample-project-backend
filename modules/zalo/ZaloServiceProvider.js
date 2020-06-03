@@ -56,6 +56,7 @@ class ZaloServiceProvider extends ServiceProvider {
     })).singleton());
   }
 
+  
   async boot() {
     const zaloMessageHandlerProvider = this.container.resolve('zaloMessageHandlerProvider');
     zaloMessageHandlerProvider.register(UserSendTextEventHandler.getEvent(), this.container.resolve('userSendTextEventHandler'));
