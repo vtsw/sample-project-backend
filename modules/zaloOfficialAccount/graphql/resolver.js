@@ -6,7 +6,7 @@ module.exports = {
     zaloOA: (_, { id }, { container }) => container.resolve('zaloOAProvider').findById(id),
     zaloOAList: async (_, args, { container }) => {
       const customLabels = {
-        totalDocs: 'itemCount',
+        totalDocs: 'total',
         docs: 'items',
         limit: 'perPage',
         page: 'currentPage',
@@ -14,7 +14,7 @@ module.exports = {
         prevPage: 'prev',
         totalPages: 'pageCount',
         pagingCounter: 'slNo',
-        meta: 'paginator',
+        hasNextPage: 'hasNext',
       };
       return container.resolve('zaloOAProvider').paginate({}, {
         customLabels,
@@ -42,13 +42,19 @@ module.exports = {
   },
   ZaloOA: {
     interestedUsers: (user, args, { container }) => {
-      const zaloInterestedUserProvider = container.resolve('zaloInterestedUserProvider');
-      if (isEmpty(args)) {
-        return zaloInterestedUserProvider
-          .find({ query: { following: user.id }, page: { limit: 10, skip: 0 } });
-      }
-      const { query: { limit, skip } } = args;
-      return zaloInterestedUserProvider.find({ query: { following: user.id }, page: { limit, skip } });
+      const zaloSAProvider = container.resolve('zaloSAProvider');
+      const customLabels = {
+        totalDocs: 'total',
+        docs: 'items',
+        limit: 'perPage',
+        page: 'currentPage',
+        nextPage: 'next',
+        prevPage: 'prev',
+        totalPages: 'pageCount',
+        pagingCounter: 'slNo',
+        hasNextPage: 'hasNext',
+      };
+      return zaloSAProvider.paginate({}, { customLabels });
     },
     id: (zaloOA) => zaloOA._id,
   },
