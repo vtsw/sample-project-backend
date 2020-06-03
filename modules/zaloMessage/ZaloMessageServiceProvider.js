@@ -1,10 +1,13 @@
-const { asClass } = require('awilix');
+const { asFunction } = require('awilix');
 const ServiceProvider = require('../../ServiceProvider');
-const ZaloMessageProvider = require('./ZaloMessageProvider');
+const zaloMessage = require('../zaloMessage/model/ZaloMessage');
 
 class ZaloMessageServiceProvider extends ServiceProvider {
   register() {
-
+    const { container } = this;
+    container.register('zaloMessageProvider', asFunction(() => container.resolve('db')
+      .model('ZaloMessage', zaloMessage, 'zaloMessages'))
+      .singleton());
   }
 }
 

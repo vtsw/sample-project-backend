@@ -74,13 +74,13 @@ module.exports = gql`
   }
 
   extend type Mutation {
-    createZaloMessage(message: CreateZaloMessageInput!): ZaloMessage @isAuthenticated
-    createZaloMessageAttachment(message: CreateZaloMessageAttachmentInput!): ZaloMessage @isAuthenticated
+    createZaloMessage(message: CreateZaloMessageInput!): ZaloMessage
+    createZaloMessageAttachment(message: CreateZaloMessageAttachmentInput!): ZaloMessage
   }
 
   extend type Query {
-    zaloMessage(id: ID!): ZaloMessage @isAuthenticated
-    zaloMessageList(query: ZaloMessageListInput): ZaloMessageList @isAuthenticated
+    zaloMessage(id: ID!): ZaloMessage
+    zaloMessageList(query: ZaloMessageListInput): ZaloMessageList
   }
   
   extend type Subscription  {

@@ -44,7 +44,7 @@ class ZaloServiceProvider extends ServiceProvider {
     // zaloMessageHandlerProvider.register(OASendTextEventHandler.getEvent(), this.container.resolve('oASendTextEventHandler'));
     zaloMessageHandlerProvider.register(UserFollowOAEventHandler.getEvent(), this.container.resolve('userFollowOAEventHandler'));
     // zaloMessageHandlerProvider.register(UserSendFileEventHandler.getEvent(), this.container.resolve('userSendFileEventHandler'));
-    // zaloMessageHandlerProvider.register(OASendFileEventHandler.getEvent(), this.container.resolve('oASendFileEventHandler'));
+    zaloMessageHandlerProvider.register(OASendFileEventHandler.getEvent(), this.container.resolve('oASendFileEventHandler'));
     zaloMessageHandlerProvider.register(UserShareInfoEventHandler.getEvent(), this.container.resolve('userShareInfoEventHandler'));
     // zaloMessageHandlerProvider.apply([OASendImageEventHandler.getEvent(), 'oa_send_gif'], this.container.resolve('oASendImageEventHandler'));
     // zaloMessageHandlerProvider.apply([UserSendImageEventHandler.getEvent(), 'user_send_gif'], this.container.resolve('userSendImageEventHandler'));

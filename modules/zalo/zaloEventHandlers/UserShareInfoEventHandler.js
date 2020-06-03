@@ -12,6 +12,10 @@ class UserShareInfoEventHandler {
         },
       },
     });
+    const following = zaloSA.followings.find((item) => (
+      item.zaloIdByOA === data.sender.id && item.oaId === data.recipient.id && item.appId === data.app_id && item.zaloIdByApp === data.user_id_by_app
+    ));
+    zaloSA.followings.id(following._id).state = 'PHONE_NUMBER_PROVIDED';
     zaloSA.phoneNumber = data.info.phone;
     zaloSA.address = data.info;
     return zaloSA.save();
