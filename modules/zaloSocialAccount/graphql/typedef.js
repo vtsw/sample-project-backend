@@ -25,6 +25,6 @@ module.exports = gql`
 
     extend type Query {
       socialAccount(id: ID!): ZaloSocialAccount
-      socialAccountList(query: ZaloSocialAccountList): ZaloSocialAccountList
+      socialAccountList(query: ZaloSocialAccountListInput): ZaloSocialAccountList
     }
 `;

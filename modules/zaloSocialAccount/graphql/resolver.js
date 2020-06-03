@@ -1,7 +1,7 @@
 module.exports = {
   Query: {
-    socialAccount: async (_, { id }, { container }) => container.resolve('zaloSocialProvider').findById(id),
-    socialAccountList: (_, args, { container }) => container.resolve('zaloSocialProvider'),
+    socialAccount: async (_, { id }, { container }) => container.resolve('zaloSAProvider').findById(id),
+    socialAccountList: (_, args, { container }) => container.resolve('zaloSAProvider'),
   },
   ZaloSocialAccount: {
     followings: (socialAccount, args, { container }) => {

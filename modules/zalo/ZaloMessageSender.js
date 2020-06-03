@@ -1,3 +1,5 @@
+const { ZaloApiError } = require('../errors');
+
 class ZaloMessageSender {
   constructor(request, config, zaloUploader) {
     this.request = request;
@@ -8,15 +10,15 @@ class ZaloMessageSender {
   /**
    *
    * @param {Object} param0
-   * @param {Object} recipient
+   * @param {String} recipientId
    * @param {User} sender
    */
-  sendRequestUserInfo({ content }, recipient, sender) {
+  async sendRequestUserInfo({ content }, recipientId, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
-    const { accessToken, cover } = sender.zaloOA;
+    const { credential: { accessToken }, cover } = sender;
     const body = {
       recipient: {
-        user_id: recipient.zaloId,
+        user_id: recipientId,
       },
       message: {
         text: content,
@@ -33,11 +35,15 @@ class ZaloMessageSender {
         },
       },
     };
-    return this.request(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
+    const response = await this.request(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
       method: 'post',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
     }).then((res) => res.json());
+    if (response.error) {
+      throw new ZaloApiError(response.error, response.message);
+    }
+    return response;
   }
 
   /**

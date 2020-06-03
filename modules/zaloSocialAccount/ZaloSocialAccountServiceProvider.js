@@ -5,7 +5,7 @@ const zaloSocialAccount = require('./model/ZaloSocialAccount');
 class ZaloOfficialAccountServiceProvider extends ServiceProvider {
   register() {
     const { container } = this;
-    container.register('zaloSocialProvider', asFunction(() => container.resolve('db')
+    container.register('zaloSAProvider', asFunction(() => container.resolve('db')
       .model('ZaloSocialAccount', zaloSocialAccount, 'zaloSocialAccounts'))
       .singleton());
   }

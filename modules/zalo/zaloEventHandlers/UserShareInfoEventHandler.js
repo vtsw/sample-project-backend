@@ -1,21 +1,20 @@
-const ZaloIdentifier = require('../ZaloIdentifier');
-
 class UserShareInfoEventHandler {
-  constructor(zaloInterestedUserProvider) {
+  constructor(zaloSAProvider) {
     this.name = UserShareInfoEventHandler.getEvent();
-    this.zaloInterestedUserProvider = zaloInterestedUserProvider;
+    this.zaloSocialUserProvider = zaloSAProvider;
   }
 
   async handle(data) {
-    const zaloId = ZaloIdentifier.factory({
-      zaloIdByOA: data.sender.id, OAID: data.recipient.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
+    const zaloSA = await this.zaloSocialUserProvider.findOne({
+      followings: {
+        $elemMatch: {
+          zaloIdByOA: data.sender.id, oaId: data.recipient.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
+        },
+      },
     });
-    const interestedUser = await this.zaloInterestedUserProvider.findByZaloId(zaloId);
-    return this.zaloInterestedUserProvider.update(interestedUser.id, {
-      phone: data.info.phone,
-      info: data.info,
-      state: 'active',
-    });
+    zaloSA.phoneNumber = data.info.phone;
+    zaloSA.address = data.info;
+    return zaloSA.save();
   }
 
   static getEvent() {

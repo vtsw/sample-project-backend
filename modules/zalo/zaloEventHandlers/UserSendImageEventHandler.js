@@ -1,5 +1,4 @@
 const { ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
-const ZaloIdentifier = require('../ZaloIdentifier');
 
 class UserSendImageEventHandler {
   constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
@@ -15,9 +14,9 @@ class UserSendImageEventHandler {
     if (message) {
       return message;
     }
-    const zaloId = ZaloIdentifier.factory({
-      zaloIdByOA: data.sender.id, OAID: data.recipient.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
-    });
+    // const zaloId = ZaloIdentifier.factory({
+    //   zaloIdByOA: data.sender.id, OAID: data.recipient.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
+    // });
     const [oaUser, interestedUser] = await Promise.all([
       this.userProvider.findByZaloId(data.recipient.id),
       this.zaloInterestedUserProvider.findByZaloId(zaloId),
