@@ -62,11 +62,14 @@ module.exports = {
         zaloMessageId: response.data.message_id,
       };
     },
-    createZaloMessageAttachment: async (_, { message }, { container, req }) => {
-      const { attachmentFile, content, fileType } = message;
-      const { user } = req;
-      const loggedUser = await container.resolve('userProvider').findById(user.id);
-      const interestedUser = await container.resolve('zaloInterestedUserProvider').findById(message.to);
+    createZaloMessageAttachment: async (_, { message }, { container }) => {
+      const {
+        attachmentFile, content, fileType, oaId, saId,
+      } = message;
+      const [OAUser, interestedUser] = await Promise.all([
+        container.resolve('zaloOAProvider').findById(oaId),
+        container.resolve('zaloSAProvider').findById(saId),
+      ]);
       const zaloMessageSender = container.resolve('zaloMessageSender');
       const {
         filename, mimetype, encoding,
@@ -103,19 +106,19 @@ module.exports = {
             filename, mimetype, encoding, data,
           },
           content,
-        }, interestedUser, loggedUser);
+        }, interestedUser, OAUser);
       } else if (fileType === 'File') {
         sendMessageRespond = await zaloMessageSender.sendFile({
           file: {
             filename, mimetype, encoding, data,
           },
-        }, interestedUser, loggedUser);
+        }, interestedUser, OAUser);
       } else if (fileType === 'Gif') {
         sendMessageRespond = await zaloMessageSender.sendGif({
           file: {
             filename, mimetype, encoding, data,
           },
-        }, interestedUser, loggedUser);
+        }, interestedUser, OAUser);
       }
       if (sendMessageRespond.error) {
         throw new Error(sendMessageRespond.message);
@@ -123,16 +126,18 @@ module.exports = {
       return {
         timestamp: new Date().getTime(),
         from: {
-          id: loggedUser.id,
-          displayName: loggedUser.name,
-          avatar: loggedUser.image.link,
+          id: OAUser._id,
+          displayName: OAUser.name,
+          avatar: OAUser.avatar,
+          zaloId: OAUser.oaId,
         },
         content,
         attachments: [],
         to: {
-          id: interestedUser.id,
-          displayName: interestedUser.displayName,
+          id: interestedUser._id,
+          displayName: interestedUser.name,
           avatar: interestedUser.avatar,
+          zaloId: interestedUser.getFollowingByCleverOAId(OAUser._id).zaloIdByOA,
         },
         type: fileType === 'File' ? fileType : 'Image',
         zaloMessageId: sendMessageRespond.data.message_id,
@@ -143,25 +148,25 @@ module.exports = {
     onZaloMessageSent: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_SENT),
-        ({ onZaloMessageCreated }, { filter }, { loggedUser }) => {
+        ({ onZaloMessageCreated }, { filter }) => {
           if (filter && filter.to) {
-            return onZaloMessageCreated.from.id === loggedUser.id && filter.to === onZaloMessageCreated.to.id;
+            return onZaloMessageCreated.from.id === filter.oaId && filter.to === onZaloMessageCreated.to.id;
           }
-          return onZaloMessageCreated.from.id === loggedUser.id;
+          return onZaloMessageCreated.from.id === filter.oaId;
         },
       ),
     },
     onZaloMessageReceived: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_RECEIVED),
-        ({ onZaloMessageReceived }, args, { loggedUser }) => onZaloMessageReceived.to.id === loggedUser.id,
+        ({ onZaloMessageReceived }, { filter }) => onZaloMessageReceived.to.id === filter.oaId,
       ),
     },
     onZaloMessageCreated: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_CREATED),
-        ({ onZaloMessageCreated }, { filter }, { loggedUser }) => {
-          const participants = [loggedUser.id, filter.interestedUserId];
+        ({ onZaloMessageCreated }, { filter }) => {
+          const participants = [filter.saId, filter.oaId];
           return (participants.includes(onZaloMessageCreated.from.id) && participants.includes(onZaloMessageCreated.to.id));
         },
       ),

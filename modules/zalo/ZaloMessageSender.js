@@ -80,10 +80,10 @@ class ZaloMessageSender {
     if (uploadResult.error) {
       throw new Error(uploadResult.message);
     }
-    const { accessToken, oaId } = sender.zaloOA;
+    const { credential: { accessToken }, _id } = sender;
     const body = {
       recipient: {
-        user_id: recipient.getZaloIdByOAId(oaId).zaloIdByOA,
+        user_id: recipient.getFollowingByCleverOAId(_id).zaloIdByOA,
       },
       message: {
         text: content,
@@ -118,10 +118,10 @@ class ZaloMessageSender {
     if (uploadResult.error) {
       throw new Error(uploadResult.message);
     }
-    const { accessToken, oaId } = sender.zaloOA;
+    const { credential: { accessToken }, _id } = sender;
     const body = {
       recipient: {
-        user_id: recipient.getZaloIdByOAId(oaId).zaloIdByOA,
+        user_id: recipient.getZaloIdByOAId(_id).zaloIdByOA,
       },
       message: {
         text: content,
@@ -156,10 +156,10 @@ class ZaloMessageSender {
     if (res.error) {
       throw new Error(res.message);
     }
-    const { accessToken, oaId } = sender.zaloOA;
+    const { credential: { accessToken }, _id } = sender;
     const body = {
       recipient: {
-        user_id: recipient.getZaloIdByOAId(oaId).zaloIdByOA,
+        user_id: recipient.getZaloIdByOAId(_id).zaloIdByOA,
       },
       message: {
         attachment: {
