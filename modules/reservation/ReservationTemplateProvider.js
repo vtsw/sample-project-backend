@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongodb');
-const ZaloReservation = require('./Reservation');
+const Reservation = require('./Reservation');
 
 class ReservationTemplateProvider {
   /**
@@ -36,10 +36,10 @@ class ReservationTemplateProvider {
         data[key] = rawData[key];
       }
     });
-    const zaloReservation = new ZaloReservation(data._id || data.id);
-    zaloReservation.type = data.type;
-    zaloReservation.content = data.content;
-    return zaloReservation;
+    const reservation = new Reservation(data._id || data.id);
+    reservation.type = data.type;
+    reservation.content = data.content;
+    return reservation;
   }
 }
 
