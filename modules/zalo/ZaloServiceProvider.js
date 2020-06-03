@@ -40,8 +40,8 @@ class ZaloServiceProvider extends ServiceProvider {
 
   async boot() {
     const zaloMessageHandlerProvider = this.container.resolve('zaloMessageHandlerProvider');
-    // zaloMessageHandlerProvider.register(UserSendTextEventHandler.getEvent(), this.container.resolve('userSendTextEventHandler'));
-    // zaloMessageHandlerProvider.register(OASendTextEventHandler.getEvent(), this.container.resolve('oASendTextEventHandler'));
+    zaloMessageHandlerProvider.register(UserSendTextEventHandler.getEvent(), this.container.resolve('userSendTextEventHandler'));
+    zaloMessageHandlerProvider.register(OASendTextEventHandler.getEvent(), this.container.resolve('oASendTextEventHandler'));
     zaloMessageHandlerProvider.register(UserFollowOAEventHandler.getEvent(), this.container.resolve('userFollowOAEventHandler'));
     // zaloMessageHandlerProvider.register(UserSendFileEventHandler.getEvent(), this.container.resolve('userSendFileEventHandler'));
     zaloMessageHandlerProvider.register(OASendFileEventHandler.getEvent(), this.container.resolve('oASendFileEventHandler'));

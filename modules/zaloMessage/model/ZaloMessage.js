@@ -10,6 +10,7 @@ const zaloMessage = new Schema({
     avatar: String,
     zaloId: String,
   },
+  content: String,
   to: {
     id: ObjectId,
     displayName: String,

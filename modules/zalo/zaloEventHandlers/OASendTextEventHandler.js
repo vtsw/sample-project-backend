@@ -1,46 +1,53 @@
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
 
 class OASendTextEventHandler {
-  constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
+  constructor(zaloMessageProvider, pubsub, zaloOAProvider, zaloSAProvider) {
     this.name = OASendTextEventHandler.getEvent();
     this.zaloMessageProvider = zaloMessageProvider;
     this.pubsub = pubsub;
-    this.userProvider = userProvider;
-    this.zaloInterestedUserProvider = zaloInterestedUserProvider;
+    this.zaloOAProvider = zaloOAProvider;
+    this.zaloSAProvider = zaloSAProvider;
   }
 
 
   async handle(data) {
-    const message = await this.zaloMessageProvider.findByZaloMessageId(data.message.msg_id);
+    const message = await this.zaloMessageProvider.findOne({ zaloMessageId: data.message.msg_id });
     if (message) {
       return message;
     }
-    // const zaloId = ZaloIdentifier.factory({
-    //   zaloIdByOA: data.recipient.id, OAID: data.sender.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
-    // });
     const [OAUser, interestedUser] = await Promise.all([
-      this.userProvider.findByZaloId(data.sender.id),
-      this.zaloInterestedUserProvider.findByZaloId(zaloId),
+      this.zaloOAProvider.findOne({ oaId: data.sender.id }),
+      this.zaloSAProvider.findOne({
+        followings: {
+          $elemMatch: {
+            appId: data.app_id, zaloIdByApp: data.user_id_by_app, zaloIdByOA: data.recipient.id, oaId: data.sender.id, state: 'PHONE_NUMBER_PROVIDED',
+          },
+        },
+      }),
     ]);
+
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: {
-        id: OAUser.id,
+        id: OAUser._id,
         displayName: OAUser.name,
-        avatar: OAUser.image.link,
+        avatar: OAUser.avatar,
+        zaloId: OAUser.oaId,
       },
       content: data.message.text,
       to: {
-        id: interestedUser.id,
+        id: interestedUser._id,
         displayName: interestedUser.displayName,
         avatar: interestedUser.avatar,
+        zaloId: data.recipient.id,
       },
       zaloMessageId: data.message.msg_id,
       type: 'Text',
     });
+
     await Promise.all([
-      this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),
-      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),
+      this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage }),
+      this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage }),
     ]);
     return createdMessage;
   }
