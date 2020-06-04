@@ -101,6 +101,7 @@ class ReservationRequestProvider {
     const reservationRequest = new ReservationRequest(data._id || data.id);
     reservationRequest.source = data.source;
     reservationRequest.sender = data.sender;
+    reservationRequest.type = data.type;
     reservationRequest.recipient = data.recipient;
     reservationRequest.payload = data.payload;
     reservationRequest.timestamp = data.timestamp;
