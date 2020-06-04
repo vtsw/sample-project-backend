@@ -1,4 +1,4 @@
-const { Schema } = require('mongoose');
+const { Schema, Types: { ObjectId } } = require('mongoose');
 
 const userStates = [
   { id: 1, state: 'NEED_PROVIDE_PHONE_NUMBER' },
@@ -10,7 +10,7 @@ const followingSchema = new Schema({
   oaId: String,
   zaloIdByApp: String,
   zaloIdByOA: String,
-  cleverOAId: String,
+  cleverOAId: ObjectId,
   state: { type: String, default: 'NEED_PROVIDE_PHONE_NUMBER' },
 });
 

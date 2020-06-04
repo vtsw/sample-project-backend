@@ -54,7 +54,7 @@ module.exports = {
         pagingCounter: 'slNo',
         hasNextPage: 'hasNext',
       };
-      return zaloSAProvider.paginate({}, { customLabels });
+      return zaloSAProvider.paginate({ 'followings.cleverOAId': user._id }, { customLabels });
     },
     id: (zaloOA) => zaloOA._id,
   },
