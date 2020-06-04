@@ -41,7 +41,7 @@ module.exports = {
         container.resolve('templateBuilder'),
       ];
 
-      const { doctors, patient } = reservation;
+      const { doctors, patient, type } = reservation;
       const doctorIds = doctors.map((doctor) => doctor.id);
       const infoDoctors = await userProvider.findByIds(doctorIds);
       const [sender, recipient] = await Promise.all([
@@ -71,6 +71,7 @@ module.exports = {
 
       const reservationRequest = {
         source: 'zalo',
+        type,
         sender: {
           id: sender.data.id,
           name: sender.name,
