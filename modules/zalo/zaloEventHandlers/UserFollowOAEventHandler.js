@@ -59,7 +59,7 @@ class UserFollowOAEventHandler {
     interestedUser.followings[foundFollowIndex] = { zaloId, userId: ObjectId(user.id), state: 'active' };
 
     followings = followings.map((following) => ({
-      user: following.userId,
+      userId: following.userId,
       zaloId: following.zaloId.toJson(),
       state: following.state,
     }));
