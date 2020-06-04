@@ -6,7 +6,7 @@ module.exports = gql`
       avatar: String
       name: String
       phoneNumber: String
-      followings(query: ZaloOAListInput): ZaloOAList
+      followings: [ZaloSocialAccount]
       createdAt: Date
       gender: String
       birthday: Date

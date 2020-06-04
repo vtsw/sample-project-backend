@@ -8,6 +8,7 @@ const expressPlayground = require('graphql-playground-middleware-express').defau
 
 const schema = require('./modules');
 const router = require('./http/router');
+const dataloader = require('./modules/dataloader');
 
 /**
  *
@@ -24,7 +25,7 @@ module.exports = (container) => {
   app.use('/graphql', graphqlUploadExpress(config.graphqlUploadExpress), graphqlHTTP((req) => ({
     schema,
     graphiql: config.app.env === 'development',
-    context: { container: req.container, req }, // bind http request context to graphQl context
+    context: { container: req.container, req, dataloader: dataloader(container) }, // bind http request context to graphQl context
   })));
   app.get('/playground', expressPlayground({ endpoint: `${config.app.host}:${config.app.port}/graphql` }));
   return app;

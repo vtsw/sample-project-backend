@@ -1,8 +1,14 @@
+const DataLoader = require('dataloader');
+const lodash = require('lodash');
+const { Types: { ObjectId } } = require('mongoose');
+
 module.exports = (container) => ({
-  getBySocialAccountList: async (socialAccountList) => {
-    const oaProvider = container.resolve('zaloOAProvider');
-    const saIds = socialAccountList.map((so) => so.followings.map((item) => item.cleverOAId));
-    const oaList = await oaProvider.find({ _id: { $in: saIds }, state: 'PHONE_NUMBER_PROVIDED' });
-    return socialAccountList.map((so) => oaList.filter((oa) => so.followings.map((item) => item.cleverOAId).includes(oa.id)));
-  },
+  getBySocialAccountList: new DataLoader(
+    async (socialAccountList) => {
+      const saIds = lodash.flattenDeep(socialAccountList.map((so) => so.followings.map((item) => item.cleverOAId))).map((id) => ObjectId(id));
+      const oaList = await container.resolve('zaloOAProvider').find({ _id: { $in: saIds } });
+      return socialAccountList.map((sa) => sa.followings
+        .map((following) => oaList.find((oa) => oa._id.toString() === following.cleverOAId.toString())));
+    },
+  ),
 });

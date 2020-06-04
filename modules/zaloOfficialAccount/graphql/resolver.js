@@ -1,4 +1,4 @@
-const { isEmpty, pickBy, identity } = require('lodash');
+const { pickBy, identity } = require('lodash');
 const fetch = require('node-fetch');
 
 module.exports = {

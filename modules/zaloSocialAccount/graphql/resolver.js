@@ -19,9 +19,9 @@ module.exports = {
     },
   },
   ZaloSocialAccount: {
-    followings: (socialAccount, args, { container }) => {
-      const { officialAccountDataloader: { getFollowings } } = container.dataloader;
-      return getFollowings.load(socialAccount);
+    followings: (socialAccount, args, { dataloader }) => {
+      const { officialAccount: { getBySocialAccountList } } = dataloader;
+      return getBySocialAccountList.load(socialAccount);
     },
     id: (socialAccount) => socialAccount._id,
   },
