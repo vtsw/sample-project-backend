@@ -51,7 +51,7 @@ module.exports = gql`
     }
  
     input ReservationRequestInput {
-      type: String !,
+      type: String,
       patient: String,
       doctors: [ReservationOptionsInput!]!
     }
