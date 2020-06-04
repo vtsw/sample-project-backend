@@ -1,10 +1,14 @@
-FROM node:12.16.1
+FROM mhart/alpine-node:12.16.1
 EXPOSE 4000
-EXPOSE 4001
 EXPOSE 80
+
+## caching npm modules installation
+RUN mkdir -p /tmp/npm/
+ADD package.json /tmp/npm/
+RUN cd /tmp/npm/ && npm install -g node-gyp && npm install
+
+## copy sources
 WORKDIR /usr/src/app
-RUN npm install -g node-gyp
 COPY . ./
-COPY package*.json ./
 RUN rm -rf ./node_modules
-RUN npm install
+RUN cp -a /tmp/npm/node_modules /usr/src/app/

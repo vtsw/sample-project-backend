@@ -49,7 +49,11 @@ module.exports = {
   ],
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT || '32768',
+    port: process.env.REDIS_PORT ||  '32768',
+    preferredSlaves: process.env.REDIS_PREFERRED_SLAVES || [
+      { ip: 'redis-slave-0.redis-slave.default.svc.cluster.local', port: 6379, prio: 1 },
+      { ip: 'redis-slave-1.redis-slave.default.svc.cluster.local', port: 6379, prio: 2 }
+    ]
   },
   zaloApi: {
     social: {},
