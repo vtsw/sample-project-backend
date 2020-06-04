@@ -71,7 +71,7 @@ module.exports = {
 
       const reservationRequest = {
         source: 'zalo',
-        type,
+        type: type || EXAMINATION,
         sender: {
           id: sender.data.id,
           name: sender.name,
