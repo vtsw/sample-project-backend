@@ -3,6 +3,7 @@ class ReservationRequest {
     this.data = {
       id,
       source: null,
+      type: null,
       sender: {},
       recipient: {},
       corId: null,
@@ -26,6 +27,14 @@ class ReservationRequest {
 
   get source() {
     return this.data.source;
+  }
+
+  set type(value) {
+    this.data.type = value;
+  }
+
+  get type() {
+    return this.data.type;
   }
 
   set messageId(value) {
