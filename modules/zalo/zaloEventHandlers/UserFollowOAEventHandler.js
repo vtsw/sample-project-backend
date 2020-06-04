@@ -33,7 +33,7 @@ class UserFollowOAEventHandler {
 
     const phoneNumber = userInfo.data.shared_info ? userInfo.data.shared_info.phone : null;
     const zaloId = ZaloIdentifier.factory({
-      zaloIdByOA: data.follower.id, phoneNumber, OAID: data.oa_id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
+      zaloIdByOA: data.follower.id, OAID: data.oa_id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
     });
 
     if (!phoneNumber) {
@@ -53,7 +53,7 @@ class UserFollowOAEventHandler {
       });
     }
 
-    const interestedUser = await this.zaloInterestedUserProvider.findByZaloId(zaloId);
+    const interestedUser = await this.zaloInterestedUserProvider.findByZaloIndentifier(zaloId);
     let { followings } = interestedUser;
     const foundFollowIndex = followings.findIndex((follow) => JSON.stringify(follow.zaloId.toJson()) === JSON.stringify(zaloId.toJson()));
     interestedUser.followings[foundFollowIndex] = { zaloId, userId: ObjectId(user.id), state: 'active' };
