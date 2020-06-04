@@ -24,15 +24,19 @@ class ReservationTemplateBuiler {
  * @param {Object} condition
  * @returns {Promise<*>}
  */
-  // eslint-disable-next-line consistent-return
   build(rawData) {
+    let message;
     switch (this.type) {
       case EXAMINATION:
-        return this.buildExaminationMessage(rawData);
+        message = this.buildExaminationMessage(rawData);
+        break;
       case CONFIRMINATION:
-        return this.buildConfirminationMessage(rawData);
+        message = this.buildConfirminationMessage(rawData);
+        break;
       default:
     }
+
+    return message;
   }
 
   /**
