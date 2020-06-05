@@ -53,7 +53,7 @@ class ReservationTemplateBuiler {
       image_url: template.element.image_url,
       default_action: {
         type: template.element.default_action.type,
-        url: `${this.config.zaloApi.confirmationCb}&corId=${corId}&patientSelected=${index}`,
+        url: `${process.env.CB_URL}?type=examination&corId=${corId}&patientSelected=${index}`,
       },
     }));
 
