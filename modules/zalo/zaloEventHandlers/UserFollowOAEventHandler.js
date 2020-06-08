@@ -60,7 +60,7 @@ class UserFollowOAEventHandler {
     const saUser = await this.zaloSAProvider.findOne({
       phoneNumber,
     });
-    return saUser.followings.create(
+    saUser.followings.push(
       {
         zaloIdByOA: data.follower.id,
         oaId: data.oa_id,
@@ -70,6 +70,7 @@ class UserFollowOAEventHandler {
         state: 'PHONE_NUMBER_PROVIDED',
       },
     );
+    return saUser.save();
   }
 
   static getEvent() {

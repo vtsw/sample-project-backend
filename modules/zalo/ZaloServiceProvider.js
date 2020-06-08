@@ -6,6 +6,7 @@ const UserSendTextEventHandler = require('../zalo/zaloEventHandlers/UserSendText
 const UserSendImageEventHandler = require('../zalo/zaloEventHandlers/UserSendImageEventHandler');
 const OASendTextEventHandler = require('../zalo/zaloEventHandlers/OASendTextEventHandler');
 const UserFollowOAEventHandler = require('../zalo/zaloEventHandlers/UserFollowOAEventHandler');
+const UserUnfollowOAEventHandler = require('../zalo/zaloEventHandlers/UserUnfollowOAEventHandler');
 const OASendImageEventHandler = require('../zalo/zaloEventHandlers/OASendImageEventHandler');
 const OASendFileEventHandler = require('../zalo/zaloEventHandlers/OASendFileEventHandler');
 const UserSendFileEventHandler = require('../zalo/zaloEventHandlers/UserSendFileEventHandler');
@@ -26,6 +27,7 @@ class ZaloServiceProvider extends ServiceProvider {
       request: fetch,
     }))
       .singleton());
+    this.container.register('userUnfollowOAEventHandler', asClass(UserUnfollowOAEventHandler).singleton());
     this.container.register('zaloMessageHandlerProvider', asClass(ZaloMessageHandlerProvider)
       .singleton());
     this.container.register('zaloMessageSender', asClass(ZaloMessageSender).inject((injectedContainer) => ({
@@ -43,6 +45,7 @@ class ZaloServiceProvider extends ServiceProvider {
     zaloMessageHandlerProvider.register(UserSendTextEventHandler.getEvent(), this.container.resolve('userSendTextEventHandler'));
     zaloMessageHandlerProvider.register(OASendTextEventHandler.getEvent(), this.container.resolve('oASendTextEventHandler'));
     zaloMessageHandlerProvider.register(UserFollowOAEventHandler.getEvent(), this.container.resolve('userFollowOAEventHandler'));
+    zaloMessageHandlerProvider.register(UserUnfollowOAEventHandler.getEvent(), this.container.resolve('userUnfollowOAEventHandler'));
     zaloMessageHandlerProvider.register(UserSendFileEventHandler.getEvent(), this.container.resolve('userSendFileEventHandler'));
     zaloMessageHandlerProvider.register(OASendFileEventHandler.getEvent(), this.container.resolve('oASendFileEventHandler'));
     zaloMessageHandlerProvider.register(UserShareInfoEventHandler.getEvent(), this.container.resolve('userShareInfoEventHandler'));
