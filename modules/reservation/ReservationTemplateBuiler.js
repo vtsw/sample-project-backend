@@ -1,6 +1,8 @@
 // const { ObjectId } = require('mongodb');
 const moment = require('moment');
 const { EXAMINATION, CONFIRMATION } = require('./types');
+const reservationCallBackRoute = require('../../http/reservation');
+const httpApiRoute = require('../../http');
 
 class ReservationTemplateBuiler {
   /**
@@ -31,7 +33,7 @@ class ReservationTemplateBuiler {
         message = this.buildExaminationMessage(rawData);
         break;
       case CONFIRMATION:
-        message = this.buildConfirminationMessage(rawData);
+        message = this.buildConfirmationMessage(rawData);
         break;
       default:
     }
@@ -53,10 +55,14 @@ class ReservationTemplateBuiler {
       image_url: template.element.image_url,
       default_action: {
         type: template.element.default_action.type,
-        url: `${process.env.CB_URL}?type=examination&corId=${corId}&patientSelected=${index}`,
+        // eslint-disable-next-line max-len
+        url: `${this.config.app.host}${httpApiRoute.path.HTTP_API_ROOT}${reservationCallBackRoute.path.ZALO_RESERVATION_CONFIRMATION}`
+          + `?type=${this.type}`
+          + `&corId=${corId}`
+          + `&patientSelected=${index}`,
       },
     }));
-
+    console.log(elementList);
     const payload = [{
       title: `${template.header.title} ${examinationDate}`,
       subtitle: template.header.subtitle,
@@ -71,7 +77,7 @@ class ReservationTemplateBuiler {
    * @param {Object} rawData
    * @returns {Promise<String>}
    */
-  async buildConfirminationMessage(rawData) {
+  async buildConfirmationMessage(rawData) {
     const { patientName, doctorName, reservationTime } = rawData;
     const template = await this.templateProvider.findByType(this.type);
 
