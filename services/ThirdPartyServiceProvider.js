@@ -1,5 +1,7 @@
 const { asClass, asValue, asFunction } = require('awilix');
+const { GraphQLSchema } = require('graphql');
 const { RedisPubSub } = require('graphql-redis-subscriptions');
+const kue = require('kue');
 const Redis = require('ioredis');
 const winston = require('./winston');
 const Bcrypt = require('./bcrypt');
@@ -23,11 +25,30 @@ class ThirdPartyServiceProvider extends ServiceProvider {
       subscriber: new Redis(config.redis),
     });
     const db = (await mongodb(config)).db('simple_db');
+    const minioClient = minio(config);
+    const loggingQueue = kue.createQueue({ redis: config.redis });
+    const winstonLogger = winston(minioClient, config);
+    loggingQueue.process('logging', (job, done) => {
+      winstonLogger.log(job.data);
+      done();
+    });
     this.container.register({
       db: asValue(db),
       pubsub: asValue(pubsub),
-      minio: asFunction(minio).singleton(),
-      logger: asFunction(() => ({ log: () => {} })).singleton(),
+      minio: asValue(minioClient),
+      logger: asFunction(() => ({
+        log: (logData) => {
+          const clonedData = { level: logData.level, message: { ...logData.message } };
+          if (clonedData.message && (clonedData.message.schema instanceof GraphQLSchema)) {
+            delete clonedData.message.schema;
+          }
+          loggingQueue.create('logging', clonedData).save((err) => {
+            if (err) {
+              console.log(err);
+            }
+          });
+        },
+      })).singleton(),
     });
   }
 }

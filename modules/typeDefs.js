@@ -21,6 +21,11 @@ const baseTypeDefs = gql`
     etag: String
   }
 
+  input DefaultPaginationInput {
+    skip: Int = 0
+    limit: Int = 10
+  }
+
   interface Paginatable {
     hasNext: Boolean
     total: Int

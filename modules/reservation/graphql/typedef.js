@@ -1,68 +1,71 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
-    input bookingOptionsInput {
-      doctor: ID!,
-      time: Float!,
-    }
-
-    input ReservationInput {
-      patient: String,
-      bookingOptions: [bookingOptionsInput!]!
-    }
-
-    type bookingOptions {
-      doctor: ID!,
-      time: Float!,
-    }
-
-    type ReservationRequestPayLoad {
-      patient: ID,
-      bookingOptions: [bookingOptions!]!
-    }
-
-    type ReservationRequest {
-      id: ID!,
-      zaloRecipientId: ID,
-      zaloSenderId: String,
-      source: String,
-      corID: ID,
-      timestamp: String,
-      zaloMessageId: ID,
-      payload: ReservationRequestPayLoad
-    }
-
-    type ReservationContent {
-      zaloPatientId: ID,
-      zaloDoctorId: ID,
-      reservationTime: String
-    }
-    
-    type Reservation {
-      id: ID!,
-      type: String,
-      timestamp: String,
-      corId: ID,
-      content: ReservationContent
-    }
-
-    input ReservationListInput {
-      skip: Int = 0
-      limit: Int = 10
-    }
-
     type ReservationList implements Paginatable {
       items: [Reservation]!
       hasNext: Boolean,
       total: Int,
     }
     
+    type Patient {
+      id: ID,
+      name: String,
+    }
+
+    type Reservation {
+      id: ID!,
+      type: String,
+      timestamp: Float,
+      corId: ID,
+      doctor: User,
+      patient: Patient,
+      time: Float
+    }
+
+    type ReservationRequestList {
+      items: [ReservationRequest]!
+      hasNext: Boolean,
+      total: Int,
+    }
+
+    type ReservationRequest {
+      id: ID!,
+      source: String,
+      corId: ID,
+      timestamp: String,
+      sender: User,
+      messageId: ID,
+      patient: Patient,
+      doctors: [ReservationOption]
+    }
+
+    input ReservationOptionsInput {
+      id: ID!,
+      time: Float!,
+    }
+
+    type ReservationOption {
+      name: String,
+      id: ID,
+      time: Float!,
+    }
+ 
+    input ReservationRequestInput {
+      type: String,
+      patient: String,
+      doctors: [ReservationOptionsInput!]!
+    }
+    
     type Query {
-      reservation: String,
-      reservationList(query: ReservationListInput): ReservationList
+      reservationList(query: DefaultPaginationInput): ReservationList  @isAuthenticated
+      reservationRequestList(query: DefaultPaginationInput): ReservationRequestList @isAuthenticated
     }
 
     type Mutation {
-      createReservationRequest(reservation: ReservationInput!): ReservationRequest  @isAuthenticated
+      createReservationRequest(reservation: ReservationRequestInput!): ReservationRequest @isAuthenticated
+    }
+
+    extend type Subscription  {
+      onReservationConfirmed: Reservation
     }
 `;

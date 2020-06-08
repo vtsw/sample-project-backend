@@ -2,67 +2,71 @@ class ReservationRequest {
   constructor(id) {
     this.data = {
       id,
-      source : null,
-      cleverSenderId: null,
-      zaloRecipientId: null,
-      zaloMessageId: null,
-      zaloSenderId: null,
+      source: null,
+      type: null,
+      sender: {},
+      recipient: {},
       corId: null,
       timestamp: null,
-      payload: {}
-    }
-  }
-
-  get id() {
-    return this.data.id;
+      messageId: null,
+      payload: {},
+    };
   }
 
   set id(value) {
     this.data.id = value;
   }
 
-  get source() {
-    return this.data.source;
+  get id() {
+    return this.data.id;
   }
 
   set source(value) {
     this.data.source = value;
   }
 
-  get zaloRecipientId() {
-    return this.data.zaloRecipientId;
+  get source() {
+    return this.data.source;
   }
 
-  set zaloRecipientId(value) {
-    this.data.zaloRecipientId = value;
+  set type(value) {
+    this.data.type = value;
   }
 
-  get zaloSenderId() {
-    return this.data.zaloSenderId;
+  get type() {
+    return this.data.type;
   }
 
-  set zaloSenderId(value) {
-    this.data.zaloSenderId = value;
+  set messageId(value) {
+    this.data.messageId = value;
   }
 
-  get cleverSenderId() {
-    return this.data.cleverSenderId;
+  get messageId() {
+    return this.data.messageId;
   }
 
-  set cleverSenderId(value) {
-    this.data.cleverSenderId = value;
+  set timestamp(value) {
+    this.data.timestamp = value;
   }
 
   get timestamp() {
-    return this.data.senderId;
+    return this.data.timestamp;
   }
 
-  set zaloMessageId(value) {
-    this.data.zaloMessageId = value;
+  set sender(value) {
+    this.data.sender = value;
   }
 
-  get zaloMessageId() {
-    return this.data.zaloMessageId;
+  get sender() {
+    return this.data.sender;
+  }
+
+  set recipient(value) {
+    this.data.recipient = value;
+  }
+
+  get recipient() {
+    return this.data.recipient;
   }
 
   set corId(value) {
@@ -73,8 +77,12 @@ class ReservationRequest {
     return this.data.corId;
   }
 
-  set timestamp(value) {
-    this.data.timestamp = value;
+  set userId(value) {
+    this.data.userId = value;
+  }
+
+  get userId() {
+    return this.data.userId;
   }
 
   get payload() {

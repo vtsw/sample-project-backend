@@ -1,6 +1,7 @@
 version: '3'
 services:
   web:
+    image: 172.76.10.150:5002/sample-project-backend_web:latest
     build:
       context: .
     command: bash -c "npm run migrate-mongo ; npm run minio-init; node server.js"

@@ -1,4 +1,5 @@
-const { ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED, ZALO_MESSAGE_SENT } = require('../../zaloMessage/events');
+const { ZALO_MESSAGE_CREATED, ZALO_MESSAGE_SENT } = require('../../zaloMessage/events');
+const ZaloIdentifier = require('../ZaloIdentifier');
 
 class OASendListEventHandler {
   constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
@@ -10,23 +11,19 @@ class OASendListEventHandler {
   }
 
   async handle(data) {
+    const zaloId = ZaloIdentifier.factory({
+      zaloIdByOA: data.recipient.id, OAID: data.sender.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
+    });
+
     const [OAUser, interestedUser] = await Promise.all([
       this.userProvider.findByZaloId(data.sender.id),
-      this.zaloInterestedUserProvider.finByOAFollowerId(data.recipient.id),
+      this.zaloInterestedUserProvider.findByZaloIndentifier(zaloId),
     ]);
 
-    if(! OAUser) {
-      throw new Error("OAUser not found !")
-    }
-
-    if(! interestedUser) {
-      throw new Error("interestedUser not found !")
-    }
-    
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: {
-        id: OAUser.id ,
+        id: OAUser.id,
         displayName: OAUser.name,
         avatar: OAUser.image.link,
       },

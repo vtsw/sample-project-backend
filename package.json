@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start:local": "cross-env MONGODB_URL=mongodb://foobar:foobarPassword@localhost:27017/simple_db MINIO_END_POINT=localhost nodemon server.js",
+    "start:local": "cross-env MONGODB_URL=mongodb://foobar:foobarPassword@127.0.0.1:27017/simple_db MINIO_END_POINT=localhost nodemon server.js",
     "test": "jest",
     "migrate-mongo": "migrate-mongo up",
     "migrate-mongo:local": "migrate-mongo up -f migrate-mongo-config.local.js",
@@ -37,15 +37,19 @@
     "graphql-upload": "^10.0.0",
     "ioredis": "^4.16.3",
     "jsonwebtoken": "^8.5.1",
+    "kue": "^0.11.6",
     "lodash": "latest",
     "lodash.get": "^4.4.2",
     "merge-graphql-schemas": "^1.7.6",
     "minio": "^7.0.14",
     "moment": "^2.24.0",
     "mongodb": "^3.5.4",
+    "objectid": "^3.2.1",
     "open": "^7.0.3",
+    "sha.js": "^2.4.11",
     "sharp": "^0.25.2",
     "subscriptions-transport-ws": "^0.9.16",
+    "uuid": "^8.1.0",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.4.2",
     "winston-transport": "^4.3.0"
@@ -69,7 +73,6 @@
     "jest-sinon": "^1.0.4",
     "migrate-mongo": "^7.1.0",
     "node-fetch": "^2.6.0",
-    "sinon": "^9.0.1",
-    "uuid": "^7.0.2"
+    "sinon": "^9.0.1"
   }
 }

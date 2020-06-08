@@ -1,14 +1,11 @@
-const { EXAMINATION } = require('../types');
 const moment = require('moment');
-const { ObjectId } = require('mongodb');
+const ObjectId = require('objectid');
+const { withFilter } = require('apollo-server-express');
+const { RESERVATION_CONFIRM, EXAMINATION } = require('../types.js');
 
 module.exports = {
   Query: {
-    reservation: async (_, { }, { container }) => {
-      return 'reservation';
-    },
-
-    reservationList:  async (_, args, { container, req }) => {
+    reservationList: async (_, args, { container, req }) => {
       const {
         query: {
           limit, skip,
@@ -16,73 +13,115 @@ module.exports = {
       } = args;
 
       const reservationProvider = container.resolve('reservationProvider');
+      return reservationProvider.find({ query: { 'sender.id': ObjectId(req.user.id) }, page: { limit, skip } });
+    },
 
-      return await reservationProvider.find({ query: { }, page: { limit, skip } });
-    }
+    reservationRequestList: async (_, args, { container, req }) => {
+      const {
+        query: {
+          limit, skip,
+        },
+      } = args;
+
+      const reservationRequestProvider = container.resolve('reservationRequestProvider');
+      return reservationRequestProvider.find({ query: { 'sender.id': ObjectId(req.user.id) }, page: { limit, skip } });
+    },
   },
 
   Mutation: {
     createReservationRequest: async (_, { reservation }, { container, req }) => {
       const loggedUser = req.user;
-
-      const [zaloMessageSender, reservationTemplateProvider, reservationRequestProvider, userProvider] = [
+      const [
+        zaloMessageSender, reservationRequestProvider, userProvider,
+        zaloInterestedUserProvider, templateBuilder] = [
         container.resolve('zaloMessageSender'),
-        container.resolve('reservationTemplateProvider'),
         container.resolve('reservationRequestProvider'),
         container.resolve('userProvider'),
+        container.resolve('zaloInterestedUserProvider'),
+        container.resolve('templateBuilder'),
       ];
 
-      const zaloUser = await userProvider.findById(loggedUser.id);
-      if (!zaloUser) console.log('cannot find user by ID', loggedUser.id);
-      console.log(zaloUser);
-      const { bookingOptions, patient } = reservation;
-      const examinationDate = moment(bookingOptions[0].time).format('YYYY-MM-DD');
-      let examinationTemplate = await reservationTemplateProvider.findByType(EXAMINATION);
+      const { doctors, patient, type } = reservation;
+      const doctorIds = doctors.map((doctor) => doctor.id);
+      const infoDoctors = await userProvider.findByIds(doctorIds);
+      const [sender, recipient] = await Promise.all([
+        userProvider.findById(loggedUser.id),
+        zaloInterestedUserProvider.findById(patient),
+      ]);
+
+      const { oaId } = sender.zaloOA;
+      const zaloRecipientId = recipient.followings.find((followingItem) => followingItem.zaloId.OAID === oaId).zaloId.data.zaloIdByOA;
+      const mappedDoctors = doctors.map((itm) => ({
+        ...infoDoctors.find((item) => (item.data.id === itm.id) && item),
+        ...itm,
+      }));
+
+      const doctorOptions = mappedDoctors.map((o) => ({
+        time: o.time,
+        name: o.data.name,
+      }));
 
       const corId = ObjectId();
-      const elementList = bookingOptions.map((bookingOption) => {
-        const examTime = moment(bookingOption.time).format('HH:mm');
-        return {
-          title: `${examinationTemplate.element.title} ${bookingOption.doctor} ${examinationTemplate.element.time} ${examTime}`,
-          image_url: examinationTemplate.element.image_url,
-          default_action: {
-            type: examinationTemplate.element.default_action.type,
-            url: `https://cleverservice.ngrok.io/api/zalo/reservation/confirmation?type=examination&zaloPatientId=${patient}&zaloDoctorId=${bookingOption.doctor}&time=${bookingOption.time}&corId=${corId}`
-          }
-        }
-      });
-
-      const elements = [{
-        title: `${examinationTemplate.header.title} ${examinationDate}`,
-        subtitle: examinationTemplate.header.subtitle,
-        image_url: examinationTemplate.header.image_url
-      }, ...elementList];
-
-      let message = examinationTemplate.message;
-      message.attachment.payload.elements = elements;
-
-      const zaLoResponse = await zaloMessageSender.sendListElement(message, { zaloId: patient }, zaloUser);
+      const message = await templateBuilder.register(EXAMINATION).build({ doctorOptions, corId });
+      const zaLoResponse = await zaloMessageSender.sendListElement(message, recipient, sender);
 
       if (zaLoResponse.error) {
-        console.log('Sender message fail');
         throw new Error(`Zalo Response: ${zaLoResponse.message}`);
       }
 
-      const zaloMessageId = zaLoResponse.data.message_id;
-
       const reservationRequest = {
-        source: "zalo",
-        zaloMessageId: zaloMessageId,
-        zaloRecipientId: patient,
-        zaloSenderId: "2257117504759790782",
-        corId: corId,
-        cleverSenderId: ObjectId(req.user.id),
-        payload: reservation,
+        source: 'zalo',
+        type: type || EXAMINATION,
+        sender: {
+          id: sender.data.id,
+          name: sender.name,
+          oaId,
+        },
+        recipient: {
+          id: recipient.data.id,
+          name: recipient.displayName,
+          zaloId: zaloRecipientId,
+        },
+        messageId: zaLoResponse.data.message_id,
+        corId,
+        payload: {
+          patient: ObjectId(patient),
+          doctors,
+        },
         timestamp: moment().valueOf(),
-      }
-
-      const result = await reservationRequestProvider.create(reservationRequest);
-      return result;
+      };
+      return reservationRequestProvider.create(reservationRequest);
     },
-  }
+  },
+  Subscription: {
+    onReservationConfirmed: {
+      subscribe: withFilter(
+        (_, __, { container }) => container.resolve('pubsub').asyncIterator(RESERVATION_CONFIRM),
+        ({ onReservationConfirmed }, { filter }, { loggedUser }) => {
+          if (onReservationConfirmed.sender.id === loggedUser.id) {
+            return true;
+          }
+        },
+      ),
+    },
+  },
+  ReservationRequest: {
+    // doctor: async (reservation, args, { dataloader, container }) => container.resolve('userProvider').findById(reservation.doctor.userId),
+    doctors: async (reservation, args, { container }) => {
+      const { doctors } = reservation.data.payload;
+      const userProvider = container.resolve('userProvider');
+      return doctors.map(async (doctor) => {
+        const doctorInfo = await userProvider.findById(doctor.id);
+        return {
+          id: doctorInfo.data.id,
+          name: doctorInfo.data.name,
+          time: doctor.time,
+        };
+      });
+    },
+    patient: (reservation) => ({
+      id: reservation.recipient.id,
+      name: reservation.recipient.name,
+    }),
+  },
 };

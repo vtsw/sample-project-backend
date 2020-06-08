@@ -1,4 +1,5 @@
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
+const ZaloIdentifier = require('../ZaloIdentifier');
 
 class OASendTextEventHandler {
   constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
@@ -15,21 +16,13 @@ class OASendTextEventHandler {
       return message;
     }
 
-    let OAUser, interestedUser;
-    if(data.user_id_by_app) {
-      [OAUser, interestedUser] = await Promise.all([
-        this.userProvider.findByZaloId(data.sender.id),
-        this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
-      ]);
-    }
-
-    if(! data.user_id_by_app) {
-      [OAUser, interestedUser] = await Promise.all([
-        this.userProvider.findByZaloId(data.sender.id),
-        this.zaloInterestedUserProvider.finByOAFollowerId(data.recipient.id),
-      ]);
-    }
-
+    const zaloId = ZaloIdentifier.factory({
+      zaloIdByOA: data.recipient.id, OAID: data.sender.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
+    });
+    const [OAUser, interestedUser] = await Promise.all([
+      this.userProvider.findByZaloId(data.sender.id),
+      this.zaloInterestedUserProvider.findByZaloId(zaloId),
+    ]);
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: {
@@ -46,7 +39,6 @@ class OASendTextEventHandler {
       zaloMessageId: data.message.msg_id,
       type: 'Text',
     });
-    
     await Promise.all([
       this.pubsub.publish(ZALO_MESSAGE_SENT, { onZaloMessageSent: createdMessage.toJson() }),
       this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),

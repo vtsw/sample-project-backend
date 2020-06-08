@@ -1,9 +1,10 @@
 const { asClass } = require('awilix');
-const fetch = require('node-fetch');
 const ServiceProvider = require('../../ServiceProvider');
 const ReservationProvider = require('../reservation/ReservationProvider');
-const ReservationTemplateProvider  = require('../reservation/ReservationTemplateProvider');
+const ReservationTemplateProvider = require('../reservation/ReservationTemplateProvider');
 const ReservationRequestProvider = require('../reservation/ReservationRequestProvider');
+const TemplateBuilder = require('../reservation/ReservationTemplateBuiler');
+
 class ReservationServiceProvider extends ServiceProvider {
   register() {
     this.container.register('reservationProvider', asClass(ReservationProvider)
@@ -15,10 +16,11 @@ class ReservationServiceProvider extends ServiceProvider {
     this.container.register('reservationRequestProvider', asClass(ReservationRequestProvider)
       .inject((injectedContainer) => ({ reservationRequest: injectedContainer.resolve('db').collection('reservationRequest') }))
       .singleton());
-  }
-
-  async boot() {
-    
+    this.container.register('templateBuilder', asClass(TemplateBuilder)
+      .inject((injectedContainer) => ({
+        config: injectedContainer.resolve('config'),
+        templateProvider: injectedContainer.resolve('reservationTemplateProvider') }))
+      .singleton());
   }
 }
 

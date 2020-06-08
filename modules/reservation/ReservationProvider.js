@@ -1,5 +1,4 @@
 const { ObjectId } = require('mongodb');
-const moment = require('moment');
 const Reservation = require('./Reservation');
 
 class ReservationProvider {
@@ -10,23 +9,49 @@ class ReservationProvider {
   constructor(reservation) {
     this.reservation = reservation;
   }
+
   /**
-   *
-   * @param {Object} reservation
+   * @param {Object} rawData
    * @returns {Promise<Reservation>}
    */
-  async create(reservation) {
-    const inserted = await this.reservation.insertOne(reservation);
+  async create(rawData) {
+    const documentToInsert = ReservationProvider.convertDataToMongodbDocument(rawData);
+    const inserted = await this.reservation.insertOne(documentToInsert);
     return ReservationProvider.factory(inserted.ops[0]);
   }
 
   /**
- *
+   * @param {Object} rawData
+   * @returns {null|reservation}
+   */
+
+  static convertDataToMongodbDocument(rawData) {
+    return Object.assign(rawData, {
+      corId: ObjectId(rawData.corId),
+      sender: {
+        id: ObjectId(rawData.sender.id),
+        name: rawData.sender.name,
+        oaId: rawData.sender.oaId,
+      },
+      doctor: {
+        id: ObjectId(rawData.doctor.id),
+        name: rawData.doctor.name,
+        oaId: rawData.doctor.oaId,
+      },
+      patient: {
+        id: ObjectId(rawData.patient.id),
+        name: rawData.patient.name,
+        zaloId: rawData.patient.zaloId,
+      },
+    });
+  }
+
+  /**
  * @param {Object} condition
  * @returns {Promise<*>}
  */
   async find(condition = { page: { limit: 10, skip: 0 }, query: {} }) {
-    let { query } = condition;
+    const { query } = condition;
     const items = await this.reservation
       .find(query)
       .limit(condition.page.limit + 1)
@@ -35,7 +60,7 @@ class ReservationProvider {
 
     const hasNext = (items.length === condition.page.limit + 1);
 
-     if (hasNext) {
+    if (hasNext) {
       items.pop();
     }
 
@@ -46,14 +71,12 @@ class ReservationProvider {
     };
   }
 
-
   /**
    *
    * @param {Object} rawData
    * @returns {null|Reservation}
    */
   static factory(rawData) {
-
     if (!rawData) {
       return null;
     }
@@ -68,9 +91,13 @@ class ReservationProvider {
     });
     const reservation = new Reservation(data._id || data.id);
     reservation.type = data.type;
-    reservation.timestamp = data.timestamp;
     reservation.corId = data.corId;
-    reservation.content = data.content;
+    reservation.sender = data.sender;
+    reservation.userId = data.userId;
+    reservation.doctor = data.doctor;
+    reservation.patient = data.patient;
+    reservation.timestamp = data.timestamp;
+    reservation.time = data.time;
     return reservation;
   }
 }
