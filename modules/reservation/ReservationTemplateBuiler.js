@@ -1,6 +1,6 @@
 // const { ObjectId } = require('mongodb');
 const moment = require('moment');
-const { EXAMINATION, CONFIRMINATION } = require('./types');
+const { EXAMINATION, CONFIRMATION } = require('./types');
 
 class ReservationTemplateBuiler {
   /**
@@ -30,7 +30,7 @@ class ReservationTemplateBuiler {
       case EXAMINATION:
         message = this.buildExaminationMessage(rawData);
         break;
-      case CONFIRMINATION:
+      case CONFIRMATION:
         message = this.buildConfirminationMessage(rawData);
         break;
       default:
@@ -45,7 +45,7 @@ class ReservationTemplateBuiler {
    */
   async buildExaminationMessage(rawData) {
     const { doctorOptions, corId } = rawData;
-    const template = await this.templateProvider.findByType(this.type);
+    const template = await this.templateProvider.findByType(this.type === null ? 'EXAMINATION' : this.type);
     const { message } = template;
     const examinationDate = moment(doctorOptions[0].time).format('YYYY-MM-DD');
     const elementList = doctorOptions.map((doctor, index) => ({
