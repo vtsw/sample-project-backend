@@ -11,6 +11,7 @@ module.exports = gql`
     thumbnail: String
     description: String
     url: String
+    title: String
     size: String
     name: String
     type: String

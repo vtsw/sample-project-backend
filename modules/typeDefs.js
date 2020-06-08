@@ -5,6 +5,7 @@ const UserTypeDefs = require('./user/graphql/typedef');
 const MessageTypeDefs = require('./message/graphql/typedef');
 const ZaloMessageTypeDefs = require('./zaloMessage/graphql/typedef');
 const ZaloTypeDefs = require('./zalo/graphql/typedef');
+const ZaloReservationTypeDefs = require('./reservation/graphql/typedef');
 
 const baseTypeDefs = gql`
 
@@ -18,6 +19,11 @@ const baseTypeDefs = gql`
     encoding: String
     link: String!
     etag: String
+  }
+
+  input DefaultPaginationInput {
+    skip: Int = 0
+    limit: Int = 10
   }
 
   interface Paginatable {
@@ -44,5 +50,5 @@ const baseTypeDefs = gql`
   }
 `;
 
-const typeDefs = [baseTypeDefs, UserTypeDefs, MessageTypeDefs, ZaloMessageTypeDefs, ZaloTypeDefs];
+const typeDefs = [baseTypeDefs, UserTypeDefs, MessageTypeDefs, ZaloMessageTypeDefs, ZaloTypeDefs, ZaloReservationTypeDefs];
 module.exports = mergeTypes(typeDefs, { all: true });

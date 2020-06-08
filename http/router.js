@@ -1,5 +1,7 @@
 const { Router } = require('express');
+
 const { isAuthenticated } = require('./middleware');
+const Reservation = require('./reservation');
 
 const router = Router();
 
@@ -26,11 +28,13 @@ router.post('/zalo/webhook', (req, res) => {
   if (req.body.event_name) {
     const handler = container.resolve('zaloMessageHandlerProvider')
       .provide(req.body.event_name);
+
     handler.handle(req.body);
   }
   res.status(200);
   res.send('ok');
 });
 
+router.use(Reservation.router);
 
 module.exports = router;

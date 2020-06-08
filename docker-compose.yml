@@ -1,12 +1,14 @@
 version: '3'
 services:
   web:
+    image: 172.76.10.150:5002/sample-project-backend_web:latest
     build:
       context: .
     command: bash -c "npm run migrate-mongo ; npm run minio-init; node server.js"
     ports:
       - "4000:4000"
       - "4001:4001"
+      - "80:80"
     environment:
       MINIO_ACCESS_KEY: "EGN382IMEPNND2JB46PQ"
       MINIO_SECRET_KEY: "5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM"

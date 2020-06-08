@@ -1,4 +1,5 @@
 const { ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
+const ZaloIdentifier = require('../ZaloIdentifier');
 
 class UserSendTextEventHandler {
   constructor(zaloMessageProvider, pubsub, userProvider, zaloInterestedUserProvider) {
@@ -14,10 +15,15 @@ class UserSendTextEventHandler {
     if (message) {
       return message;
     }
+    const zaloId = ZaloIdentifier.factory({
+      zaloIdByOA: data.sender.id, OAID: data.recipient.id, appId: data.app_id, zaloIdByApp: data.user_id_by_app,
+    });
     const [oaUser, interestedUser] = await Promise.all([
       this.userProvider.findByZaloId(data.recipient.id),
-      this.zaloInterestedUserProvider.findByZaloId(data.user_id_by_app),
+      this.zaloInterestedUserProvider.findByZaloId(zaloId),
     ]);
+
+    // console.log(interestedUser);
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       to: {
@@ -34,6 +40,7 @@ class UserSendTextEventHandler {
       zaloMessageId: data.message.msg_id,
       type: 'Text',
     });
+
     await Promise.all([
       this.pubsub.publish(ZALO_MESSAGE_CREATED, { onZaloMessageCreated: createdMessage.toJson() }),
       this.pubsub.publish(ZALO_MESSAGE_RECEIVED, { onZaloMessageReceived: createdMessage.toJson() }),
