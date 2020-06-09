@@ -9,7 +9,8 @@ class UserSendImageEventHandler {
     this.pubsub = pubsub;
   }
 
-  async handle(data) {
+  async handle(req) {
+    const { headers, body: data } = req;
     const message = await this.zaloMessageProvider.findOne({ zaloMessageId: data.message.msg_id });
     if (message) {
       return message;
@@ -24,6 +25,7 @@ class UserSendImageEventHandler {
         },
       }),
     ]);
+    this.zaloAuthenticator.verifySignature(headers['x-zevent-signature'], data, OAUser);
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       to: {

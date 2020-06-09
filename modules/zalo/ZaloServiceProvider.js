@@ -1,5 +1,6 @@
 const { asClass } = require('awilix');
 const fetch = require('node-fetch');
+const shajs = require('sha.js');
 const ServiceProvider = require('../../ServiceProvider');
 const ZaloMessageHandlerProvider = require('../zalo/ZaloEventHandlerProvider');
 const UserSendTextEventHandler = require('../zalo/zaloEventHandlers/UserSendTextEventHandler');
@@ -13,6 +14,7 @@ const UserSendFileEventHandler = require('../zalo/zaloEventHandlers/UserSendFile
 const UserShareInfoEventHandler = require('../zalo/zaloEventHandlers/UserShareInfoEventHandler');
 const ZaloMessageSender = require('./ZaloMessageSender');
 const ZaloUploader = require('../zalo/ZaloUploader');
+const ZaloAuthenticator = require('./ZaloAuthenticator');
 
 class ZaloServiceProvider extends ServiceProvider {
   register() {
@@ -37,6 +39,9 @@ class ZaloServiceProvider extends ServiceProvider {
     this.container.register('zaloUploader', asClass(ZaloUploader).inject((injectedContainer) => ({
       request: fetch,
       config: injectedContainer.resolve('config'),
+    })).singleton());
+    this.container.register('zaloAuthenticator', asClass(ZaloAuthenticator).inject(() => ({
+      sha: shajs,
     })).singleton());
   }
 

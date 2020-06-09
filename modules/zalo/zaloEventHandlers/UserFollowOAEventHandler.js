@@ -7,23 +7,26 @@ class UserFollowOAEventHandler {
    * @param config
    * @param zaloMessageSender
    */
-  constructor(zaloSAProvider, request, zaloOAProvider, config, zaloMessageSender) {
+  constructor(zaloSAProvider, request, zaloOAProvider, config, zaloMessageSender, zaloAuthenticator) {
     this.zaloSAProvider = zaloSAProvider;
     this.request = request;
     this.zaloOAProvider = zaloOAProvider;
     this.config = config;
     this.zaloMessageSender = zaloMessageSender;
+    this.zaloAuthenticator = zaloAuthenticator;
   }
 
   /**
    *
-   * @param data
+   * @param req
    * @returns {Promise<*>}
    */
-  async handle(data) {
+  async handle(req) {
+    const { headers, body: data } = req;
     const zaloOA = await this.zaloOAProvider.findOne({ oaId: data.oa_id });
     const { credential: { accessToken } } = zaloOA;
     const { zaloApi: { officialAccount: { getInterestedUserProfile } } } = this.config;
+    this.zaloAuthenticator.verifySignature(headers['x-zevent-signature'], data, zaloOA);
 
     const userInfo = await this.request(`${getInterestedUserProfile}?access_token=${accessToken}&data={"user_id":"${data.follower.id}"}`,
       {

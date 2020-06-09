@@ -1,14 +1,16 @@
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
 
 class OASendFileEventHandler {
-  constructor(zaloSAProvider, zaloOAProvider, zaloMessageProvider, pubsub) {
+  constructor(zaloSAProvider, zaloOAProvider, zaloMessageProvider, zaloAuthenticator, pubsub) {
     this.zaloSAProvider = zaloSAProvider;
     this.zaloOAProvider = zaloOAProvider;
     this.zaloMessageProvider = zaloMessageProvider;
     this.pubsub = pubsub;
+    this.zaloAuthenticator = zaloAuthenticator;
   }
 
-  async handle(data) {
+  async handle(req) {
+    const { headers, body: data } = req;
     const message = await this.zaloMessageProvider.findOne({ zaloMessageId: data.message.msg_id });
     if (message) {
       return message;
@@ -24,7 +26,7 @@ class OASendFileEventHandler {
         },
       }),
     ]);
-
+    this.zaloAuthenticator.verifySignature(headers['x-zevent-signature'], data, OAUser);
     const createdMessage = await this.zaloMessageProvider.create({
       timestamp: data.timestamp,
       from: {

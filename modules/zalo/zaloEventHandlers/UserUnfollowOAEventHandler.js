@@ -11,10 +11,11 @@ class UserUnfollowOAEventHandler {
 
   /**
    *
-   * @param data
+   * @param req
    * @returns {Promise<*>}
    */
-  async handle(data) {
+  async handle(req) {
+    const { headers, body: data } = req;
     const [OAUser, zaloSA] = await Promise.all([
       this.zaloOAProvider.findOne({ oaId: data.oa_id }),
       this.zaloSAProvider.findOne({
@@ -25,7 +26,7 @@ class UserUnfollowOAEventHandler {
         },
       }),
     ]);
-
+    this.zaloAuthenticator.verifySignature(headers['x-zevent-signature'], data, OAUser);
     zaloSA.getFollowingByCleverOAId(OAUser._id);
     zaloSA.followings.id(zaloSA.getFollowingByCleverOAId(OAUser._id)._id).remove();
     zaloSA.save();
