@@ -27,15 +27,25 @@ module.exports = {
       await container.resolve('zaloOAProvider').deleteById(id);
       return container.resolve('zaloOAProvider').findOneWithDeleted({ _id: id });
     },
+    // eslint-disable-next-line consistent-return
     createZaloOA: async (_, { zaloOA }, { container }) => {
       const { zaloApi: { officialAccount: { getOAInfo } } } = container.resolve('config');
-      const oa = await fetch(`${getOAInfo}?access_token=${zaloOA.accessToken}`).then((response) => response.json());
-      return container.resolve('zaloOAProvider').create(pickBy({
-        ...oa.data,
-        oaId: zaloOA.oaId, // @Todo oaId from dashboard is difference with the one is getted from api https://openapi.zalo.me/v2.0/oa/getoa
-        oa_id: null,
-        credential: zaloOA,
-      }, identity));
+      const { accessToken } = zaloOA;
+      if (accessToken) {
+        const oa = await fetch(`${getOAInfo}?access_token=${zaloOA.accessToken}`).then((response) => response.json());
+        return container.resolve('zaloOAProvider').create(pickBy({
+          ...oa.data,
+          oaId: zaloOA.oaId, // @Todo oaId from dashboard is difference with the one is getted from api https://openapi.zalo.me/v2.0/oa/getoa
+          credential: zaloOA,
+        }, identity));
+      }
+
+      if (!accessToken) {
+        return container.resolve('zaloOAProvider').create(pickBy({
+          oaId: zaloOA.oaId, // @Todo oaId from dashboard is difference with the one is getted from api https://openapi.zalo.me/v2.0/oa/getoa
+          credential: zaloOA,
+        }, identity));
+      }
     },
     updateZaloOA: async (_, { zaloOA }, { container }) => container.resolve('zaloOAProvider').findByIdAndUpdate(zaloOA.id, {
       credential: zaloOA,
