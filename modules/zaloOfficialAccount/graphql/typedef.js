@@ -2,7 +2,7 @@ const gql = require('graphql-tag');
 
 module.exports = gql`
   input CreateZaloOAInput {
-    accessToken: String!
+    accessToken: String
     oaId: String!
     oaSecretKey: String!
     appId: String!
