@@ -40,12 +40,10 @@ module.exports = {
         }, identity));
       }
 
-      if (!accessToken) {
-        return container.resolve('zaloOAProvider').create(pickBy({
-          oaId: zaloOA.oaId, // @Todo oaId from dashboard is difference with the one is getted from api https://openapi.zalo.me/v2.0/oa/getoa
-          credential: zaloOA,
-        }, identity));
-      }
+      return container.resolve('zaloOAProvider').create(pickBy({
+        oaId: zaloOA.oaId, // @Todo oaId from dashboard is difference with the one is getted from api https://openapi.zalo.me/v2.0/oa/getoa
+        credential: zaloOA,
+      }, identity));
     },
     updateZaloOA: async (_, { zaloOA }, { container }) => container.resolve('zaloOAProvider').findByIdAndUpdate(zaloOA.id, {
       credential: zaloOA,
