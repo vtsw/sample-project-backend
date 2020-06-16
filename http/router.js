@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const fetch = require('node-fetch');
 const { isAuthenticated } = require('./middleware');
 
 const router = Router();
@@ -28,6 +29,22 @@ router.post('/zalo/webhook', (req, res) => {
       .provide(req.body.event_name);
     handler.handle(req);
   }
+  res.status(200);
+  res.send('ok');
+});
+
+router.get('/zalo/callback', async (req, res) => {
+  const { container } = req;
+  const { oaId } = req.query;
+  const accessToken = req.query.access_token;
+  const { zaloApi: { officialAccount: { getOAInfo } } } = container.resolve('config');
+  const oa = await fetch(`${getOAInfo}?access_token=${accessToken}`).then((response) => response.json());
+  container.resolve('zaloOAProvider').findOneAndUpdate({ oaId },
+    {
+      ...oa.data,
+      'credential.accessToken': accessToken,
+    });
+
   res.status(200);
   res.send('ok');
 });
