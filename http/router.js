@@ -39,7 +39,7 @@ router.get('/zalo/callback', async (req, res) => {
   const accessToken = req.query.access_token;
   const { zaloApi: { officialAccount: { getOAInfo } } } = container.resolve('config');
   const oa = await fetch(`${getOAInfo}?access_token=${accessToken}`).then((response) => response.json());
-  container.resolve('zaloOAProvider').findOneAndUpdate({ oaId },
+  await container.resolve('zaloOAProvider').findOneAndUpdate({ oaId },
     {
       ...oa.data,
       'credential.accessToken': accessToken,
