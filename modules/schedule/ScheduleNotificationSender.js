@@ -6,7 +6,7 @@ class ScheduleNotificationSender {
     this.scheduleMessageProvider = scheduleMessageProvider;
   }
 
-  static run() {
+  run() {
     console.log('12321');
   }
 }
