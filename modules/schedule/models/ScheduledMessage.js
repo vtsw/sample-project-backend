@@ -2,7 +2,7 @@ const { ObjectId, Schema } = require('mongoose');
 const mongooseDelete = require('mongoose-delete');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const ScheduledMessage = new Schema({
+const ScheduleMessage = new Schema({
   id: ObjectId,
   from: {
     id: ObjectId,
@@ -22,8 +22,8 @@ const ScheduledMessage = new Schema({
   },
 });
 
-ScheduledMessage.plugin(mongooseDelete, { overrideMethods: true, deletedAt: true, use$neOperator: false });
-ScheduledMessage.plugin(mongoosePaginate);
+ScheduleMessage.plugin(mongooseDelete, { overrideMethods: true, deletedAt: true, use$neOperator: false });
+ScheduleMessage.plugin(mongoosePaginate);
 
 
-module.exports = ScheduledMessage;
+module.exports = ScheduleMessage;
