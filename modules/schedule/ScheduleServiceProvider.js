@@ -6,12 +6,12 @@ const ScheduleNotificationSender = require('./ScheduleNotificationSender');
 class ScheduleServiceProvider extends ServiceProvider {
   register() {
     const { container } = this;
-    container.register('scheduleMessageProvider', asFunction(() => container.resolve('db')
-      .model('ScheduleMessage', ScheduleMessage, 'ScheduleMessages'))
+    container.register('scheduleMessagesProvider', asFunction(() => container.resolve('db')
+      .model('ScheduleMessage', ScheduleMessage, 'scheduleMessages'))
       .singleton());
     container.register('scheduleNotificationSender', asClass(ScheduleNotificationSender).inject((injectedContainer) => ({
       zaloMessageSender: injectedContainer.resolve('zaloMessageSender'),
-      scheduleMessageProvider: injectedContainer.resolve('scheduleMessageProvider'),
+      scheduleMessagesProvider: injectedContainer.resolve('scheduleMessagesProvider'),
     })).singleton());
   }
 }

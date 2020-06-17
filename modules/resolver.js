@@ -9,7 +9,7 @@ const baseResolver = {
   Mutation: {
     hello: (_, { name }, { container }) => {
       const scheduleNotificationSender = container.resolve('scheduleNotificationSender');
-      scheduleNotificationSender.run();
+      scheduleNotificationSender.sendScheduleNotification();
       return name || 'world';
     },
   },

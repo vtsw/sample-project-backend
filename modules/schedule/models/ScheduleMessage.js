@@ -14,12 +14,12 @@ const ScheduleMessage = new Schema({
     name: String,
     avatar: String,
   },
-  createdAt: Date,
-  time: Date,
   message: {
-    type: String,
+    type: { type: String },
     content: {},
   },
+  createdAt: Date,
+  time: Number,
 });
 
 ScheduleMessage.plugin(mongooseDelete, { overrideMethods: true, deletedAt: true, use$neOperator: false });
