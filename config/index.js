@@ -43,6 +43,7 @@ module.exports = {
     require('../modules/zaloOfficialAccount/ZaloOfficialAccountServiceProvider'),
     require('../modules/zaloSocialAccount/ZaloSocialAccountServiceProvider'),
     require('../modules/schedule/ScheduleServiceProvider'),
+    require('../services/CronManageServiceProvider'),
   ],
   redis: {
     host: process.env.REDIS_HOST || 'localhost',

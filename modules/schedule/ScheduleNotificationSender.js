@@ -11,20 +11,22 @@ class ScheduleNotificationSender {
   async sendScheduleNotification() {
     const now = moment().unix(); const nextDay = moment().add(1, 'days').unix();
 
-    const schedule = await this.scheduleMessagesProvider.find({ time: { $gte: now, $lte: nextDay } });
+    const schedules = await this.scheduleMessagesProvider.find({ time: { $gte: now, $lte: nextDay } });
 
-    const [sampleSchedule] = schedule;
+    schedules.map(async (schedule) => {
+      const { from: { id: senderId }, to: { id: recipientId }, message: { content: messageContent } } = schedule;
 
-    const { from: { id: senderId }, to: { id: recipientId }, message: { content: messageContent } } = sampleSchedule;
+      const [sender, recipient] = await Promise.all([
+        this.zaloOAProvider.findById(senderId),
+        this.zaloSAProvider.findById(recipientId),
+      ]);
 
-    const [sender, recipient] = await Promise.all([
-      this.zaloOAProvider.findById(senderId),
-      this.zaloSAProvider.findById(recipientId),
-    ]);
+      await this.zaloMessageSender.sendText({ text: messageContent }, recipient, sender);
+    });
+  }
 
-    await this.zaloMessageSender.sendText({ text: messageContent }, recipient, sender);
-
-    return schedule;
+  start() {
+    return this.sendScheduleNotification();
   }
 }
 
