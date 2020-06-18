@@ -12,6 +12,8 @@ class ScheduleServiceProvider extends ServiceProvider {
     container.register('scheduleNotificationSender', asClass(ScheduleNotificationSender).inject((injectedContainer) => ({
       zaloMessageSender: injectedContainer.resolve('zaloMessageSender'),
       scheduleMessagesProvider: injectedContainer.resolve('scheduleMessagesProvider'),
+      zaloOAProvider: injectedContainer.resolve('zaloOAProvider'),
+      zaloSAProvider: injectedContainer.resolve('zaloSAProvider'),
     })).singleton());
   }
 }
