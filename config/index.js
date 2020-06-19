@@ -64,5 +64,8 @@ module.exports = {
   },
   zaloWebhook: {
     ignoreEvents: []
+  },
+  cron: {
+    zaloScheduleInterval: process.env.ZALO_SCHEDULE_MESSAGE_SEND_INTERVAL || '0 * * * * *',
   }
 };

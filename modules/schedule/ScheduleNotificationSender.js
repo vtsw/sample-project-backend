@@ -9,8 +9,7 @@ class ScheduleNotificationSender {
   }
 
   async sendScheduleNotification() {
-    const now = moment().unix(); const nextDay = moment().add(1, 'days').unix();
-
+    const now = moment().unix(); const nextDay = moment().add(8, 'hours').unix();
     const schedules = await this.scheduleMessagesProvider.find({ time: { $gte: now, $lte: nextDay } });
 
     schedules.map(async (schedule) => {
