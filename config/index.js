@@ -66,6 +66,6 @@ module.exports = {
     ignoreEvents: []
   },
   cron: {
-    zaloScheduleInterval: process.env.ZALO_SCHEDULE_MESSAGE_SEND_INTERVAL || '0 * * * * *',
+    zaloScheduleInterval: '0 0 * * * *',
   }
 };

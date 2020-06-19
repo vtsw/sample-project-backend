@@ -8,11 +8,10 @@ const baseResolver = {
   Upload: GraphQLUpload,
   Mutation: {
     // eslint-disable-next-line arrow-body-style
-    hello: (_, { name }) => {
+    hello: (_, { name }, { container }) => {
+      const scheduleNotificationSender = container.resolve('scheduleNotificationSender');
+      scheduleNotificationSender.sendScheduleNotification();
       return name || 'world';
-
-      // const scheduleNotificationSender = container.resolve('scheduleNotificationSender');
-      // scheduleNotificationSender.sendScheduleNotification();
     },
   },
   Query: {

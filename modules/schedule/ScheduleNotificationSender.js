@@ -13,14 +13,39 @@ class ScheduleNotificationSender {
     const schedules = await this.scheduleMessagesProvider.find({ time: { $gte: now, $lte: nextDay } });
 
     schedules.map(async (schedule) => {
-      const { from: { id: senderId }, to: { id: recipientId }, message: { content: messageContent } } = schedule;
+      const {
+        _id: scheduleId, from: { id: senderId }, to: { id: recipientId }, message: { content: messageContent },
+      } = schedule;
 
       const [sender, recipient] = await Promise.all([
         this.zaloOAProvider.findById(senderId),
         this.zaloSAProvider.findById(recipientId),
       ]);
 
-      await this.zaloMessageSender.sendText({ text: messageContent }, recipient, sender);
+      const zaloResponse = await this.zaloMessageSender.sendText({ text: messageContent }, recipient, sender);
+
+      const { message: zaloResponseStatus } = zaloResponse;
+
+      if (zaloResponseStatus === 'Success') {
+        await this.scheduleMessagesProvider.findByIdAndUpdate(scheduleId, { status: 'success' });
+      }
+
+      if (zaloResponseStatus !== 'Success') {
+        const scheduleSendFailed = await this.scheduleMessagesProvider.findById(scheduleId);
+        const { retryCount } = scheduleSendFailed;
+
+        if (!retryCount) {
+          await this.scheduleMessagesProvider.findByIdAndUpdate(scheduleId, { status: 'retry', retryCount: 1 });
+        }
+
+        if (retryCount < 3) {
+          await this.scheduleMessagesProvider.findByIdAndUpdate(scheduleId, { status: 'retry', retryCount: retryCount + 1 });
+        }
+
+        if (retryCount >= 3) {
+          await this.scheduleMessagesProvider.findByIdAndUpdate(scheduleId, { status: 'failed' });
+        }
+      }
     });
   }
 

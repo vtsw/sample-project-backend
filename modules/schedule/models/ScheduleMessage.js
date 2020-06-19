@@ -9,6 +9,8 @@ const ScheduleMessage = new Schema({
     name: String,
     avatar: String,
   },
+  status: String,
+  retryCount: Number,
   to: {
     id: ObjectId,
     name: String,
