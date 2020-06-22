@@ -44,14 +44,14 @@ module.exports = gql`
   }
 
   input CreateZaloMessageInput {
-    oaId: ID!
-    saId: ID!
+    from: ID!
+    to: ID!
     content: String!
   }
 
   input ZaloMessageListInput {
-    oaId: ID!
-    saId: ID!
+    firstParticipant: ID!
+    secondParticipant: ID!
     skip: Int = 0
     limit: Int = 10
   }
@@ -69,8 +69,8 @@ module.exports = gql`
   }
   
   input CreateZaloMessageAttachmentInput {
-    oaId: ID!
-    saId: ID!
+    from: ID!
+    to: ID!
     content: String
     attachmentFile: Upload!
     fileType: ZaloFileType
