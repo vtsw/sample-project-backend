@@ -37,21 +37,15 @@ class ScheduleNotificationSender {
         await this.scheduleMessagesProvider.findByIdAndUpdate(scheduleId, { status: 'success' });
       }
 
-      if (zaloResponseStatus !== 'Success') {
+      if (zaloResponseStatus === 'Success') {
         const scheduleSendFailed = await this.scheduleMessagesProvider.findById(scheduleId);
         const { retryCount } = scheduleSendFailed;
 
-        if (!retryCount) {
-          await this.scheduleMessagesProvider.findByIdAndUpdate(scheduleId, { status: 'retry', retryCount: 1 });
-        }
+        // eslint-disable-next-line no-nested-ternary
+        const scheduleUpdate = !retryCount ? { status: 'retry', retryCount: 1 }
+          : (retryCount < 3 ? { status: 'retry', retryCount: retryCount + 1 } : { status: 'failed' });
 
-        if (retryCount < 3) {
-          await this.scheduleMessagesProvider.findByIdAndUpdate(scheduleId, { status: 'retry', retryCount: retryCount + 1 });
-        }
-
-        if (retryCount >= 3) {
-          await this.scheduleMessagesProvider.findByIdAndUpdate(scheduleId, { status: 'failed' });
-        }
+        await this.scheduleMessagesProvider.findByIdAndUpdate(scheduleId, scheduleUpdate);
       }
     });
   }
