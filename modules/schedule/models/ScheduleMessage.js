@@ -18,10 +18,10 @@ const ScheduleMessage = new Schema({
   },
   message: {
     type: { type: String },
-    content: {},
+    content: {}, // any
   },
   createdAt: Date,
-  time: Number,
+  time: Number, // time to send schedule message
 });
 
 ScheduleMessage.plugin(mongooseDelete, { overrideMethods: true, deletedAt: true, use$neOperator: false });
