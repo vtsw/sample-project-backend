@@ -22,7 +22,11 @@ class ScheduleNotificationSender {
         this.zaloSAProvider.findById(recipientId),
       ]);
 
+      
+
       const zaloResponse = await this.zaloMessageSender.sendText({ text: messageContent }, recipient, sender);
+
+      console.log('12312312', zaloResponse);
 
       const { message: zaloResponseStatus } = zaloResponse;
 
