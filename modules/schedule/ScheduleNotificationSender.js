@@ -14,7 +14,7 @@ class ScheduleNotificationSender {
 
     schedules.map(async (schedule) => {
       const {
-        _id: scheduleId, from: { id: senderId }, to: { id: recipientId }, message: { content: messageContent },
+        _id: scheduleId, from: { id: senderId }, to: { id: recipientId }, message: { type: messageTye, content: messageContent },
       } = schedule;
 
       const [sender, recipient] = await Promise.all([
@@ -22,11 +22,14 @@ class ScheduleNotificationSender {
         this.zaloSAProvider.findById(recipientId),
       ]);
 
-      
+      let zaloResponse;
+      if (messageTye === 'text') {
+        zaloResponse = await this.zaloMessageSender.sendText({ text: messageContent }, recipient, sender);
+      }
 
-      const zaloResponse = await this.zaloMessageSender.sendText({ text: messageContent }, recipient, sender);
-
-      console.log('12312312', zaloResponse);
+      if (messageTye === 'element') {
+        zaloResponse = await this.zaloMessageSender.sendListElement(messageContent, recipient, sender);
+      }
 
       const { message: zaloResponseStatus } = zaloResponse;
 

@@ -177,14 +177,16 @@ class ZaloMessageSender {
     }).then((response) => response.json());
   }
 
-  async sendListElement(message, recipient, sender) {
+  async sendListElement({ attachment }, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
-    const { accessToken, oaId } = sender.zaloOA;
+    const { credential: { accessToken }, _id } = sender;
     const body = {
       recipient: {
-        user_id: recipient.getZaloIdByOAId(oaId).zaloIdByOA,
+        user_id: recipient.getFollowingByCleverOAId(_id).zaloIdByOA,
       },
-      message,
+      message: {
+        attachment,
+      },
     };
 
     const response = await this.request(`${sendMessageToInterestedUser}?access_token=${accessToken}`, {
