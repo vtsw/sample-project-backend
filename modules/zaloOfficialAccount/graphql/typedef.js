@@ -2,20 +2,20 @@ const gql = require('graphql-tag');
 
 module.exports = gql`
   input CreateZaloOAInput {
-    accessToken: String
     oaId: String!
-    oaSecretKey: String!
+    oaSecretKey: String
+    accessToken: String
     appId: String
     appSecretKey: String
   }
 
   input UpdateZaloOAInput {
     id: ID!
-    accessToken: String!
-    oaId: String!
-    oaSecretKey: String!
-    appId: String!
-    appSecretKey: String!
+    accessToken: String
+    oaId: String
+    oaSecretKey: String
+    appId: String
+    appSecretKey: String
   }
 
   type ZaloOA {
@@ -41,7 +41,7 @@ module.exports = gql`
   }
   
   extend type Mutation {
-    createZaloOA(zaloOA: CreateZaloOAInput): ZaloOA
+    createZaloOA(zaloOA: CreateZaloOAInput!): ZaloOA
     updateZaloOA(zaloOA: UpdateZaloOAInput!): ZaloOA
     deleteZaloOA(id: ID!): ZaloOA
   }
