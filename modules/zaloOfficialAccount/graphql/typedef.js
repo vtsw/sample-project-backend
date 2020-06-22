@@ -5,8 +5,8 @@ module.exports = gql`
     accessToken: String
     oaId: String!
     oaSecretKey: String!
-    appId: String!
-    appSecretKey: String!
+    appId: String
+    appSecretKey: String
   }
 
   input UpdateZaloOAInput {

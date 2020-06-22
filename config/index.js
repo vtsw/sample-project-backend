@@ -66,6 +66,6 @@ module.exports = {
     ignoreEvents: []
   },
   cron: {
-    zaloScheduleInterval: '0 * * * * *',
+    zaloScheduleInterval: '0 0 * * * *',
   }
 };
