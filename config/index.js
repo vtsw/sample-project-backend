@@ -42,6 +42,8 @@ module.exports = {
     require('../modules/zaloMessage/ZaloMessageServiceProvider'),
     require('../modules/zaloOfficialAccount/ZaloOfficialAccountServiceProvider'),
     require('../modules/zaloSocialAccount/ZaloSocialAccountServiceProvider'),
+    require('../modules/schedule/ScheduleServiceProvider'),
+    require('../services/CronManageServiceProvider'),
   ],
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
@@ -62,5 +64,8 @@ module.exports = {
   },
   zaloWebhook: {
     ignoreEvents: []
+  },
+  cron: {
+    zaloScheduleInterval: '0 0 * * * *',
   }
 };

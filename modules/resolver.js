@@ -7,7 +7,12 @@ const zaloSocialAccountResolver = require('./zaloSocialAccount/graphql/resolver'
 const baseResolver = {
   Upload: GraphQLUpload,
   Mutation: {
-    hello: (_, { name }) => `hello ${name}`,
+    // eslint-disable-next-line arrow-body-style
+    hello: (_, { name }, { container }) => {
+      const scheduleNotificationSender = container.resolve('scheduleNotificationSender');
+      scheduleNotificationSender.sendScheduleNotification();
+      return name || 'world';
+    },
   },
   Query: {
     hello: () => 'world',

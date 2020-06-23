@@ -11,7 +11,7 @@ module.exports = {
     zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findOne({ zaloMessageId: id }),
     zaloMessageList: async (_, { query }, { container }) => {
       const {
-        oaId, saId, limit, offset,
+        firstParticipant, secondParticipant, limit, offset,
       } = query;
       const customLabels = {
         totalDocs: 'itemCount',
@@ -25,7 +25,8 @@ module.exports = {
         meta: 'paginator',
       };
       return container.resolve('zaloMessageProvider').paginate({
-        'from.id': { $in: [ObjectId(oaId), ObjectId(saId)] }, 'to.id': { $in: [ObjectId(oaId), ObjectId(saId)] },
+        'from.id': { $in: [ObjectId(firstParticipant), ObjectId(secondParticipant)] },
+        'to.id': { $in: [ObjectId(firstParticipant), ObjectId(secondParticipant)] },
       }, {
         limit, offset, customLabels, sort: { timestamp: -1 },
       });
@@ -34,11 +35,11 @@ module.exports = {
   Mutation: {
     createZaloMessage: async (_, { message }, { container }) => {
       const {
-        oaId, saId, content,
+        from, to, content,
       } = message;
       const [OAUser, interestedUser] = await Promise.all([
-        container.resolve('zaloOAProvider').findById(oaId),
-        container.resolve('zaloSAProvider').findById(saId),
+        container.resolve('zaloOAProvider').findById(from),
+        container.resolve('zaloSAProvider').findById(to),
       ]);
       const response = await container.resolve('zaloMessageSender').sendText({
         text: message.content,
@@ -64,11 +65,11 @@ module.exports = {
     },
     createZaloMessageAttachment: async (_, { message }, { container }) => {
       const {
-        attachmentFile, content, fileType, oaId, saId,
+        attachmentFile, content, fileType, from, to,
       } = message;
       const [OAUser, interestedUser] = await Promise.all([
-        container.resolve('zaloOAProvider').findById(oaId),
-        container.resolve('zaloSAProvider').findById(saId),
+        container.resolve('zaloOAProvider').findById(from),
+        container.resolve('zaloSAProvider').findById(to),
       ]);
       const zaloMessageSender = container.resolve('zaloMessageSender');
       const {
