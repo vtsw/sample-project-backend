@@ -1,0 +1,19 @@
+- hosts: node1
+  remote_user: leo
+  become: true
+  become_user: leo
+  connection: ssh
+  tasks:
+    - name: 'Create kubernetes deployment and service'
+      k8s:
+        state: absent
+        definition: "{{ lookup('file', '{{ playbook_dir }}''/zalo-integration.yaml' ) }}"
+        namespace: default
+    - name: 'Create kubernetes deployment and service'
+      k8s:
+        state: present
+        definition: "{{ lookup('file', '{{ playbook_dir }}''/zalo-integration.yaml' ) }}"
+        namespace: default
+    - name: 'Patch istio ingress gateway'
+      command: |
+        kubectl patch service -n istio-system istio-ingressgateway --patch "$(cat {{ playbook_dir }}/ingress-gateway.patch.yaml)"

@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zalo-integration-dev
+spec:
+  selector:
+    matchLabels:
+      run: zalo-integration-dev
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: zalo-integration-dev
+    spec:
+      containers:
+        - name: zalo-integration-dev
+          image: 172.76.10.150:5002/zalo-integration:dev
+          command: ["node"]
+          args: ["server.js"]
+          ports:
+            - containerPort: 3000
+          env:
+          - name: REDIS_HOST
+            value: "redis-master"
+          - name: REDIS_PORT
+            value: "6379"
+          - name: MINIO_ACCESS_KEY
+            value: "EGN382IMEPNND2JB46PQ"
+          - name: MINIO_SECRET_KEY
+            value: "5NwA8Cqx2QCJLa8u3SGUwSzRiKs6DhwbBsbpNbkM"
+          - name: MINIO_USE_SSL
+            value: "false"
+          - name: MINIO_PORT
+            value: "9000"
+          - name: MINIO_END_POINT
+            value: "minio-service"
+          - name: MINIO_PUBLIC_END_POINT
+            value: "http://minio-service"
+          - name: MONGODB_URL
+            value: "mongodb://mongo-replica-set-svc.mongodb.svc.cluster.local:27017/simple_db"
+          - name: MONGODB_HOST
+            value: "mongo-replica-set-svc.mongodb.svc.cluster.local"
+          - name: MONGODB_ROOT_USER
+            value: "replicaset-admin"
+          - name: MONGODB_ROOT_PASSWORD
+            value: "meomeomeo"
+          - name: MONGODB_PORT
+            value: "27017"
+          - name: HOST_APP_PORT
+            value: "80"
+          - name: APP_PORT
+            value: "80"
+          - name: APP_HOST
+            value: http://backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zalo-integration-service-dev
+  labels:
+    run: zalo-integration-dev
+spec:
+  ports:
+    - name: http-zalo-integration-dev
+      port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    run: zalo-integration-dev
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: zalo-integration-gateway-dev
+spec:
+  selectors:
+    istio: ingressgateway
+  servers:
+    - hosts:
+        - "*"
+      port:
+        number: 30503
+        name: http-zalo-integration-dev
+        protocol: HTTP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: zalo-integration-virtualservice-dev
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - zalo-integration-gateway-dev
+  http:
+    - match:
+        - port: 30503
+          uri:
+            prefix: /
+      name: zalo-integration-dev
+      route:
+        - destination:
+            host: zalo-integration-service-dev
+            port:
+              number: 80
+---

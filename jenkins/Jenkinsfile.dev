@@ -1,0 +1,31 @@
+pipeline {
+
+  environment {
+      registry = "172.76.10.150:5002"
+      repository = "zalo-integration"
+      registryCredential = 'privateregistryadmin'
+      def imageId = "${registry}/${repository}:dev"
+  }
+
+  agent any
+
+  stages {
+    stage('Building image') {
+      steps {
+        script {
+          docker.withRegistry("https://${registry}", registryCredential) {
+            def builtImage = docker.build(imageId, " . -f docker/dockerfile.jenkins --network host", )
+            builtImage.push()
+          }
+        }
+      }
+    }
+    stage ('Create Kubernetes Service') {
+      steps {
+        script {
+           sh "ansible-playbook k8s/dev/create.yaml"
+        }
+      }
+    }
+  }
+}

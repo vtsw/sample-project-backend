@@ -1,0 +1,7 @@
+spec:
+  ports:
+    - name: http-zalo-integration-service-dev
+      nodePort: 30503
+      port: 30503
+      protocol: TCP
+      targetPort: 30503
