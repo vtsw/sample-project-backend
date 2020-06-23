@@ -16,6 +16,6 @@
         namespace: default
     - name: 'Patch istio ingress gateway'
       command: |
-        kubectl patch service -n istio-system istio-ingressgateway --patch {{ingress_gateway_patch_yaml}}
+        kubectl patch service -n istio-system istio-ingressgateway --patch "{{ lookup('file', '{{ playbook_dir }}''/ingress-gateway.patch.yaml') }}"
   vars:
-    ingress_gateway_patch_yaml: "{{ lookup('file', '{{ playbook_dir }}''/ingress-gateway.patch.yaml') }}"
+    ingress_gateway_patch_yaml: ''
