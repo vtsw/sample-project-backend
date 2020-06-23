@@ -97,7 +97,7 @@ spec:
         - port: 30503
           uri:
             prefix: /
-      name: zalo-integration-dev
+      name: http-zalo-integration-dev
       route:
         - destination:
             host: zalo-integration-service-dev
