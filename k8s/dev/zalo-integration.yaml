@@ -18,7 +18,7 @@ spec:
           command: ["node"]
           args: ["server.js"]
           ports:
-            - containerPort: 3000
+            - containerPort: 80
           env:
           - name: REDIS_HOST
             value: "redis-master"
