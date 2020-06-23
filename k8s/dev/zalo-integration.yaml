@@ -21,7 +21,6 @@ spec:
           ports:
             - containerPort: 80
               name: http-zalointdev
-              protocol: SCTP
           env:
           - name: REDIS_HOST
             value: "redis-master"
