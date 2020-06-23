@@ -27,7 +27,7 @@ class ThirdPartyServiceProvider extends ServiceProvider {
     });
     const db = await mongodb(config);
     const minioClient = minio(config);
-    const loggingQueue = kue.createQueue();
+    const loggingQueue = kue.createQueue({ redis: config.redis });
     const winstonLogger = winston(minioClient, config);
     loggingQueue.process('logging', (job, done) => {
       winstonLogger.log(job.data);
