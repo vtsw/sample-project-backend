@@ -52,7 +52,7 @@ spec:
           - name: APP_PORT
             value: "80"
           - name: APP_HOST
-            value: http://zalo-integration-service-dev
+            value: https://zalo-integration-service-dev
 ---
 apiVersion: v1
 kind: Service
