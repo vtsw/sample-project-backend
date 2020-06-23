@@ -19,6 +19,7 @@ spec:
           args: ["server.js"]
           ports:
             - containerPort: 80
+              name: http-zalo-integration-dev
           env:
           - name: REDIS_HOST
             value: "redis-master"
