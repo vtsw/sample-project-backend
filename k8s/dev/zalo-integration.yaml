@@ -13,14 +13,13 @@ spec:
         run: zalo-integration-dev
     spec:
       containers:
-        - name: zalo-integration-dev
+        - name: zalo-int-dev
           image: 172.76.10.150:5002/zalo-integration:dev
           imagePullPolicy: Always
           command: ["node"]
           args: ["server.js"]
           ports:
             - containerPort: 80
-              name: http-zalointdev
           env:
           - name: REDIS_HOST
             value: "redis-master"
@@ -54,6 +53,8 @@ spec:
             value: "80"
           - name: APP_HOST
             value: https://zalo-integration-service-dev
+          - name: CB_URL
+            value: https://172.76.10.227:30503/api/zalo/reservation/confirmation
 ---
 apiVersion: v1
 kind: Service
