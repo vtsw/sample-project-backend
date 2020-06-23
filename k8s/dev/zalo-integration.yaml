@@ -15,11 +15,13 @@ spec:
       containers:
         - name: zalo-integration-dev
           image: 172.76.10.150:5002/zalo-integration:dev
+          imagePullPolicy: Always
           command: ["node"]
           args: ["server.js"]
           ports:
             - containerPort: 80
               name: http-zalointdev
+              protocol: SCTP
           env:
           - name: REDIS_HOST
             value: "redis-master"
