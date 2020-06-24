@@ -9,7 +9,6 @@ module.exports = {
     }
     try {
       const decodedToken = await container.resolve('authService').verify(token);
-      console.log(decodedToken);
       req.user = decodedToken;
       return next();
     } catch (e) {
