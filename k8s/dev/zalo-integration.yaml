@@ -38,13 +38,13 @@ spec:
           - name: MINIO_PUBLIC_END_POINT
             value: "http://minio-service"
           - name: MONGODB_URL
-            value: "mongodb://mongo-replica-set-svc.mongodb.svc.cluster.local:27017/simple_db"
+            value: "mongodb://mongodb-noops-dev.mongodb-noops.svc.cluster.local:27017/simple_db"
           - name: MONGODB_HOST
-            value: "mongo-replica-set-svc.mongodb.svc.cluster.local"
+            value: "mongodb-noops-dev.mongodb-noops.svc.cluster.local"
           - name: MONGODB_ROOT_USER
-            value: "replicaset-admin"
+            value: "foobar"
           - name: MONGODB_ROOT_PASSWORD
-            value: "meomeomeo"
+            value: "foobarPassword"
           - name: MONGODB_PORT
             value: "27017"
           - name: HOST_APP_PORT
