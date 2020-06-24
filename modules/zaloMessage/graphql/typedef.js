@@ -50,8 +50,8 @@ module.exports = gql`
   }
 
   input ZaloMessageListInput {
-    firstParticipant: ID!
-    secondParticipant: ID!
+    firstParticipant: ID
+    secondParticipant: ID
     skip: Int = 0
     limit: Int = 10
   }
