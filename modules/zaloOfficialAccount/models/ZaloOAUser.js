@@ -10,7 +10,7 @@ const zaloOASchema = new Schema({
   name: String,
   avatar: String,
   cover: String,
-  oaId: { type: String, unique: true },
+  oaId: { type: String, unique: false },
   createdAt: Date,
   lastModified: Date,
   credential: zaloOACredential,
