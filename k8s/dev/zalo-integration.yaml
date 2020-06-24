@@ -38,7 +38,7 @@ spec:
           - name: MINIO_PUBLIC_END_POINT
             value: "http://minio-service"
           - name: MONGODB_URL
-            value: "mongodb://mongodb-noops-dev.mongodb-noops.svc.cluster.local:27017/simple_db?authSource=simple_db&ssl=false&replicaSet=mongodb-noops-dev&"
+            value: "mongodb://foobar@foobarPasswordmongodb-noops-dev.mongodb-noops.svc.cluster.local:27017/simple_db?authSource=simple_db&ssl=false&replicaSet=mongodb-noops-dev&"
           - name: MONGODB_HOST
             value: "mongodb-noops-dev.mongodb-noops.svc.cluster.local"
           - name: MONGODB_ROOT_USER
