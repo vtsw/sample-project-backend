@@ -34,9 +34,10 @@ module.exports = {
     },
   },
   Mutation: {
-    createZaloMessage: async (_, { message }, { container }) => {
+    createZaloMessage: async (_, { message }, { container, req }) => {
+      const { zaloIntegrationId: from } = req.user;
       const {
-        from, to, content,
+        to, content,
       } = message;
       const [OAUser, interestedUser] = await Promise.all([
         container.resolve('zaloOAProvider').findById(from),
@@ -64,9 +65,10 @@ module.exports = {
         zaloMessageId: response.data.message_id,
       };
     },
-    createZaloMessageAttachment: async (_, { message }, { container }) => {
+    createZaloMessageAttachment: async (_, { message }, { container, req }) => {
+      const { zaloIntegrationId: from } = req.user;
       const {
-        attachmentFile, content, fileType, from, to,
+        attachmentFile, content, fileType, to,
       } = message;
       const [OAUser, interestedUser] = await Promise.all([
         container.resolve('zaloOAProvider').findById(from),
