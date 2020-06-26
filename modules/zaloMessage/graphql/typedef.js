@@ -44,7 +44,6 @@ module.exports = gql`
   }
 
   input CreateZaloMessageInput {
-    from: ID!
     to: ID!
     content: String!
   }
@@ -69,7 +68,6 @@ module.exports = gql`
   }
   
   input CreateZaloMessageAttachmentInput {
-    from: ID!
     to: ID!
     content: String
     attachmentFile: Upload!
@@ -77,13 +75,13 @@ module.exports = gql`
   }
 
   extend type Mutation {
-    createZaloMessage(message: CreateZaloMessageInput!): ZaloMessage
-    createZaloMessageAttachment(message: CreateZaloMessageAttachmentInput!): ZaloMessage
+    createZaloMessage(message: CreateZaloMessageInput!): ZaloMessage @isAuthenticated
+    createZaloMessageAttachment(message: CreateZaloMessageAttachmentInput!): ZaloMessage @isAuthenticated
   }
 
   extend type Query {
     zaloMessage(id: ID!): ZaloMessage
-    zaloMessageList(query: ZaloMessageListInput): ZaloMessageList
+    zaloMessageList(query: ZaloMessageListInput): ZaloMessageList @isAuthenticated
   }
   
   extend type Subscription  {
