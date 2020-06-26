@@ -9,9 +9,10 @@ const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = requi
 module.exports = {
   Query: {
     zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findOne({ zaloMessageId: id }),
-    zaloMessageList: async (_, { query }, { container }) => {
+    zaloMessageList: async (_, { query }, { container, req }) => {
+      const { zaloIntegrationId: firstParticipant } = req.user;
       const {
-        firstParticipant, secondParticipant, limit, offset,
+        secondParticipant, limit, offset,
       } = query;
       const customLabels = {
         totalDocs: 'itemCount',
