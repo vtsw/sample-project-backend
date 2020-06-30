@@ -113,4 +113,16 @@ spec:
             host: zalo-integration-service-dev
             port:
               number: 80
+    - match:
+        - port: 30502
+          hosts:
+            - '*'
+          uri:
+            prefix: /api
+        name: https-zalo-integration-dev
+        route:
+          - destination:
+              host: zalo-integration-service-dev
+              port:
+                number: 80
 ---
