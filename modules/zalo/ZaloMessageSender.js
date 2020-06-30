@@ -54,10 +54,10 @@ class ZaloMessageSender {
    */
   sendText(message, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
-    const { credential: { accessToken }, _id } = sender;
+    const { credential: { accessToken }, oaId } = sender;
     const body = {
       recipient: {
-        user_id: recipient.getFollowingByCleverOAId(_id).zaloIdByOA,
+        user_id: recipient.getFollowingByZaloOAId(oaId).zaloIdByOA,
       },
       message,
     };

@@ -25,4 +25,12 @@ zaloOASchema.methods.getFollowingByCleverOAId = function getFollowingByCleverOAI
   });
 };
 
+zaloOASchema.methods.getFollowingByZaloOAId = function getFollowingByZaloOAId(zaloOAId) {
+  return this.followings.find((item) => {
+    console.log('item.oaId.toString()', item.oaId.toString());
+    console.log('zaloOAId.toString()', zaloOAId.toString());
+    return item.oaId.toString() === zaloOAId.toString();
+  });
+};
+
 module.exports = zaloOASchema;
