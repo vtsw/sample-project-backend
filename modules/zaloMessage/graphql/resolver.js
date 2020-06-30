@@ -46,6 +46,7 @@ module.exports = {
       const response = await container.resolve('zaloMessageSender').sendText({
         text: message.content,
       }, interestedUser, OAUser);
+      console.log('zalo send text message response', response);
       return {
         timestamp: new Date().getTime(),
         from: {
@@ -62,7 +63,7 @@ module.exports = {
           zaloId: interestedUser.getFollowingByCleverOAId(OAUser._id).zaloIdByOA,
         },
         type: 'text',
-        zaloMessageId: response.data.message_id,
+        id: response.data.message_id,
       };
     },
     createZaloMessageAttachment: async (_, { message }, { container, req }) => {
@@ -144,7 +145,7 @@ module.exports = {
           zaloId: interestedUser.getFollowingByCleverOAId(OAUser._id).zaloIdByOA,
         },
         type: fileType === 'File' ? fileType : 'Image',
-        zaloMessageId: sendMessageRespond.data.message_id,
+        id: sendMessageRespond.data.message_id,
       };
     },
   },
@@ -175,8 +176,5 @@ module.exports = {
         },
       ),
     },
-  },
-  ZaloMessage: {
-    id: (message) => message.zaloMessageId,
   },
 };
