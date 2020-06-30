@@ -9,9 +9,10 @@ const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = requi
 module.exports = {
   Query: {
     zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findOne({ zaloMessageId: id }),
-    zaloMessageList: async (_, { query }, { container }) => {
+    zaloMessageList: async (_, { query }, { container, req }) => {
+      const { zaloIntegrationId: firstParticipant } = req.user;
       const {
-        firstParticipant, secondParticipant, limit, offset,
+        secondParticipant, limit, offset,
       } = query;
       const customLabels = {
         totalDocs: 'itemCount',
@@ -33,9 +34,10 @@ module.exports = {
     },
   },
   Mutation: {
-    createZaloMessage: async (_, { message }, { container }) => {
+    createZaloMessage: async (_, { message }, { container, req }) => {
+      const { zaloIntegrationId: from } = req.user;
       const {
-        from, to, content,
+        to, content,
       } = message;
       const [OAUser, interestedUser] = await Promise.all([
         container.resolve('zaloOAProvider').findById(from),
@@ -63,9 +65,10 @@ module.exports = {
         zaloMessageId: response.data.message_id,
       };
     },
-    createZaloMessageAttachment: async (_, { message }, { container }) => {
+    createZaloMessageAttachment: async (_, { message }, { container, req }) => {
+      const { zaloIntegrationId: from } = req.user;
       const {
-        attachmentFile, content, fileType, from, to,
+        attachmentFile, content, fileType, to,
       } = message;
       const [OAUser, interestedUser] = await Promise.all([
         container.resolve('zaloOAProvider').findById(from),
