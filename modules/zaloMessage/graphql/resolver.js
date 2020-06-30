@@ -62,7 +62,7 @@ module.exports = {
           zaloId: interestedUser.getFollowingByCleverOAId(OAUser._id).zaloIdByOA,
         },
         type: 'text',
-        id: response.data.message_id,
+        zaloMessageId: response.data.message_id,
       };
     },
     createZaloMessageAttachment: async (_, { message }, { container, req }) => {
