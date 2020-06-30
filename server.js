@@ -6,8 +6,8 @@ global.APP_ROOT = path.resolve(__dirname);
 
 const cluster = require('cluster');
 const os = require('os');
-const fs = require('fs');
-const https = require('https');
+// const fs = require('fs');
+const http = require('http');
 
 const websocker = require('./websocket');
 const createApp = require('./app');
@@ -17,10 +17,10 @@ const bootstrapper = require('./bootstrapper');
 async function runApp() {
   const container = await bootstrapper(config);
   const app = createApp(container);
-  const privateKey = fs.readFileSync('./sslcert/server.key', 'utf8');
-  const certificate = fs.readFileSync('./sslcert/server.crt', 'utf8');
-  const credentials = { key: privateKey, cert: certificate };
-  const httpsServer = https.createServer(credentials, app);
+  // const privateKey = fs.readFileSync('./sslcert/server.key', 'utf8');
+  // const certificate = fs.readFileSync('./sslcert/server.crt', 'utf8');
+  // const credentials = { key: privateKey, cert: certificate };
+  const httpsServer = http.createServer({ }, app);
   websocker(httpsServer, container);
   httpsServer.listen(config.app.port, () => {
     console.log(`Running a GraphQL API server at ${config.app.host}:${config.app.port}/graphql`);

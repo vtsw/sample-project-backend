@@ -32,7 +32,8 @@ module.exports = {
       const { zaloApi: { officialAccount: { getOAInfo } } } = container.resolve('config');
       const { accessToken } = zaloOA;
       if (accessToken) {
-        const oa = await fetch(`${getOAInfo}?access_token=${zaloOA.accessToken}`).then((response) => response.json());
+        const oa = await fetch(`${getOAInfo}?access_token=${zaloOA.accessToken}`)
+          .then((response) => response.json());
         return container.resolve('zaloOAProvider').create(pickBy({
           ...oa.data,
           oaId: zaloOA.oaId, // @Todo oaId from dashboard is difference with the one is getted from api https://openapi.zalo.me/v2.0/oa/getoa
@@ -41,7 +42,7 @@ module.exports = {
       }
 
       return container.resolve('zaloOAProvider').create(pickBy({
-        oaId: zaloOA.oaId, // @Todo oaId from dashboard is difference with the one is getted from api https://openapi.zalo.me/v2.0/oa/getoa
+        oaId: zaloOA.oaId,
         credential: zaloOA,
       }, identity));
     },
