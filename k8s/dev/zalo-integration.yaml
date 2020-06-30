@@ -55,6 +55,8 @@ spec:
             value: https://zalo-integration-service-dev
           - name: CB_URL
             value: https://clevervn.ap.ngrok.io/api/zalo/reservation/confirmation
+          - name: JWT_PRIVATE_KEY
+            value: bd2dcbbe-b333-4c69-bc18-8aaf6ceda89a
 ---
 apiVersion: v1
 kind: Service
