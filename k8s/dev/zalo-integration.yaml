@@ -54,7 +54,7 @@ spec:
           - name: APP_HOST
             value: https://zalo-integration-service-dev
           - name: CB_URL
-            value: https://172.76.10.227:30503/api/zalo/reservation/confirmation
+            value: https://clevervn.ap.ngrok.io/api/zalo/reservation/confirmation
 ---
 apiVersion: v1
 kind: Service
