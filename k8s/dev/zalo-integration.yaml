@@ -80,13 +80,14 @@ spec:
     istio: ingressgateway
   servers:
     - hosts:
-        - "*"
+        - '*'
       port:
-        number: 30503
         name: https-zalo-integration-dev
+        number: 30502
         protocol: HTTPS
       tls:
-        mode: PASSTHROUGH
+        credentialName: clever
+        mode: SIMPLE
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -97,13 +98,15 @@ spec:
     - "*"
   gateways:
     - zalo-integration-gateway-dev
-  tls:
+  http:
     - match:
-        - port: 30503
-          sni_hosts:
+        - port: 30502
+          hosts:
             - '*'
           uri:
-            prefix: /
+            prefix: /zalo
+      rewrite:
+        uri: /graphql
       name: https-zalo-integration-dev
       route:
         - destination:
