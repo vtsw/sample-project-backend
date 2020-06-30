@@ -18,7 +18,11 @@ const zaloOASchema = new Schema({
 
 zaloOASchema.plugin(mongoosePaginate);
 zaloOASchema.methods.getFollowingByCleverOAId = function getFollowingByCleverOAId(cleverOAId) {
-  return this.followings.find((item) => item.cleverOAId.toString() === cleverOAId.toString());
+  return this.followings.find((item) => {
+    console.log('item.cleverOAId.toString()', item.cleverOAId.toString());
+    console.log('cleverOAId.toString()', cleverOAId.toString());
+    return item.cleverOAId.toString() === cleverOAId.toString();
+  });
 };
 
 module.exports = zaloOASchema;
