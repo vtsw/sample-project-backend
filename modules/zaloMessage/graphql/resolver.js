@@ -60,7 +60,7 @@ module.exports = {
           id: interestedUser._id,
           displayName: interestedUser.name,
           avatar: interestedUser.avatar,
-          zaloId: interestedUser.getFollowingByCleverOAId(OAUser._id).zaloIdByOA,
+          zaloId: interestedUser.getFollowingByZaloOAId(OAUser.oaId).zaloIdByOA,
         },
         type: 'text',
         zaloMessageId: response.data.message_id,
