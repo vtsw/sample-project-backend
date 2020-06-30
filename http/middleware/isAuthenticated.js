@@ -9,7 +9,9 @@ const isAuthenticated = async (req, res, next) => {
   }
   try {
     const authService = req.container.resolve('authService');
-    req.user = await authService.verify(token);
+    const decodedUserClaims = await authService.verify(token);
+    console.log('decodedUserClaims', decodedUserClaims);
+    req.user = decodedUserClaims;
     next();
   } catch (e) {
     if (e instanceof AuthenticationError) {
