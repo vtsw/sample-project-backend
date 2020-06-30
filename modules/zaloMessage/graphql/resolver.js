@@ -63,7 +63,7 @@ module.exports = {
           zaloId: interestedUser.getFollowingByCleverOAId(OAUser._id).zaloIdByOA,
         },
         type: 'text',
-        id: response.data.message_id,
+        zaloMessageId: response.data.message_id,
       };
     },
     createZaloMessageAttachment: async (_, { message }, { container, req }) => {
@@ -145,7 +145,7 @@ module.exports = {
           zaloId: interestedUser.getFollowingByCleverOAId(OAUser._id).zaloIdByOA,
         },
         type: fileType === 'File' ? fileType : 'Image',
-        id: sendMessageRespond.data.message_id,
+        zaloMessageId: sendMessageRespond.data.message_id,
       };
     },
   },
@@ -176,5 +176,8 @@ module.exports = {
         },
       ),
     },
+  },
+  ZaloMessage: {
+    id: (message) => message.zaloMessageId,
   },
 };
