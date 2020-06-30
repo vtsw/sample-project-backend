@@ -4,7 +4,7 @@
   become_user: leo
   connection: ssh
   tasks:
-    - name: 'Create kubernetes deployment and service'
+    - name: 'Delete kubernetes deployment and service'
       k8s:
         state: absent
         definition: "{{ lookup('file', '{{ playbook_dir }}''/zalo-integration.yaml' ) }}"

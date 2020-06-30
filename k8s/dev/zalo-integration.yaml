@@ -119,10 +119,10 @@ spec:
             - '*'
           uri:
             prefix: /api
-        name: https-zalo-integration-dev
-        route:
-          - destination:
-              host: zalo-integration-service-dev
-              port:
-                number: 80
+      name: https-zalo-integration-dev-api
+      route:
+         - destination:
+            host: zalo-integration-service-dev
+            port:
+              number: 80
 ---
