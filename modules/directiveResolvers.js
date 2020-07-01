@@ -1,5 +1,4 @@
 const get = require('lodash.get');
-const { GraphQLError } = require('graphql');
 const { AuthenticationError } = require('./errors');
 
 module.exports = {
@@ -12,7 +11,6 @@ module.exports = {
       req.user = await container.resolve('authService').verify(token);
       return next();
     } catch (e) {
-      req.errors.push(e);
       if (e instanceof AuthenticationError) {
         throw new Error('User not authenticated');
       }
