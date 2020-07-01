@@ -2,7 +2,7 @@ const { asFunction } = require('awilix');
 const ServiceProvider = require('../../ServiceProvider');
 const zaloSocialAccount = require('./model/ZaloSocialAccount');
 
-class ZaloOfficialAccountServiceProvider extends ServiceProvider {
+class ZaloSAServiceProvider extends ServiceProvider {
   register() {
     const { container } = this;
     container.register('zaloSAProvider', asFunction(() => container.resolve('db')
@@ -11,4 +11,4 @@ class ZaloOfficialAccountServiceProvider extends ServiceProvider {
   }
 }
 
-module.exports = ZaloOfficialAccountServiceProvider;
+module.exports = ZaloSAServiceProvider;

@@ -1,7 +1,15 @@
 class UserShareInfoEventHandler {
-  constructor(zaloSAProvider) {
+  /**
+   *
+   * @param zaloSAProvider
+   * @param zaloOAProvider
+   * @param zaloAuthenticator
+   */
+  constructor(zaloSAProvider, zaloOAProvider, zaloAuthenticator) {
     this.name = UserShareInfoEventHandler.getEvent();
     this.zaloSocialUserProvider = zaloSAProvider;
+    this.zaloAuthenticator = zaloAuthenticator;
+    this.zaloOAProvider = zaloOAProvider;
   }
 
   async handle(req) {

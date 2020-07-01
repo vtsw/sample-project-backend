@@ -1,6 +1,14 @@
 const { ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
 
 class UserSendFileEventHandler {
+  /**
+   *
+   * @param zaloMessageProvider
+   * @param pubsub
+   * @param zaloOAProvider
+   * @param zaloSAProvider
+   * @param zaloAuthenticator
+   */
   constructor(zaloMessageProvider, pubsub, zaloOAProvider, zaloSAProvider, zaloAuthenticator) {
     this.name = UserSendFileEventHandler.getEvent();
     this.zaloMessageProvider = zaloMessageProvider;

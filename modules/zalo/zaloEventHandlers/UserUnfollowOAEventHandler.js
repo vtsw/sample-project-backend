@@ -1,12 +1,14 @@
 class UserUnfollowOAEventHandler {
   /**
    *
-   * @param zaloInterestedUserProvider
-   * @param userProvider
+   * @param zaloSAProvider
+   * @param zaloOAProvider
+   * @param zaloAuthenticator
    */
-  constructor(zaloSAProvider, zaloOAProvider) {
+  constructor(zaloSAProvider, zaloOAProvider, zaloAuthenticator) {
     this.zaloSAProvider = zaloSAProvider;
     this.zaloOAProvider = zaloOAProvider;
+    this.zaloAuthenticator = zaloAuthenticator;
   }
 
   /**

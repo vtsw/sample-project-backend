@@ -49,5 +49,4 @@ router.get('/zalo/callback', async (req, res) => {
   res.send('ok');
 });
 
-
 module.exports = router;

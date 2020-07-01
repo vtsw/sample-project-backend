@@ -10,7 +10,6 @@ const isAuthenticated = async (req, res, next) => {
   try {
     const authService = req.container.resolve('authService');
     const decodedUserClaims = await authService.verify(token);
-    console.log('decodedUserClaims', decodedUserClaims);
     req.user = decodedUserClaims;
     next();
   } catch (e) {

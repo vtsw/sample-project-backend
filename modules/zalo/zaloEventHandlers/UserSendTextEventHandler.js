@@ -1,12 +1,21 @@
 const { ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
 
 class UserSendTextEventHandler {
-  constructor(zaloMessageProvider, pubsub, zaloOAProvider, zaloSAProvider) {
+  /**
+   *
+   * @param zaloMessageProvider
+   * @param pubsub
+   * @param zaloOAProvider
+   * @param zaloSAProvider
+   * @param zaloAuthenticator
+   */
+  constructor(zaloMessageProvider, pubsub, zaloOAProvider, zaloSAProvider, zaloAuthenticator) {
     this.name = UserSendTextEventHandler.getEvent();
     this.zaloMessageProvider = zaloMessageProvider;
     this.zaloOAProvider = zaloOAProvider;
     this.zaloSAProvider = zaloSAProvider;
     this.pubsub = pubsub;
+    this.zaloAuthenticator = zaloAuthenticator;
   }
 
   async handle(req) {

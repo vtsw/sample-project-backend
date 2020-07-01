@@ -4,6 +4,9 @@ module.exports = class ZaloAuthenticator {
   }
 
   verifySignature(signature, data, oa) {
+    if (!signature) {
+      throw new Error('signature is invalid');
+    }
     const generatedSignature = this.sha('sha256')
       .update(oa.credential.appId)
       .update(JSON.stringify(data))

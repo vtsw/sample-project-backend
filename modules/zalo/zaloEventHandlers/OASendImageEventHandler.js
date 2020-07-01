@@ -1,6 +1,14 @@
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_CREATED } = require('../../zaloMessage/events');
 
 class OASendImageEventHandler {
+  /**
+   *
+   * @param zaloSAProvider
+   * @param zaloOAProvider
+   * @param zaloMessageProvider
+   * @param pubsub
+   * @param zaloAuthenticator
+   */
   constructor(zaloSAProvider, zaloOAProvider, zaloMessageProvider, pubsub, zaloAuthenticator) {
     this.zaloSAProvider = zaloSAProvider;
     this.zaloOAProvider = zaloOAProvider;

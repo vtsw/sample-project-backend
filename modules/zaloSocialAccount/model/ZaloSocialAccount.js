@@ -2,7 +2,7 @@ const { ObjectId, Schema } = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const followingSchema = require('./ZaloSocialAccountFollowing');
 
-const zaloOASchema = new Schema({
+const zaloSASchema = new Schema({
   id: ObjectId,
   birthday: String,
   gender: String,
@@ -11,13 +11,20 @@ const zaloOASchema = new Schema({
   avatars: Object,
   createdAt: Date,
   lastModified: Date,
-  phoneNumber: { type: String, unique: true },
+  phoneNumber: {
+    type: String,
+    trim: true,
+    index: {
+      unique: true,
+      partialFilterExpression: { phoneNumber: { $type: String } },
+    },
+  },
   followings: [followingSchema],
   address: Object,
 });
 
-zaloOASchema.plugin(mongoosePaginate);
-zaloOASchema.methods.getFollowingByCleverOAId = function getFollowingByCleverOAId(cleverOAId) {
+zaloSASchema.plugin(mongoosePaginate);
+zaloSASchema.methods.getFollowingByCleverOAId = function getFollowingByCleverOAId(cleverOAId) {
   return this.followings.find((item) => {
     console.log('item.cleverOAId.toString()', item.cleverOAId.toString());
     console.log('cleverOAId.toString()', cleverOAId.toString());
@@ -25,7 +32,7 @@ zaloOASchema.methods.getFollowingByCleverOAId = function getFollowingByCleverOAI
   });
 };
 
-zaloOASchema.methods.getFollowingByZaloOAId = function getFollowingByZaloOAId(zaloOAId) {
+zaloSASchema.methods.getFollowingByZaloOAId = function getFollowingByZaloOAId(zaloOAId) {
   return this.followings.find((item) => {
     console.log('item.oaId.toString()', item.oaId.toString());
     console.log('zaloOAId.toString()', zaloOAId.toString());
@@ -33,4 +40,4 @@ zaloOASchema.methods.getFollowingByZaloOAId = function getFollowingByZaloOAId(za
   });
 };
 
-module.exports = zaloOASchema;
+module.exports = zaloSASchema;

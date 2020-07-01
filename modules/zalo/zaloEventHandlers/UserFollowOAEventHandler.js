@@ -1,11 +1,12 @@
 class UserFollowOAEventHandler {
   /**
    *
-   * @param zaloInterestedUserProvider
+   * @param zaloSAProvider
    * @param request
-   * @param userProvider
+   * @param zaloOAProvider
    * @param config
    * @param zaloMessageSender
+   * @param zaloAuthenticator
    */
   constructor(zaloSAProvider, request, zaloOAProvider, config, zaloMessageSender, zaloAuthenticator) {
     this.zaloSAProvider = zaloSAProvider;
@@ -39,7 +40,7 @@ class UserFollowOAEventHandler {
      *
      */
     if (!phoneNumber) {
-      this.zaloMessageSender.sendRequestUserInfo({ content: '' }, data.follower.id, zaloOA);
+      await this.zaloMessageSender.sendRequestUserInfo({ content: '' }, data.follower.id, zaloOA);
       /**
        * create an new user as NEED_PROVIDE_PHONE_NUMBER state
        */
