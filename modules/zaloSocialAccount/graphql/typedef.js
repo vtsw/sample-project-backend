@@ -6,12 +6,20 @@ module.exports = gql`
       avatar: String
       name: String
       phoneNumber: String
-      followings: [ZaloSocialAccount]
+      followings: [ZaloFollow]
       createdAt: Date
       gender: String
       birthday: Date
     }
-    
+
+
+    type ZaloFollow {
+        state: String
+        zaloIdByOA: String
+        oaId: String
+        cleverOAId: String
+    }
+
     type ZaloSocialAccountList implements Paginatable {
         items: [ZaloSocialAccount]!
         hasNext: Boolean
