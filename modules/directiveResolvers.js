@@ -8,8 +8,7 @@ module.exports = {
       throw new Error('You must supply a JWT for authorization!');
     }
     try {
-      const decodedToken = await container.resolve('authService').verify(token);
-      req.user = decodedToken;
+      req.user = await container.resolve('authService').verify(token);
       return next();
     } catch (e) {
       if (e instanceof AuthenticationError) {

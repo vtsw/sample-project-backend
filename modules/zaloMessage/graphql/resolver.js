@@ -5,7 +5,6 @@ const sharp = require('sharp');
 
 const { ZALO_MESSAGE_SENT, ZALO_MESSAGE_RECEIVED, ZALO_MESSAGE_CREATED } = require('../events');
 
-
 module.exports = {
   Query: {
     zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findOne({ zaloMessageId: id }),

@@ -1,10 +1,10 @@
 const { pickBy, identity } = require('lodash');
 const fetch = require('node-fetch');
 
-
 module.exports = {
   Query: {
     zaloOA: (_, { id }, { container }) => container.resolve('zaloOAProvider').findById(id),
+    myOA: (_, args, { container, req }) => container.resolve('zaloOAProvider').findById(req.user.zaloIntegrationId),
     zaloOAList: async (_, args, { container }) => {
       const customLabels = {
         totalDocs: 'total',
