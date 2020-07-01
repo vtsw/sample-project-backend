@@ -11,15 +11,13 @@ const { ValidationError } = require('@hapi/joi');
  */
 // eslint-disable-next-line consistent-return
 module.exports = async (resolve, parent, args, context, info) => {
-  const { container } = context;
+  const { container, req } = context;
   const config = container.resolve('config');
   try {
     return await resolve(parent, args, context, info);
   } catch (e) {
     if (config.app.env === 'development') {
-    // eslint-disable-next-line no-console
-      console.error(e);
-      return e.stack;
+      req.errors.push(e);
     }
     if (e instanceof ValidationError) {
       return e;

@@ -21,11 +21,25 @@ module.exports = (container) => {
   app.use(bodyParser.json());
   app.use(scopePerRequest(container));
   app.use(cors());
+  app.use((req, res, next) => {
+    req.errors = [];
+    next();
+  });
   app.use('/api', router);
   app.use('/graphql', graphqlUploadExpress(config.graphqlUploadExpress), graphqlHTTP((req) => ({
     schema,
     graphiql: config.app.env === 'development',
     context: { container: req.container, req, dataloader: dataloader(container) }, // bind http request context to graphQl context
+    extensions: ({ context }) => {
+      if (context.req.errors[0]) {
+        return {
+          errors: context.req.errors.map((e) => ({
+            message: e.toString(),
+            stacktrace: e.stack,
+          })),
+        };
+      }
+    },
   })));
   app.get('/playground', expressPlayground({ endpoint: `${config.app.host}:${config.app.port}/graphql` }));
   return app;

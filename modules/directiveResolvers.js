@@ -1,16 +1,18 @@
 const get = require('lodash.get');
+const { GraphQLError } = require('graphql');
 const { AuthenticationError } = require('./errors');
 
 module.exports = {
   isAuthenticated: async (next, source, args, { container, req }) => {
     const token = get(req, 'headers.authorization', '').replace('Bearer ', '');
-    if (!token) {
-      throw new Error('You must supply a JWT for authorization!');
-    }
     try {
+      if (!token) {
+        throw new Error('You must supply a JWT for authorization!');
+      }
       req.user = await container.resolve('authService').verify(token);
       return next();
     } catch (e) {
+      req.errors.push(e);
       if (e instanceof AuthenticationError) {
         throw new Error('User not authenticated');
       }
