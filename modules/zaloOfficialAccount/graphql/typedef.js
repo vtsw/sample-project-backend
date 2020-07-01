@@ -47,8 +47,8 @@ module.exports = gql`
   }
   
   extend type Query {
-    zaloOA(id: ID!): ZaloOA
+    zaloOA(id: ID!): ZaloOA @isAuthenticated
     myOA: ZaloOA @isAuthenticated
-    zaloOAList(query: ZaloOAListInput): ZaloOAList
+    zaloOAList(query: ZaloOAListInput): ZaloOAList @isAuthenticated
   }
 `;

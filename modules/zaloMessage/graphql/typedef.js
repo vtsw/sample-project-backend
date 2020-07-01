@@ -80,13 +80,13 @@ module.exports = gql`
   }
 
   extend type Query {
-    zaloMessage(id: ID!): ZaloMessage
+    zaloMessage(id: ID!): ZaloMessage @isAuthenticated
     zaloMessageList(query: ZaloMessageListInput): ZaloMessageList @isAuthenticated
   }
   
   extend type Subscription  {
-    onZaloMessageSent(filter: OnZaloMessageSentInput): ZaloMessage
-    onZaloMessageReceived(filter: OnZaloMessageReceivedInput): ZaloMessage
-    onZaloMessageCreated(filter: OnZaloMessageCreatedInput!): ZaloMessage
+    onZaloMessageSent(filter: OnZaloMessageSentInput): ZaloMessage @isAuthenticated
+    onZaloMessageReceived(filter: OnZaloMessageReceivedInput): ZaloMessage @isAuthenticated
+    onZaloMessageCreated(filter: OnZaloMessageCreatedInput!): ZaloMessage @isAuthenticated
   }
 `;

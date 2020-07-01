@@ -32,7 +32,7 @@ module.exports = gql`
     }
 
     extend type Query {
-      socialAccount(id: ID!): ZaloSocialAccount
-      socialAccountList(query: ZaloSocialAccountListInput): ZaloSocialAccountList
+      socialAccount(id: ID!): ZaloSocialAccount @isAuthenticated
+      socialAccountList(query: ZaloSocialAccountListInput): ZaloSocialAccountList @isAuthenticated
     }
 `;
