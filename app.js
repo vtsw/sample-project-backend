@@ -30,6 +30,7 @@ module.exports = (container) => {
     schema,
     graphiql: config.app.env === 'development',
     context: { container: req.container, req, dataloader: dataloader(container) }, // bind http request context to graphQl context
+    // eslint-disable-next-line consistent-return
     extensions: ({ context }) => {
       if (context.req.errors[0]) {
         return {
