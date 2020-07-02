@@ -25,19 +25,11 @@ const zaloSASchema = new Schema({
 
 zaloSASchema.plugin(mongoosePaginate);
 zaloSASchema.methods.getFollowingByCleverOAId = function getFollowingByCleverOAId(cleverOAId) {
-  return this.followings.find((item) => {
-    console.log('item.cleverOAId.toString()', item.cleverOAId.toString());
-    console.log('cleverOAId.toString()', cleverOAId.toString());
-    return item.cleverOAId.toString() === cleverOAId.toString();
-  });
+  return this.followings.find((item) => item.cleverOAId.toString() === cleverOAId.toString());
 };
 
 zaloSASchema.methods.getFollowingByZaloOAId = function getFollowingByZaloOAId(zaloOAId) {
-  return this.followings.find((item) => {
-    console.log('item.oaId.toString()', item.oaId.toString());
-    console.log('zaloOAId.toString()', zaloOAId.toString());
-    return item.oaId.toString() === zaloOAId.toString();
-  });
+  return this.followings.find((item) => item.oaId.toString() === zaloOAId.toString());
 };
 
 module.exports = zaloSASchema;

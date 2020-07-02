@@ -7,7 +7,7 @@ class ZaloUploader {
   }
 
   uploadImage(file, owner) {
-    const { accessToken } = owner.zaloOA;
+    const { accessToken } = owner.credential;
     const { zaloApi: { officialAccount: { upload: { uploadImage } } } } = this.config;
     const formdata = new FormData();
     formdata.append('file', file.data, {
@@ -22,7 +22,7 @@ class ZaloUploader {
   }
 
   uploadGif(file, owner) {
-    const { accessToken } = owner.zaloOA;
+    const { accessToken } = owner.credential;
     const { zaloApi: { officialAccount: { upload: { uploadGif } } } } = this.config;
     const formdata = new FormData();
     formdata.append('file', file.data, {
@@ -37,7 +37,7 @@ class ZaloUploader {
   }
 
   uploadFile(file, owner) {
-    const { accessToken } = owner.zaloOA;
+    const { accessToken } = owner.credential;
     const { zaloApi: { officialAccount: { upload: { uploadFile } } } } = this.config;
     const formdata = new FormData();
     formdata.append('file', file.data, {

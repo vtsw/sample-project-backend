@@ -16,12 +16,8 @@ class Authenticator {
    */
   verify(token) {
     try {
-      console.log('jwt', this.jwt);
-      const decodedToken = this.jwt.decode(token);
-      console.log('decodedToken', decodedToken);
-      return decodedToken;
+      return this.jwt.decode(token);
     } catch (err) {
-      console.log(err);
       throw new AuthenticationError('Invalid token', err);
     }
   }

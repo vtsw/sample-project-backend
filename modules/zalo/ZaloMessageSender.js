@@ -70,9 +70,11 @@ class ZaloMessageSender {
 
   /**
    *
-   * @param {Object} param0
-   * @param {ZaloInterestedUser} recipient
-   * @param {User} sender
+   * @param file
+   * @param content
+   * @param recipient
+   * @param sender
+   * @returns {Promise<*>}
    */
   async sendImage({ file, content }, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
