@@ -4,6 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "install": "npm install",
+    "start": "nodemon server.js",
     "start:local": "cross-env MONGODB_URL=mongodb://foobar:foobarPassword@localhost:27017/simple_db MINIO_END_POINT=localhost nodemon server.js",
     "test": "jest",
     "migrate-mongo": "migrate-mongo up",

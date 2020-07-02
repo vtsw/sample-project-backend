@@ -16,8 +16,13 @@ module.exports = async (resolve, parent, args, context, info) => {
   try {
     return await resolve(parent, args, context, info);
   } catch (e) {
+    console.error(e);
     if (config.app.env === 'development') {
-      req.errors.push(e);
+      if (req) {
+        req.errors.push(e);
+      }
+
+      console.log(context);
     }
     if (e instanceof ValidationError) {
       return e;

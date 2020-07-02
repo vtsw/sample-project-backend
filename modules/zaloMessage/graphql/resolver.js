@@ -152,25 +152,25 @@ module.exports = {
     onZaloMessageSent: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_SENT),
-        ({ onZaloMessageCreated }, { filter }, { loggedUser }) => {
+        ({ onZaloMessageSent }, { filter }, { loggedUser }) => {
           if (filter && filter.to) {
-            return onZaloMessageCreated.from.id === loggedUser.id && filter.to === onZaloMessageCreated.to.id;
+            return onZaloMessageSent.from.id === loggedUser.zaloIntegrationId && filter.to === onZaloMessageSent.to.id;
           }
-          return onZaloMessageCreated.from.id === loggedUser.id;
+          return onZaloMessageSent.from.id === loggedUser.zaloIntegrationId;
         },
       ),
     },
     onZaloMessageReceived: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_RECEIVED),
-        ({ onZaloMessageReceived }, args, { loggedUser }) => onZaloMessageReceived.to.id === loggedUser.id,
+        ({ onZaloMessageReceived }, args, { loggedUser }) => onZaloMessageReceived.to.id === loggedUser.zaloIntegrationId,
       ),
     },
     onZaloMessageCreated: {
       subscribe: withFilter(
         (_, __, { container }) => container.resolve('pubsub').asyncIterator(ZALO_MESSAGE_CREATED),
         ({ onZaloMessageCreated }, { filter }, { loggedUser }) => {
-          const participants = [loggedUser.id, filter.interestedUserId];
+          const participants = [loggedUser.zaloIntegrationId, filter.interestedUserId];
           return (participants.includes(onZaloMessageCreated.from.id) && participants.includes(onZaloMessageCreated.to.id));
         },
       ),

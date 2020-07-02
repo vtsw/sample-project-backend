@@ -32,7 +32,7 @@ module.exports = (container) => {
     context: { container: req.container, req, dataloader: dataloader(container) }, // bind http request context to graphQl context
     // eslint-disable-next-line consistent-return
     extensions: ({ context }) => {
-      if (context.req.errors[0]) {
+      if (context.req && context.req.errors[0]) {
         return {
           errors: context.req.errors.map((e) => ({
             message: e.toString(),

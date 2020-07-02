@@ -85,8 +85,8 @@ module.exports = gql`
   }
   
   extend type Subscription  {
-    onZaloMessageSent(filter: OnZaloMessageSentInput): ZaloMessage @isAuthenticated
-    onZaloMessageReceived(filter: OnZaloMessageReceivedInput): ZaloMessage @isAuthenticated
-    onZaloMessageCreated(filter: OnZaloMessageCreatedInput!): ZaloMessage @isAuthenticated
+    onZaloMessageSent(filter: OnZaloMessageSentInput): ZaloMessage
+    onZaloMessageReceived(filter: OnZaloMessageReceivedInput): ZaloMessage
+    onZaloMessageCreated(filter: OnZaloMessageCreatedInput!): ZaloMessage
   }
 `;
