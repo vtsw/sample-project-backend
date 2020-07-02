@@ -1,6 +1,6 @@
 const { asFunction } = require('awilix');
 const ServiceProvider = require('../../ServiceProvider');
-const zaloMessage = require("./model/ZaloMessage");
+const zaloMessage = require('./model/ZaloMessage');
 
 class ZaloMessageServiceProvider extends ServiceProvider {
   register() {
