@@ -9,27 +9,30 @@ module.exports = {
   Query: {
     zaloMessage: (_, { id }, { container }) => container.resolve('zaloMessageProvider').findOne({ zaloMessageId: id }),
     zaloMessageList: async (_, { query }, { container, req }) => {
-      const { zaloIntegrationId: firstParticipant } = req.user;
+      const { zaloIntegrationId } = req.user;
       const {
-        secondParticipant, limit, offset,
+        secondParticipant, limit, skip,
       } = query;
       const customLabels = {
-        totalDocs: 'itemCount',
+        totalDocs: 'totalDocs',
         docs: 'items',
-        limit: 'perPage',
-        page: 'currentPage',
+        limit: 'limit',
+        page: 'page',
         nextPage: 'next',
         prevPage: 'prev',
         totalPages: 'pageCount',
         pagingCounter: 'slNo',
-        meta: 'paginator',
+        hasNextPage: 'hasNext',
       };
       return container.resolve('zaloMessageProvider').paginate({
-        'from.id': { $in: [ObjectId(firstParticipant), ObjectId(secondParticipant)] },
-        'to.id': { $in: [ObjectId(firstParticipant), ObjectId(secondParticipant)] },
+        'from.id': { $in: [ObjectId(zaloIntegrationId), ObjectId(secondParticipant)] },
+        'to.id': { $in: [ObjectId(zaloIntegrationId), ObjectId(secondParticipant)] },
       }, {
-        limit, offset, customLabels, sort: { timestamp: -1 },
-      });
+        limit, offset: skip, customLabels, sort: { timestamp: -1 },
+      }).then((data) => ({
+        ...data,
+        total: data.items.length,
+      }));
     },
   },
   Mutation: {
