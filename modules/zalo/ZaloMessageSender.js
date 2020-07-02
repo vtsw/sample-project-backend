@@ -46,12 +46,6 @@ class ZaloMessageSender {
     return response;
   }
 
-  /**
-   *
-   * @param {Object} message
-   * @param {ZaloInterestedUser} recipient
-   * @param {User} sender
-   */
   sendText(message, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
     const { credential: { accessToken }, oaId } = sender;
@@ -108,12 +102,6 @@ class ZaloMessageSender {
     }).then((res) => res.json());
   }
 
-  /**
-   *
-   * @param {Object} param0
-   * @param {ZaloInterestedUser} recipient
-   * @param {User} sender
-   */
   async sendGif({ file, content }, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
     const uploadResult = await this.zaloUploader.uploadGif(file, sender);
@@ -123,7 +111,7 @@ class ZaloMessageSender {
     const { credential: { accessToken }, _id } = sender;
     const body = {
       recipient: {
-        user_id: recipient.getZaloIdByOAId(_id).zaloIdByOA,
+        user_id: recipient.getFollowingByCleverOAId(_id).zaloIdByOA,
       },
       message: {
         text: content,
@@ -146,12 +134,6 @@ class ZaloMessageSender {
     }).then((res) => res.json());
   }
 
-  /**
-   *
-   * @param {Object} param0
-   * @param {ZaloInterestedUser} recipient
-   * @param {User} sender
-   */
   async sendFile({ file }, recipient, sender) {
     const { zaloApi: { officialAccount: { sendMessageToInterestedUser } } } = this.config;
     const res = await this.zaloUploader.uploadFile(file, sender);
@@ -161,7 +143,7 @@ class ZaloMessageSender {
     const { credential: { accessToken }, _id } = sender;
     const body = {
       recipient: {
-        user_id: recipient.getZaloIdByOAId(_id).zaloIdByOA,
+        user_id: recipient.getFollowingByCleverOAId(_id).zaloIdByOA,
       },
       message: {
         attachment: {

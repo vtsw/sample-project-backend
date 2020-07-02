@@ -19,5 +19,4 @@ const zaloOASchema = new Schema({
 zaloOASchema.plugin(mongooseDelete, { overrideMethods: true, deletedAt: true, use$neOperator: false });
 zaloOASchema.plugin(mongoosePaginate);
 
-
 module.exports = zaloOASchema;
