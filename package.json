@@ -19,7 +19,7 @@
     "apollo-server-express": "^2.12.0",
     "awilix": "^4.2.5",
     "awilix-express": "^3.0.0",
-    "bcrypt": "^4.0.0",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "buffer-image-size": "^0.6.4",
     "cors": "^2.8.5",
